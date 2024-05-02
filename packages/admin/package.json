@@ -1,0 +1,39 @@
+{
+  "name": "stranough-admin",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@pixi/interaction": "^6.5.10",
+    "@solidjs/router": "^0.13.2",
+    "@solidjs/start": "^1.0.0-rc.0",
+    "@types/lodash": "^4.17.0",
+    "@types/object-hash": "^3.0.6",
+    "autoprefixer": "^10.4.14",
+    "axios": "^1.6.8",
+    "lodash": "^4.17.21",
+    "object-hash": "^3.0.0",
+    "pixi.js": "^8.1.0",
+    "postcss": "^8.4.26",
+    "solid-js": "^1.8.16",
+    "tailwindcss": "^3.3.3",
+    "solid-pixi" : "*"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5",
+    "vite": "^5.2.9",
+    "vite-plugin-solid": "^2.10.2"
+  },
+  "description": "Everything you need to build a Solid project, powered by [`solid-start`](https://start.solidjs.com);",
+  "version": "1.0.0",
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

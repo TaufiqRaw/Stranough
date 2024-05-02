@@ -1,0 +1,19 @@
+{
+  "name": "stranough-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:solid-pixi": "cd packages/solid-pixi && vite build && tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "workspaces": [
+    "packages/admin",
+    "packages/client",
+    "packages/server",
+    "packages/solid-pixi"
+  ]
+}
