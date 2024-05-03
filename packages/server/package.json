@@ -78,5 +78,6 @@
   "homepage": "https://github.com/w3cj/express-api-starter#readme",
   "directories": {
     "test": "test"
-  }
+  },
+  "types": "dist/index.d.ts"
 }

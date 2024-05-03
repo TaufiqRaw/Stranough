@@ -58,22 +58,23 @@ app.use(helmet());
 app.use(cors());
 app.use(express.json());
 
-async function main(){
-  await initDependency();
-
-  app.use(express.json());
-  app.use(middlewares.createRequestContext);
+export namespace App {
+  export async function main(){
+    await initDependency();
   
-  // app.use('/author', AuthorController);
-  // app.use('/book', BookController);
-
-  // app.use(middlewares.notFound);
-  app.use(middlewares.errorHandler);
-
-  DI.server = app.listen(port, () => {
-    console.log(`MikroORM express TS example started at http://localhost:${port}`)});
+    app.use(express.json());
+    app.use(middlewares.createRequestContext);
+    
+    // app.use('/author', AuthorController);
+    // app.use('/book', BookController);
+  
+    // app.use(middlewares.notFound);
+    app.use(middlewares.errorHandler);
+  
+    DI.server = app.listen(port, () => {
+      console.log(`MikroORM express TS example started at http://localhost:${port}`)});
+  }
 }
-main();
 
 async function initDependency(){
   DI.orm = await MikroORM.init(mikroOrmConfig);
