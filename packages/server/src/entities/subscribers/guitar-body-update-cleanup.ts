@@ -22,7 +22,7 @@ export class GuitarBodyUpdateCleanup implements EventSubscriber {
     const changedEntity = cs.entity as GuitarBody;
     const _oldEntity = args.uow.getOriginalEntityData(changedEntity);
 
-    if (!_oldEntity) return;
+    if (!_oldEntity || !_oldEntity.id) return;
 
     const oldEntity = await args.em.findOne(GuitarBody, _oldEntity.id);
 

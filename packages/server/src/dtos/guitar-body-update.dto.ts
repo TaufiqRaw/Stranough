@@ -2,6 +2,7 @@ import { Type } from "class-transformer";
 import { ArrayMinSize, IsArray, IsNotEmpty, IsNumber, IsObject, IsOptional, ValidateNested } from "class-validator";
 import { PositionDto, PositionWithRotationDto } from "./position.dto";
 import { GuitarModel } from "../entities/guitar-model.entity";
+import { PickupSpawnPointDto } from "./pickup-spawn-point.dto";
 
 export class GuitarBodyUpdateDto {
   @IsNotEmpty()
@@ -21,11 +22,10 @@ export class GuitarBodyUpdateDto {
   bridgeSpawnPoint: PositionDto;
 
   @IsOptional()
-  @IsArray()
-  @ValidateNested({ each: true })
-  @ArrayMinSize(2)
-  @Type(() => PositionDto)
-  pickupSpawnPoint?: PositionDto[];
+  @IsObject()
+  @ValidateNested()
+  @Type(() => PickupSpawnPointDto)
+  pickupSpawnPoint?: PickupSpawnPointDto;
 
   @IsOptional()
   @IsArray()

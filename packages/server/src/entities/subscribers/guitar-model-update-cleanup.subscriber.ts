@@ -21,7 +21,7 @@ export class GuitarModelUpdateCleanup implements EventSubscriber {
     const changedEntity = cs.entity as GuitarModel;
     const _oldEntity = args.uow.getOriginalEntityData(changedEntity);
 
-    if (!_oldEntity) return;
+    if (!_oldEntity || !_oldEntity.id) return;
 
     const oldEntity = await args.em.findOne(GuitarModel, _oldEntity.id);
 

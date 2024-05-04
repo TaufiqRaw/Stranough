@@ -22,7 +22,11 @@ export class GuitarBody extends BaseEntity {
   bridgeSpawnPoint ?: Position;
 
   @Property({type : 'json'})
-  pickupSpawnPoint ?: Position[];
+  pickupSpawnPoint ?: {
+    bridge ?: Position;
+    middle ?: Position;
+    neck ?: Position;
+  };
 
   @Property({type : 'json'})
   knobSpawnPoint ?: Position[];

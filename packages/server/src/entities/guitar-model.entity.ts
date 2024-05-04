@@ -13,6 +13,7 @@ export type GuitarModelProps = Omit<
 @Entity()
 export class GuitarModel extends BaseEntity {
   @Property()
+  @Unique()
   name : string;
 
   @Property()

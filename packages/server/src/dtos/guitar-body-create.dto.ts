@@ -11,6 +11,7 @@ import {
 import { GuitarModel } from "../entities/guitar-model.entity";
 import { PositionDto, PositionWithRotationDto } from "./position.dto";
 import { Type } from "class-transformer";
+import { PickupSpawnPointDto } from "./pickup-spawn-point.dto";
 
 export class GuitarBodyCreateDto {
   @IsNotEmpty()
@@ -30,11 +31,10 @@ export class GuitarBodyCreateDto {
   bridgeSpawnPoint: PositionDto;
 
   @IsOptional()
-  @IsArray()
-  @ValidateNested({ each: true })
-  @ArrayMinSize(2)
-  @Type(() => PositionDto)
-  pickupSpawnPoint?: PositionDto[];
+  @IsObject()
+  @ValidateNested()
+  @Type(() => PickupSpawnPointDto)
+  pickupSpawnPoint?: PickupSpawnPointDto;
 
   @IsOptional()
   @IsArray()
