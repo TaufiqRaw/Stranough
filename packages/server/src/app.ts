@@ -12,7 +12,7 @@ import { Media } from './entities/media.entity';
 import { Bridge } from './entities/bridge.entity';
 import winston from 'winston';
 import multer from 'multer';
-import { IMAGE_SIZE_LIMIT } from './constants';
+import * as Constants from './constants';
 import { Headstock } from './entities/headstock.entity';
 import { Jack } from './entities/jack.entity';
 import { Knob } from './entities/knob.entity';
@@ -22,9 +22,21 @@ import { Pickguard } from './entities/pickguard.entity';
 import { Switch } from './entities/switch.entity';
 import { GuitarBodyTexture } from './entities/guitar-body-texture.entity';
 import mikroOrmConfig from "./database/mikro-orm.config";
-require('express-async-errors');
-require('dotenv').config();
-const upload = multer({ storage: multer.memoryStorage(), limits : {fileSize : IMAGE_SIZE_LIMIT}});
+import path from 'path';
+import { guitarModelController, mediaController } from './controllers';
+import { BridgeDto } from './dtos/bridge.dto';
+import { JackDto } from './dtos/jack.dto';
+import { BaseEntityWithSprite, Pickup } from './entities';
+import { KnobDto } from './dtos/knob.dto';
+import { BaseEntityWithSpriteDto } from './dtos/base-entity-with-sprite.dto';
+import { Class } from 'utility-types';
+import { NutDto } from './dtos/nuts.dto';
+import { PickupDto } from './dtos/pickup.dto';
+import { SwitchDto } from './dtos/switch.dto';
+import { entityWithSpriteRouterFactory } from './utils/entity-with-sprite-router.factory';
+require('dotenv').config({
+  path : Constants.envPath
+});
 
 type Repository  = {
   guitarBodies : EntityRepository<GuitarBody>,
@@ -38,25 +50,36 @@ type Repository  = {
   nuts : EntityRepository<Nut>,
   pegs : EntityRepository<Peg>,
   pickguards : EntityRepository<Pickguard>,
-  switch : EntityRepository<Switch>,
+  switchs : EntityRepository<Switch>,
+  pickups : EntityRepository<Pickup>, 
 };
 
+// Dependency Injection container
+// can only be accessed on runtime (after the app is started)
+// e.g. inside a function that not immediately evaluated
 export const DI = {} as {
   repository : Repository,
   orm: MikroORM,
   em: EntityManager,
   server: http.Server,
   logger : winston.Logger,
-  upload : multer.Multer,
 }
 
 export const app = express();
-const port = process.env.PORT || 5000;
+const port = Constants.serverPort;
 
 app.use(morgan('dev'));
 app.use(helmet());
-app.use(cors());
+app.use(cors({
+  credentials : true,
+  origin : process.env.NODE_ENV === 'production' ? process.env.FRONTEND_URL : '*',
+}));
 app.use(express.json());
+app.use((_, res, next)=>{
+  res.set('Cross-Origin-Resource-Policy', 'cross-origin');
+  next();
+})
+app.use(express.static('public'))
 
 export namespace App {
   export async function main(){
@@ -65,29 +88,40 @@ export namespace App {
     app.use(express.json());
     app.use(middlewares.createRequestContext);
     
-    // app.use('/author', AuthorController);
-    // app.use('/book', BookController);
+    initRoutes();
   
     // app.use(middlewares.notFound);
     app.use(middlewares.errorHandler);
   
     DI.server = app.listen(port, () => {
-      console.log(`MikroORM express TS example started at http://localhost:${port}`)});
+      DI.logger.info(`Server is running on port ${port}`);
+    });
   }
+}
+
+function initRoutes(){
+  app.use('/guitar-models', guitarModelController);
+  app.use('/medias', mediaController);
+  ([
+    ['bridges', DI.repository.bridges, BridgeDto],
+    ['jacks', DI.repository.jacks, JackDto],
+    ['knobs', DI.repository.knobs, KnobDto],
+    ['nuts', DI.repository.nuts, NutDto],
+    ['pickups', DI.repository.pickups, PickupDto],
+    ['switchs', DI.repository.switchs, SwitchDto],
+  ] as const ).forEach(([route, repo, dto])=>{
+    //@ts-ignore
+    app.use(`/${route}`, entityWithSpriteRouterFactory(()=>repo, dto));
+  })
 }
 
 async function initDependency(){
   DI.orm = await MikroORM.init(mikroOrmConfig);
-
   DI.em = DI.orm.em;
-
-  DI.upload = upload;
 
   initLogger();
 
   initRepository();
-
-  DI.logger.info('APP Started');
 }
 
 function initLogger(){
@@ -118,7 +152,10 @@ function initRepository(){
     nuts : DI.orm.em.getRepository(Nut),
     pegs : DI.orm.em.getRepository(Peg),
     pickguards : DI.orm.em.getRepository(Pickguard),
-    switch : DI.orm.em.getRepository(Switch),
+    switchs : DI.orm.em.getRepository(Switch),
     guitarBodyTextures : DI.orm.em.getRepository(GuitarBodyTexture),
+    pickups : DI.orm.em.getRepository(Pickup),
   }
 }
+
+App.main();

@@ -5,28 +5,12 @@ import { EntityWithoutBase } from "../interfaces/entity-without-base.interface";
 import { classAssign } from "../utils/class-assign.util";
 import { idProperty } from "../utils/id-property.util";
 import { Media } from "./media.entity";
+import { BaseEntityWithSprite } from "./base-with-sprite.entity";
 
 export type JackProps = EntityWithoutBase<Jack>;
 
 @Entity()
-export class Jack extends BaseEntity {
-  @Property()
-  name : string;
-
-  @Property()
-  description : string;
-
-  @Property()
-  price : number;
-
-  @ManyToOne(()=>Media, {deleteRule : 'set null', updateRule : 'cascade'})
-  texture ?: Media;
-
-  @Property({type : 'float'})
-  scale : number;
-
-  @Property({type : 'json'})
-  pivotPosition : Position;
+export class Jack extends BaseEntityWithSprite {
 
   @Property()
   isSide : boolean;

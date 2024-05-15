@@ -1,6 +1,5 @@
 import sharp from 'sharp';
 import {v4} from 'uuid'
-import { IMAGE_PATH } from '../constants';
 import { join } from 'path';
 import { ImageConversionOutput } from '../interfaces/image-conversion-output.interface';
 import { Media, MediaProps } from '../entities/media.entity';
@@ -10,7 +9,8 @@ import { Request, RequestHandler, Response } from 'express';
 import { validateDto } from '../utils/validate-dto.util';
 import { ImageUploadDto } from '../dtos/image-upload.dto';
 import { BadRequestError } from '../utils/classes/error.class.util';
-import { GuitarPartEnum } from '../enums';
+import * as Constants from '../constants';
+import { RequestContext } from '@mikro-orm/core';
 
 export namespace MediaService {
   /**
@@ -40,12 +40,12 @@ export namespace MediaService {
     });
 
     const newMedia = new Media({
-      name, 
+      name: `${name}-${filename}`, 
       filename : outputMetadata.filename,
       mimeType: contentType(outputMetadata.format) as string,
     });
 
-    DI.orm.em.persistAndFlush(newMedia);
+    await RequestContext.getEntityManager()!.persistAndFlush(newMedia);
 
     return newMedia;
   }
@@ -62,11 +62,11 @@ export namespace MediaService {
       if(req.file == undefined)
         throw new BadRequestError("No file uploaded");
     
-      const result = MediaService.storeImage(data.name, req.file, {
+      const result = await MediaService.storeImage(data.name, req.file, {
         maxWidth: maxSize.maxWidth,
         maxHeight: maxSize.maxHeight,
       });
-    
+
       return res.json(result);
     }
   }
@@ -82,7 +82,7 @@ async function convertImgAndSave(
     };
   },
 ): Promise<ImageConversionOutput> {
-  const filename = args.filename + '.jpg';
+  const filename = args.filename + '.png';
   try {
     const o = sharp(args.imgBuffer);
     const metadata = await o.metadata();
@@ -99,7 +99,7 @@ async function convertImgAndSave(
     }
 
     return {
-      ...(await o.jpeg().toFile(join(IMAGE_PATH, filename))),
+      ...(await o.png().toFile(join(Constants.imagePath, filename))),
       filename,
     };
   } catch (err: any) {

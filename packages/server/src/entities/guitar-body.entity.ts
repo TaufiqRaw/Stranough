@@ -12,7 +12,9 @@ export type GuitarBodyProps = EntityWithoutBase<GuitarBody>;
 
 @Entity()
 export class GuitarBody extends BaseEntity {
-  @OneToOne(()=>GuitarModel, {deleteRule : 'cascade', updateRule : 'cascade', owner : false})
+  @OneToOne(()=>GuitarModel, {deleteRule : 'cascade', updateRule : 'cascade', owner : false, mappedBy : 'boltOnBody'})
+  @OneToOne(()=>GuitarModel, {deleteRule : 'cascade', updateRule : 'cascade', owner : false, mappedBy : 'neckThroughBody'})
+  @OneToOne(()=>GuitarModel, {deleteRule : 'cascade', updateRule : 'cascade', owner : false, mappedBy : 'setInBody'})
   model : GuitarModel;
 
   @Property({type : 'json'})
@@ -40,25 +42,25 @@ export class GuitarBody extends BaseEntity {
   @Property({type : 'json'})
   sideJackSpawnPoint ?: PositionWithRotation;
 
-  @OneToOne(()=>GuitarBodyTexture , b=>b.body, {owner : true})
+  @OneToOne(()=>GuitarBodyTexture , b=>b.body, {owner : true, orphanRemoval : true})
   flatTopBackTexture ?: GuitarBodyTexture;
 
-  @OneToOne(()=>GuitarBodyTexture, b=>b.body, {owner : true})
+  @OneToOne(()=>GuitarBodyTexture, b=>b.body, {owner : true, orphanRemoval : true})
   forearmCutTexture ?: GuitarBodyTexture;
 
-  @OneToOne(()=>GuitarBodyTexture, b=>b.body, {owner : true})
+  @OneToOne(()=>GuitarBodyTexture, b=>b.body, {owner : true, orphanRemoval : true})
   tummyCutTexture ?: GuitarBodyTexture;
 
-  @OneToOne(()=>GuitarBodyTexture, b=>b.body, {owner : true})
+  @OneToOne(()=>GuitarBodyTexture, b=>b.body, {owner : true, orphanRemoval : true})
   forearmTummyCutTexture ?: GuitarBodyTexture;
 
-  @OneToOne(()=>GuitarBodyTexture, b=>b.body, {owner : true})
+  @OneToOne(()=>GuitarBodyTexture, b=>b.body, {owner : true, orphanRemoval : true})
   carvedTopTexture ?: GuitarBodyTexture;
 
-  @OneToOne(()=>GuitarBodyTexture, b=>b.body, {owner : true})
+  @OneToOne(()=>GuitarBodyTexture, b=>b.body, {owner : true, orphanRemoval : true})
   carvedTopBackTexture ?: GuitarBodyTexture;
 
-  @OneToOne(()=>GuitarBodyTexture, b=>b.body, {owner : true})
+  @OneToOne(()=>GuitarBodyTexture, b=>b.body, {owner : true, orphanRemoval : true})
   carvedTopTummyCutTexture ?: GuitarBodyTexture;
 
   constructor(props : GuitarBodyProps){

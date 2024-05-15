@@ -1,9 +1,15 @@
 import { Options, PostgreSqlDriver } from "@mikro-orm/postgresql";
 import { TsMorphMetadataProvider } from "@mikro-orm/reflection";
-import { GuitarBodyUpdateCleanup } from "../entities/subscribers/guitar-body-update-cleanup";
+import { GuitarBodyUpdateCleanup } from "../entities/subscribers/guitar-body-update-cleanup.subscriber";
 import { GuitarModelUpdateCleanup } from "../entities/subscribers/guitar-model-update-cleanup.subscriber";
 import { Migrator } from "@mikro-orm/migrations";
-require('dotenv').config();
+import path from "path";
+import dotenv from 'dotenv';
+import * as Constants from "../constants";
+import { GuitarModelDeleteCleanup } from "../entities/subscribers/guitar-model-delete-cleanup.subscriber";
+dotenv.config({
+  path : Constants.envPath
+});
 
 const config : Options = {
     driver : PostgreSqlDriver,
@@ -16,7 +22,7 @@ const config : Options = {
     entities: ['dist/entities'],
     entitiesTs: ['src/entities'],
     extensions : [Migrator],
-    subscribers : [new GuitarBodyUpdateCleanup(), new GuitarModelUpdateCleanup()],
+    subscribers : [new GuitarBodyUpdateCleanup(), new GuitarModelUpdateCleanup(), new GuitarModelDeleteCleanup()],
     metadataProvider: TsMorphMetadataProvider,
     migrations: {
       path: 'dist/database/migrations',

@@ -6,6 +6,7 @@ import { classAssign } from "../utils/class-assign.util";
 import { GuitarModel } from "./guitar-model.entity";
 import { Media } from "./media.entity";
 import { idProperty } from "../utils/id-property.util";
+import { maxDescriptionLength } from "../constants";
 
 export type PickguardProps = EntityWithoutBase<Pickguard>;
 
@@ -14,7 +15,7 @@ export class Pickguard extends BaseEntity {
   @Property()
   name : string;
 
-  @Property()
+  @Property({type : 'varchar', length : maxDescriptionLength})
   description : string;
 
   @Property()

@@ -1,7 +1,8 @@
+import { Expose } from "class-transformer";
 import { IsNotEmpty, Matches } from "class-validator";
-import { IMAGE_SIZE_LIMIT } from "../constants";
 
 export class ImageUploadDto{
+  @Expose()
   @IsNotEmpty()
   name: string;
 }

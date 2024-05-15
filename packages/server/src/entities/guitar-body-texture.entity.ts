@@ -12,7 +12,12 @@ export type GuitarBodyTextureProps = Optional<EntityWithoutBase<GuitarBodyTextur
 @Entity()
 export class GuitarBodyTexture extends BaseEntity {
 
-  @OneToOne(()=>GuitarBody, {deleteRule : 'cascade', updateRule : 'cascade', owner : false})
+  @OneToOne(()=>GuitarBody, {deleteRule : 'cascade', updateRule : 'cascade', owner : false, mappedBy : 'flatTopBackTexture'})
+  @OneToOne(()=>GuitarBody, {deleteRule : 'cascade', updateRule : 'cascade', owner : false, mappedBy : 'forearmCutTexture'})
+  @OneToOne(()=>GuitarBody, {deleteRule : 'cascade', updateRule : 'cascade', owner : false, mappedBy : 'tummyCutTexture'})
+  @OneToOne(()=>GuitarBody, {deleteRule : 'cascade', updateRule : 'cascade', owner : false, mappedBy : 'forearmTummyCutTexture'})
+  @OneToOne(()=>GuitarBody, {deleteRule : 'cascade', updateRule : 'cascade', owner : false, mappedBy : 'carvedTopTexture'})
+  @OneToOne(()=>GuitarBody, {deleteRule : 'cascade', updateRule : 'cascade', owner : false, mappedBy : 'carvedTopBackTexture'})
   body : GuitarBody;
 
   @Property({type : 'float'})
@@ -22,7 +27,7 @@ export class GuitarBodyTexture extends BaseEntity {
   frontHoleMask ?: Media;
 
   @ManyToOne(()=>Media, {deleteRule : 'set null', updateRule : 'cascade'})
-  frontMask ?: Media;
+  mask ?: Media;
 
   @ManyToOne(()=>Media, {deleteRule : 'set null', updateRule : 'cascade'})
   backMask ?: Media;

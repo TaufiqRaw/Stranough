@@ -1,4 +1,6 @@
-export enum GuitarPartEnum {
+export type GuitarPartEnumType = 'body' | 'bridge' | 'pickguard' | 'headstock' | 'jack' | 'knob' | 'nut' | 'peg' | 'switch' | 'pickup';
+
+export enum GuitarPart {
   BODY = "body",
   BRIDGE = "bridge",
   PICKGUARD = "pickguard",
@@ -11,7 +13,7 @@ export enum GuitarPartEnum {
   PICKUP = "pickup",
 }
 
-export enum GuitarPickupTypeEnum {
+export enum GuitarPickupType {
   Single = 'single',
   Humbucker = 'humbucker',
   P90 = 'p90',

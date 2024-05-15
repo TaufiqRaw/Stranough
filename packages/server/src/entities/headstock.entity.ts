@@ -6,6 +6,7 @@ import { classAssign } from "../utils/class-assign.util";
 import { Media } from "./media.entity";
 import { idProperty } from "../utils/id-property.util";
 import { GuitarModel } from "./guitar-model.entity";
+import { maxDescriptionLength } from "../constants";
 
 export type HeadstockProps = EntityWithoutBase<Headstock>;
 
@@ -14,7 +15,7 @@ export class Headstock extends BaseEntity {
   @Property()
   name : string;
 
-  @Property()
+  @Property({type : 'varchar', length : maxDescriptionLength})
   description : string;
 
   @ManyToOne(()=>GuitarModel, {deleteRule : 'set null', updateRule : 'cascade'})

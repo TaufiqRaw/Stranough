@@ -5,32 +5,16 @@ import { EntityWithoutBase } from "../interfaces/entity-without-base.interface";
 import { classAssign } from "../utils/class-assign.util";
 import { Media } from "./media.entity";
 import { idProperty } from "../utils/id-property.util";
-import { GuitarPickupTypeEnum } from "../enums";
+import * as Enums from "../enums";
+import { BaseEntityWithSprite } from "./base-with-sprite.entity";
 
 export type PickupProps = EntityWithoutBase<Pickup>;
 
 @Entity()
-export class Pickup extends BaseEntity {
-  @Property()
-  name : string;
+export class Pickup extends BaseEntityWithSprite {
 
-  @Property()
-  description : string;
-
-  @Property()
-  price : number;
-
-  @ManyToOne(()=>Media, {deleteRule : 'set null', updateRule : 'cascade'})
-  texture ?: Media;
-
-  @Property({type : 'float'})
-  scale : number;
-
-  @Property({type : 'json'})
-  pivotPosition : Position;
-
-  @Enum(()=>GuitarPickupTypeEnum)
-  type : GuitarPickupTypeEnum;
+  @Enum(()=>Enums.GuitarPickupType)
+  type : Enums.GuitarPickupType;
 
   constructor(props : PickupProps){
     super();

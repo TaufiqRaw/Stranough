@@ -1,4 +1,4 @@
-import { ERROR_MESSAGE } from "../../constants";
+import * as Constants from "../../constants";
 
 export class ExpressError extends Error {
   statusCode: number;
@@ -21,12 +21,12 @@ export class BadRequestError extends ExpressError {
   constructor(messages : string[] | string, context?: {[key : string] : any}) {
     if(typeof messages === 'string')
       messages = [messages];
-    super(ERROR_MESSAGE[400], 400, {messages, ...context});
+    super(Constants.errorMessage[400], 400, {messages, ...context});
   }
 }
 
 export class NotFoundError extends ExpressError {
   constructor(context?: {[key : string] : any}) {
-    super(ERROR_MESSAGE[404], 404, context);
+    super(Constants.errorMessage[404], 404, context);
   }
 }

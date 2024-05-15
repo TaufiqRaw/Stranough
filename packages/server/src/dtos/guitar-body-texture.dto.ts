@@ -1,39 +1,45 @@
+import { Expose } from "class-transformer";
 import { IsNotEmpty, IsNumber, IsOptional, Max, Min } from "class-validator";
 
 export class GuitarBodyTextureDto { 
+  
+  @Expose()
   @IsOptional()
   @IsNumber()
-  body : number;
-  
-  @IsNotEmpty()
-  @IsNumber()
   @Min(0)
-  scale : number;
+  scale ?: number;
 
+  @Expose()
   @IsOptional()
   @IsNumber()
   frontHoleMask ?: number;
 
-  @IsOptional()
+  @Expose()
+  @IsNotEmpty()
   @IsNumber()
-  frontMask ?: number;
+  mask : number;
 
+  @Expose()
   @IsOptional()
   @IsNumber()
   backMask ?: number;
 
+  @Expose()
   @IsOptional()
   @IsNumber()
   frontShadowTexture ?: number;
 
+  @Expose()
   @IsOptional()
   @IsNumber()
   backShadowTexture ?: number;
 
+  @Expose()
   @IsOptional()
   @IsNumber()
   frontSpecularTexture ?: number;
 
+  @Expose()
   @IsOptional()
   @IsNumber()
   backSpecularTexture ?: number;

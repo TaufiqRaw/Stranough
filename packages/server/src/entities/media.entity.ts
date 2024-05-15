@@ -4,9 +4,8 @@ import { classAssign } from "../utils/class-assign.util";
 import { rm } from "fs/promises";
 import { join } from "path";
 import { DI } from "../app";
-import { IMAGE_PATH } from "../constants";
 import { BaseEntity } from "./base.entity";
-import { GuitarPartEnum } from "../enums";
+import * as Constants from "../constants";
 
 export type MediaProps = EntityWithoutBase<Media>;
 
@@ -31,7 +30,7 @@ export class Media extends BaseEntity {
   async beforeDelete(args: EventArgs<Media>) {
     const media = args.entity;
     try {
-      await rm(join(IMAGE_PATH, media.filename));
+      await rm(join(Constants.imagePath, media.filename));
     } catch (err) {
       throw Error('[Media.entity@destroyImage] file deletion error');
     }

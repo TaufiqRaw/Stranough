@@ -1,4 +1,4 @@
-import { EntityRepository, FilterQuery, FindOptions, QueryFlag } from "@mikro-orm/postgresql";
+import { EntityRepository, FilterQuery, FindOptions, QueryFlag, QueryOrder } from "@mikro-orm/postgresql";
 import { PaginationQueryType } from "../interfaces/pagination.interface";
 import { BaseEntity } from "../entities/base.entity";
 
