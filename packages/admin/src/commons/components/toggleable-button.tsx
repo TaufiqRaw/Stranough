@@ -1,0 +1,29 @@
+import { Accessor, JSX, splitProps } from "solid-js";
+
+export function ToggleableButton(props: {
+  inactiveClass?: string;
+  activeClass?: string;
+  isActive: boolean;
+  onMouseOver?: (e: MouseEvent) => void;
+  onMouseLeave?: (e: MouseEvent) => void;
+  onClick: (e: MouseEvent) => void;
+  class?: string;
+  children?: JSX.Element | ((isActive : boolean)=>JSX.Element);
+}) {
+  return (
+    <button
+      class={
+        "rounded-md border p-1 " + (props.class || "") + " " +
+        (props.activeClass || "") +
+        (props.isActive
+          ? " border-blue-500 " + (props.activeClass || "")
+          : " border-gray-500 hover:border-white-950 " + (props.inactiveClass || ""))
+      }
+      onClick={props.onClick}
+      onMouseOver={props.onMouseOver}
+      onMouseLeave={props.onMouseLeave}
+    >
+      {typeof props.children === 'function' ? props.children(props.isActive) : props.children}
+    </button>
+  );
+}
