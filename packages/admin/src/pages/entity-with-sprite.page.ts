@@ -1,31 +1,29 @@
 import { EntityIndexFactory } from "~/commons/item-index.factory"
 
 export const Bridge = EntityIndexFactory({
-  serverLink : "bridges",
-  appLink : "bridges"
+  entityName : "bridges",
 })
 
 export const Jack = EntityIndexFactory({
-  serverLink : "jacks",
-  appLink : "jacks"
+  entityName : "jacks",
 })
 
 export const Knob = EntityIndexFactory({
-  serverLink : "knobs",
-  appLink : "knobs"
+  entityName : "knobs",
 })
 
 export const Nut = EntityIndexFactory({
-  serverLink : "nuts",
-  appLink : "nuts"
+  entityName : "nuts",
 })
 
 export const Pickup = EntityIndexFactory({
-  serverLink : "pickups",
-  appLink : "pickups"
+  entityName : "pickups",
 })
 
 export const Switch = EntityIndexFactory({
-  serverLink : "switchs",
-  appLink : "switchs"
+  entityName : "switchs",
+})
+
+export const Model = EntityIndexFactory({
+  entityName : "guitar-models"
 })

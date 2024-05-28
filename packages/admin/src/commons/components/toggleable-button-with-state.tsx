@@ -1,8 +1,8 @@
-import { Show } from "solid-js";
+import { JSX, Show } from "solid-js";
 import { Button } from "~/commons/components/button";
 import { ToggleableButton } from "~/commons/components/toggleable-button";
 
-export default function PartPointButton(props: {
+export default function ToggleableButtonWithState(props: {
   isActive: boolean;
   isFocus : boolean;
   onClick: () => void;
@@ -11,7 +11,9 @@ export default function PartPointButton(props: {
   onReset?: () => void;
   onView? : () => void;
   viewActive?: boolean;
-  name: string;
+  class?: string;
+  indicatorClass?: string;
+  children?: string | JSX.Element;
 }) {
   return (
     <div class="flex gap-1">
@@ -20,12 +22,12 @@ export default function PartPointButton(props: {
         onMouseOver={props.onHover}
         onMouseLeave={props.onLeave}
         isActive={props.isFocus}
-        class="grow flex gap-2 items-center px-2 relative"
+        class={"grow flex gap-2 items-center px-2 relative " + props.class}
       >
         <div class="relative w-3">
-          <div class={"w-3 h-3 rounded-full absolute top-1/2 transform -translate-y-1/2  " + (props.isActive ? 'bg-blue-500' : ' border border-gray-500')} />
+          <div class={"w-3 h-3 rounded-full absolute top-1/2 transform -translate-y-1/2  " + (props.isActive ? 'bg-blue-500' : ' border border-gray-500') + " " + props.indicatorClass} />
         </div>
-        <span class="pointer-events-none">{props.name}</span>
+        <span class="pointer-events-none">{props.children}</span>
       </ToggleableButton>
       <Show when={props.isActive && !!props.onView}>
         <button

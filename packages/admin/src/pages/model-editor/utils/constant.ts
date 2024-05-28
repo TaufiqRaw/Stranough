@@ -1,3 +1,4 @@
+import { GuitarBody } from "stranough-server/dist/entities";
 import { GuitarBodyTextureKeyType, GuitarBodyTextureMediaKeyType, GuitarModelBodyKeyType } from "./types";
 
 export const guitarBodyTextureMediaKey = Object.freeze(['frontHoleMask', 'mask', 'backMask', 'frontShadowTexture', 'backShadowTexture', 'frontSpecularTexture', 'backSpecularTexture'] as const);

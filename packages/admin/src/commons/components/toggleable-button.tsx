@@ -14,7 +14,6 @@ export function ToggleableButton(props: {
     <button
       class={
         "rounded-md border p-1 " + (props.class || "") + " " +
-        (props.activeClass || "") +
         (props.isActive
           ? " border-blue-500 " + (props.activeClass || "")
           : " border-gray-500 hover:border-white-950 " + (props.inactiveClass || ""))

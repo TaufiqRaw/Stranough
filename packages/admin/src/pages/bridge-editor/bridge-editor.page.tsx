@@ -1,39 +1,42 @@
-import { createResizeObserver } from "@solid-primitives/resize-observer";
 import { useParams } from "@solidjs/router";
-import { Show, createSignal, onMount } from "solid-js";
-import { Color, Application as pxApplication} from 'pixi.js'
-import { Application } from "solid-pixi";
-import { Viewport } from "~/commons/components/viewport";
+import { BridgeEditorPresenter } from "./components/bridge-editor-presenter";
+import { BridgeEditorGui } from "./components/bridge-editor-gui";
+import { EditorPage } from "~/commons/components/editor-page";
+import { createEntityResource } from "~/commons/functions/create-entity-resource";
+import { createBridge } from "./utils/create-bridge";
+import { bridgeRepository } from "./bridge.repository";
+import { createContext, useContext } from "solid-js";
+import { BridgeContextType } from "./utils/types";
 
-function BridgeEditor(){
-  const [appContainer, setAppContainer] = createSignal<HTMLDivElement | null>(null)
-  const [app, setApp] = createSignal<pxApplication | null>(null)
+const BridgeContext = createContext<BridgeContextType>();
+
+function BridgeEditor() {
   const params = useParams();
   const id = parseInt(params.id);
 
-  onMount(()=>{
-    createResizeObserver(appContainer, ({width, height}, el)=>{
-      app()?.renderer.resize(width, height);
-      if(!app()) return;
-      app()!.canvas.style.width = width + 'px';
-      app()!.canvas.style.height = height + 'px';
-    })
-  });
+  const resource = createEntityResource(
+    id,
+    "bridge",
+    createBridge,
+    bridgeRepository.get,
+    {
+      onUpdate: bridgeRepository.update,
+      onStore: bridgeRepository.create,
+    }
+  );
 
-  return <div class="relative flex">
-      <div class="flex-grow relative" ref={setAppContainer}>
-        <div class="absolute">
-          <Show when={appContainer()}>
-            <Application antialias uses={setApp} resolution={1.5} backgroundColor={new Color()}>
-              <Viewport>
-                <Presenter/>
-              </Viewport>
-            </Application>
-          </Show>
-        </div>
-      </div>
-      <UserGui/>
-  </div>
+  return (
+    <BridgeContext.Provider value={resource}>
+      <EditorPage
+        editorGui={() => <BridgeEditorGui />}
+        presenter={() => <BridgeEditorPresenter />}
+      />
+    </BridgeContext.Provider>
+  );
+}
+
+export function useGuitarBridge() {
+  return useContext(BridgeContext)!;
 }
 
 export default BridgeEditor;

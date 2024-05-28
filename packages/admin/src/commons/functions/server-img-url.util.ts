@@ -1,6 +1,6 @@
 import { Constants } from "~/constants";
 
-export function serverImgUrl (filename: string | undefined) {
-  if(!filename) return  `${Constants.serverImgUrl}/none.jpg`;
+export function serverImgUrl (filename: string | undefined, useDefault = false) {
+  if(!filename) return useDefault ? Constants.defaultImgUrl : undefined;
   return `${Constants.serverImgUrl}/${filename}`;
 }

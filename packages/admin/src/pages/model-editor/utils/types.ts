@@ -1,8 +1,11 @@
-import { Accessor } from "solid-js";
-import { Position } from "~/commons/interfaces/position.interface";
-import { SignalObject } from "~/commons/interfaces/signal-object.interface";
+import { Accessor, Resource } from "solid-js";
+import { Position } from "~/commons/interfaces/position";
+import { SignalObject } from "~/commons/interfaces/signal-object";
 import { GuitarBodySPEnum, guitarBodyTextureKey, guitarBodyTextureMediaKey, guitarModelBodyKey } from "./constant";
-import { ImageType } from "~/commons/interfaces/image.type.util";
+import { ImageType } from "~/commons/interfaces/image-type";
+import { EntityContext } from "~/commons/interfaces/entity";
+
+export interface GuitarModelContextType extends EntityContext<GuitarModel> {}
 
 export type SpawnPointType = {
   isShow : SignalObject<boolean>,
@@ -22,37 +25,21 @@ export interface GuitarModel {
   boltOnBody: SignalObject<GuitarBody | null |undefined>;
   neckThroughBody: SignalObject<GuitarBody | null | undefined>;
   setInBody: SignalObject<GuitarBody | null | undefined>;
-  save : ()=> Promise<void>;
+  thumbnail : SignalObject<ImageType | null | undefined>;
+  allowSingleCoilPickup : SignalObject<boolean>;
+  save ?: ()=> Promise<void>;
   selectedBody : {
     get : Accessor<GuitarModelBodyKeyType | null | undefined>,
     set : (x ?: GuitarModelBodyKeyType)=>void,
   };
   getSelectedBodySignal : () => GuitarBody | null | undefined;
-  // pickguards: Collection<Pickguard, object>;
-  // headstocks: Collection<Headstock, object>;
-}
-
-export interface GuitarBody {
-  id: SignalObject<number | undefined>;
-  selectedBodyTexture: {
-    get : Accessor<GuitarBodyTextureKeyType | undefined>,
-    set : (x ?: GuitarBodyTextureKeyType)=>void,
-  },
-  getSelectedBodyTextureSignal : () => GuitarBodyTexture | null | undefined;
-  flatTopBackTexture: SignalObject<GuitarBodyTexture | null | undefined>;
-  forearmCutTexture: SignalObject<GuitarBodyTexture | null | undefined>;
-  tummyCutTexture: SignalObject<GuitarBodyTexture | null | undefined>;
-  forearmTummyCutTexture: SignalObject<GuitarBodyTexture | null | undefined>;
-  carvedTopTexture: SignalObject<GuitarBodyTexture | null | undefined>;
-  carvedTopBackTexture: SignalObject<GuitarBodyTexture | null | undefined>;
-  carvedTopTummyCutTexture: SignalObject<GuitarBodyTexture | null | undefined>;
   spawnPoints : {
     selected : SignalObject<GuitarBodySPEnum | undefined>,
     getSelectedSignal : ()=>{
       get : Accessor<Position | undefined>,
       set : (x : Position)=>void,
     },
-    asArray : ()=>SignalObject<Position | undefined>[],
+    asArray : ()=>{position : SignalObject<Position | undefined>, rotation ?: SignalObject<number>}[],
     hovered : SignalObject<GuitarBodySPEnum | undefined>,
     fingerboard : SpawnPointType,
     bridge : SpawnPointType,
@@ -73,7 +60,27 @@ export interface GuitarBody {
       removeKnobs : (index : number) => void,
       selectedKnobIndex : SignalObject<number | undefined>,
     }
-  }
+  };
+  // pickguards: Collection<Pickguard, object>;
+  // headstocks: Collection<Headstock, object>;
+}
+
+export interface GuitarBody {
+  id: SignalObject<number | undefined>;
+  selectedBodyTexture: {
+    get : Accessor<GuitarBodyTextureKeyType | undefined>,
+    set : (x ?: GuitarBodyTextureKeyType)=>void,
+  },
+  mask : SignalObject<ImageType | null | undefined>;
+  maskScale : SignalObject<number>;
+  getSelectedBodyTextureSignal : () => GuitarBodyTexture | null | undefined;
+  flatTopBackTexture: SignalObject<GuitarBodyTexture | null | undefined>;
+  forearmCutTexture: SignalObject<GuitarBodyTexture | null | undefined>;
+  tummyCutTexture: SignalObject<GuitarBodyTexture | null | undefined>;
+  forearmTummyCutTexture: SignalObject<GuitarBodyTexture | null | undefined>;
+  carvedTopTexture: SignalObject<GuitarBodyTexture | null | undefined>;
+  carvedTopBackTexture: SignalObject<GuitarBodyTexture | null | undefined>;
+  carvedTopTummyCutTexture: SignalObject<GuitarBodyTexture | null | undefined>;
 }
 
 export interface GuitarBodyTexture {

@@ -5,7 +5,7 @@ import { Show, createSignal, onMount } from "solid-js";
 import { GuitarPartEnumType, ServerDtos, ServerEntities } from "stranough-server";
 import { Constants } from "~/constants";
 import { Input } from "~/commons/components/input";
-import { ImageType } from "~/commons/interfaces/image.type.util";
+import { ImageType } from "~/commons/interfaces/image-type";
 
 export default function (props: {
   partType : GuitarPartEnumType;

@@ -1,47 +1,36 @@
 import { useParams } from "@solidjs/router";
-import { Application as pxApplication, Color, Graphics as pxGraphic} from "pixi.js";
-import { JSX, Show, createEffect, createMemo, createSignal, on, onMount } from "solid-js";
-import { Application, Graphics } from "solid-pixi";
-import UserGui from "./components/user-gui";
-import { Viewport } from "~/commons/components/viewport";
-import { GuitarModelSignalProvider, useGuitarModelSignal } from "~/pages/model-editor/guitar-model.context";
-import { ModelPresenter } from "./components/model-presenter";
-import { createResizeObserver, createWindowSize } from "@solid-primitives/resize-observer";
-import { Assets } from "solid-pixi";
-import { guitarBodyTextureKey, guitarBodyTextureMediaKey, guitarModelBodyKey } from "./utils/constant";
-import { serverImgUrl } from "~/commons/functions/server-img-url.util";
+import ModelEditorGui from "./components/model-editor-gui";
+import { EditorPage } from "~/commons/components/editor-page";
+import { createEntityResource } from "~/commons/functions/create-entity-resource";
+import { createModel } from "./utils/functions/create-model";
+import { guitarModelRepository } from "./guitar-model.repository";
+import { GuitarModelContextType } from "./utils/types";
+import { createContext, useContext } from "solid-js";
+import { ModelEditorPresenter } from "./components/model-editor-presenter";
 
+const GuitarModelContext = createContext<GuitarModelContextType>();
 export default function ModelEditor() {
-  const [appContainer, setAppContainer] = createSignal<HTMLDivElement | null>(null)
-  const [app, setApp] = createSignal<pxApplication | null>(null)
   const params = useParams();
   const id = parseInt(params.id);
 
-  onMount(()=>{
-    createResizeObserver(appContainer, ({width, height}, el)=>{
-      app()?.renderer.resize(width, height);
-      if(!app()) return;
-      app()!.canvas.style.width = width + 'px';
-      app()!.canvas.style.height = height + 'px';
-    })
-  });
+  const resource = createEntityResource(id, 
+    'guitar-model',
+    createModel,
+    guitarModelRepository.get,
+    {
+      onUpdate : guitarModelRepository.update,
+      onStore : guitarModelRepository.create,
+    }
+  )
 
-  return <GuitarModelSignalProvider id={id}>
-    <div class="relative flex">
-      <div class="flex-grow relative" ref={setAppContainer}>
-        <div class="absolute">
-          <Show when={appContainer()}>
-            <Application antialias uses={setApp} resolution={1.5} backgroundColor={new Color()}>
-              <Viewport>
-                <Assets load={[['/assets/alder.jpg', '/assets/fingerboard.png']]}>
-                  <ModelPresenter/>
-                </Assets>
-              </Viewport>
-            </Application>
-          </Show>
-        </div>
-      </div>
-      <UserGui/>
-    </div>
-  </GuitarModelSignalProvider>
+  return <GuitarModelContext.Provider value={resource}>
+    <EditorPage
+      editorGui={() => <ModelEditorGui />}
+      presenter={() => <ModelEditorPresenter />}
+    />
+  </GuitarModelContext.Provider>
+}
+
+export function useGuitarModel(){
+  return useContext(GuitarModelContext)!;
 }

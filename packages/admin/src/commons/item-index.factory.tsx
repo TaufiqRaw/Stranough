@@ -11,20 +11,19 @@ export function EntityIndexFactory<T extends ServerEntities.BaseEntity & {
   description : string;
   thumbnail : ServerEntities.Media | null;
 }>(props : {
-  serverLink : string;
-  appLink : string;
+  entityName : string;
 }){
   return ()=>{
     const queryClient = useQueryClient();
     const [page, setPage] = createSignal(1);
     const [limit, setLimit] = createSignal(10);
     const items = createQuery(()=>({
-      queryKey : [props.serverLink, {
+      queryKey : [props.entityName, {
         page : page(),
         limit : limit()
       }],
       queryFn : async ()=>{
-        const {data} = await axios.get<[T[], number]>(`/${props.serverLink}?page=${page()}?limit=${limit()}`);
+        const {data} = await axios.get<[T[], number]>(`/${props.entityName}?page=${page()}?limit=${limit()}`);
         return data;
       }
     }))
@@ -33,16 +32,15 @@ export function EntityIndexFactory<T extends ServerEntities.BaseEntity & {
 
     async function deleteItem(id : number){
       if(confirm("Are you sure you want to delete this item?")){
-        await axios.delete(`/${props.serverLink}/${id}`);
+        await axios.delete(`/${props.entityName}/${id}`);
         queryClient.invalidateQueries({
-          queryKey : [props.serverLink]
+          queryKey : [props.entityName]
         });
       }
     }
 
-    createEffect(()=> console.log(maxPage()));
     return <div class="p-3 h-full bg-slate-100">
-      <Button href={`/${props.appLink}/new`}>
+      <Button href={`/${props.entityName}/new`}>
         Create New
       </Button>
       <Suspense>  
@@ -51,7 +49,7 @@ export function EntityIndexFactory<T extends ServerEntities.BaseEntity & {
             <For each={items.data![0]}>
               {item => <div class="bg-white p-2 rounded-md group relative ">
                 <div class="absolute right-2 p-2 bg-white rounded-md border border-gray-500 hidden group-hover:flex shadow-md gap-2">
-                  <Button href={`/${props.appLink}/${item.id}`}>
+                  <Button href={`/${props.entityName}/${item.id}`}>
                     <i class="bi bi-pen"/>
                   </Button>
                   <Button class="!bg-red-500" onClick={()=>deleteItem(item.id)}>

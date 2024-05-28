@@ -60,23 +60,12 @@ export function Viewport(props : {
     app.canvas.removeEventListener('pointerdown', canvasPointerDownHandler);
     app.canvas.removeEventListener('wheel', canvasWheelHandler);
   })
-
-  createEffect(()=>{
-    console.log('container :',container())
-  })
   return <Container
     x={app.screen.width / 2}  
     y={app.screen.height / 2}
-    pivot={{x : worldWidth/2, y : worldHeight/2}}
     
     uses={setContainer}
   >
-    <Graphics
-      draw={[
-        ['rect', 0, 0, worldWidth, worldHeight],
-        ['fill', new Color('white')]
-      ]}
-    />
     {props.children}
   </Container>
 }
