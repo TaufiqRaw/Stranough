@@ -1,4 +1,4 @@
-import { Entity, ManyToOne, Property } from "@mikro-orm/core";
+import { Entity, ManyToOne, Property, Ref, ref } from "@mikro-orm/core";
 import { BaseEntity } from "./base.entity";
 import {Position} from "../interfaces/position.interface";
 import { EntityWithoutBase } from "../interfaces/entity-without-base.interface";
@@ -6,9 +6,11 @@ import { classAssign } from "../utils/class-assign.util";
 import { GuitarModel } from "./guitar-model.entity";
 import { Media } from "./media.entity";
 import { idProperty } from "../utils/id-property.util";
-import { maxDescriptionLength } from "../constants";
+import { maxDescriptionLength, mediaFKOption } from "../constants";
 
-export type PickguardProps = EntityWithoutBase<Pickguard>;
+export interface PickguardProps extends Omit<EntityWithoutBase<Pickguard>, 'texture'>{
+  texture : Media;
+};
 
 @Entity()
 export class Pickguard extends BaseEntity {
@@ -21,8 +23,8 @@ export class Pickguard extends BaseEntity {
   @Property()
   price : number;
 
-  @ManyToOne(()=>Media, {deleteRule : 'set null', updateRule : 'cascade'})
-  texture ?: Media;
+  @ManyToOne(()=>Media, mediaFKOption)
+  texture : Ref<Media>;
 
   @Property({type : 'float'})
   scale : number;
@@ -35,6 +37,8 @@ export class Pickguard extends BaseEntity {
 
   constructor(props : PickguardProps){
     super();
+    const {texture, ..._props} = props;
     classAssign(this, props);
+    this.texture = ref(texture);
   }
 }

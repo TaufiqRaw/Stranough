@@ -21,6 +21,12 @@ export class Media extends BaseEntity {
   @Property()
   mimeType : string;
 
+  @Property()
+  height : number;
+
+  @Property()
+  width : number;
+
   constructor(props : MediaProps){
     super();
     classAssign(this, props);
@@ -32,7 +38,10 @@ export class Media extends BaseEntity {
     try {
       await rm(join(Constants.imagePath, media.filename));
     } catch (err) {
-      throw Error('[Media.entity@destroyImage] file deletion error');
+      //@ts-ignore
+      const code = err?.code || '';
+      if(code !== 'ENOENT')
+        throw Error(`[Media.entity@destroyImage] file deletion error, ${err}`);
     }
   }
 }

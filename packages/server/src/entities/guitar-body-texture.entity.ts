@@ -1,54 +1,66 @@
-import { AfterDelete, BeforeDelete, Entity, EventArgs, ManyToOne, OneToOne, Property } from "@mikro-orm/core";
+import { AfterDelete, BeforeDelete, Cascade, Entity, EventArgs, ManyToOne, OneToMany, OneToOne, Property, Ref, ref } from "@mikro-orm/core";
 import { BaseEntity } from "./base.entity";
 import { GuitarBody } from "./guitar-body.entity";
 import { EntityWithoutBase } from "../interfaces/entity-without-base.interface";
 import { Media } from "./media.entity";
-import { idProperty } from "../utils/id-property.util";
 import {Optional} from 'utility-types'
+import { GuitarBodyTexturePivot } from "./guitar-body-texture.pivot.entity";
+import { mediaFKOption } from "../constants";
 
 
-export type GuitarBodyTextureProps = Optional<EntityWithoutBase<GuitarBodyTexture>, 'scale'>;
+export type GuitarBodyTextureProps = Omit<Optional<EntityWithoutBase<GuitarBodyTexture>, 'scale'>, 'bodyTexturePivot'>;
 
 @Entity()
 export class GuitarBodyTexture extends BaseEntity {
 
-  @OneToOne(()=>GuitarBody, {deleteRule : 'cascade', updateRule : 'cascade', owner : false, mappedBy : 'flatTopBackTexture'})
-  @OneToOne(()=>GuitarBody, {deleteRule : 'cascade', updateRule : 'cascade', owner : false, mappedBy : 'forearmCutTexture'})
-  @OneToOne(()=>GuitarBody, {deleteRule : 'cascade', updateRule : 'cascade', owner : false, mappedBy : 'tummyCutTexture'})
-  @OneToOne(()=>GuitarBody, {deleteRule : 'cascade', updateRule : 'cascade', owner : false, mappedBy : 'forearmTummyCutTexture'})
-  @OneToOne(()=>GuitarBody, {deleteRule : 'cascade', updateRule : 'cascade', owner : false, mappedBy : 'carvedTopTexture'})
-  @OneToOne(()=>GuitarBody, {deleteRule : 'cascade', updateRule : 'cascade', owner : false, mappedBy : 'carvedTopBackTexture'})
-  body : GuitarBody;
+  @OneToMany(()=>GuitarBodyTexturePivot, (p)=>p.texture)
+  bodyTexturePivot : GuitarBody;
 
   @Property({type : 'float'})
   scale : number = 1;
 
-  @ManyToOne(()=>Media, {deleteRule : 'set null', updateRule : 'cascade'})
-  frontHoleMask ?: Media;
+  @ManyToOne(()=>Media, mediaFKOption)
+  frontHoleMask ?: Ref<Media>;
 
-  @ManyToOne(()=>Media, {deleteRule : 'set null', updateRule : 'cascade'})
-  mask ?: Media;
+  @ManyToOne(()=>Media, mediaFKOption)
+  mask ?: Ref<Media>;
 
-  @ManyToOne(()=>Media, {deleteRule : 'set null', updateRule : 'cascade'})
-  backMask ?: Media;
+  @ManyToOne(()=>Media, mediaFKOption)
+  backMask ?: Ref<Media>;
 
-  @ManyToOne(()=>Media, {deleteRule : 'set null', updateRule : 'cascade'})
-  frontShadowTexture ?: Media;
+  @ManyToOne(()=>Media, mediaFKOption)
+  frontShadowTexture ?: Ref<Media>;
 
-  @ManyToOne(()=>Media, {deleteRule : 'set null', updateRule : 'cascade'})
-  backShadowTexture ?: Media;
+  @ManyToOne(()=>Media, mediaFKOption)
+  backShadowTexture ?: Ref<Media>;
 
-  @ManyToOne(()=>Media, {deleteRule : 'set null', updateRule : 'cascade'})
-  frontSpecularTexture ?: Media;
+  @ManyToOne(()=>Media, mediaFKOption)
+  frontSpecularTexture ?: Ref<Media>;
 
-  @ManyToOne(()=>Media, {deleteRule : 'set null', updateRule : 'cascade'})
-  backSpecularTexture ?: Media;
+  @ManyToOne(()=>Media, mediaFKOption)
+  backSpecularTexture ?: Ref<Media>;
 
   constructor(props : GuitarBodyTextureProps){
     super();
-    Object.assign(this, props);
+    const {frontHoleMask, mask, backMask, frontShadowTexture, backShadowTexture, frontSpecularTexture, backSpecularTexture, ..._props} = props;
+    Object.assign(this, {..._props,
+      frontHoleMask : frontHoleMask && ref(frontHoleMask),
+      mask : mask && ref(mask),
+      backMask : backMask && ref(backMask),
+      frontShadowTexture : frontShadowTexture && ref(frontShadowTexture),
+      backShadowTexture : backShadowTexture && ref(backShadowTexture),
+      frontSpecularTexture : frontSpecularTexture && ref(frontSpecularTexture),
+      backSpecularTexture : backSpecularTexture && ref(backSpecularTexture),
+    });
   }
 
-  //TODO: when deleting, delete all associated media
-  
+  async loadMedias(){
+    await this.frontHoleMask?.load();
+    await this.mask?.load();
+    await this.backMask?.load();
+    await this.frontShadowTexture?.load();
+    await this.backShadowTexture?.load();
+    await this.frontSpecularTexture?.load();
+    await this.backSpecularTexture?.load();
+  }
 }

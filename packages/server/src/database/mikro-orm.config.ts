@@ -1,12 +1,12 @@
 import { Options, PostgreSqlDriver } from "@mikro-orm/postgresql";
 import { TsMorphMetadataProvider } from "@mikro-orm/reflection";
-import { GuitarBodyUpdateCleanup } from "../entities/subscribers/guitar-body-update-cleanup.subscriber";
-import { GuitarModelUpdateCleanup } from "../entities/subscribers/guitar-model-update-cleanup.subscriber";
 import { Migrator } from "@mikro-orm/migrations";
 import path from "path";
 import dotenv from 'dotenv';
 import * as Constants from "../constants";
-import { GuitarModelDeleteCleanup } from "../entities/subscribers/guitar-model-delete-cleanup.subscriber";
+import { GuitarModelCleanup } from "../entities/subscribers/guitar-model-cleanup";
+import { GuitarModelBodyPivotCleanup } from "../entities/subscribers/guitar-model-body-pivot.cleanup";
+import { GuitarBodyCleanup } from "../entities/subscribers/guitar-body-cleanup";
 dotenv.config({
   path : Constants.envPath
 });
@@ -19,10 +19,11 @@ const config : Options = {
     user : process.env.DB_USER || 'postgres',
     password : process.env.DB_PASS || 'postgres',
     host : process.env.DB_HOST || 'localhost',
-    entities: ['dist/entities'],
-    entitiesTs: ['src/entities'],
+    entities: ['dist/entities/*'],
+    entitiesTs: ['src/entities/*'],
     extensions : [Migrator],
-    subscribers : [new GuitarBodyUpdateCleanup(), new GuitarModelUpdateCleanup(), new GuitarModelDeleteCleanup()],
+    // subscribers : [new GuitarBodyUpdateCleanup(), new GuitarModelUpdateCleanup(), new GuitarModelDeleteCleanup()],
+    subscribers : [new GuitarModelCleanup(), new GuitarModelBodyPivotCleanup(), new GuitarBodyCleanup()],
     metadataProvider: TsMorphMetadataProvider,
     migrations: {
       path: 'dist/database/migrations',

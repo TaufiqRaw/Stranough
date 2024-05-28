@@ -1,12 +1,16 @@
-import { Entity, ManyToOne, Property, Unique } from "@mikro-orm/core";
+import { Entity, ManyToOne, Property, Ref, Unique, ref } from "@mikro-orm/core";
 import { BaseEntity } from "./base.entity";
 import {Position} from "../interfaces/position.interface";
 import { EntityWithoutBase } from "../interfaces/entity-without-base.interface";
 import { classAssign } from "../utils/class-assign.util";
 import { Media } from "./media.entity";
-import { maxDescriptionLength } from "../constants";
+import { maxDescriptionLength, mediaFKOption } from "../constants";
 
-export type PegProps = EntityWithoutBase<Peg>;
+export interface PegProps extends Omit<EntityWithoutBase<Peg>, 'thumbnail' | 'pegCapTexture' | 'pegBackTexture'>{
+  thumbnail : Media;
+  pegCapTexture : Media;
+  pegBackTexture : Media;
+}
 
 @Entity()
 export class Peg extends BaseEntity {
@@ -18,20 +22,20 @@ export class Peg extends BaseEntity {
   @Property({type : 'varchar', length : maxDescriptionLength})
   description : string;
 
-  @ManyToOne(()=>Media, {deleteRule : 'set null', updateRule : 'cascade'})
-  thumbnail ?: Media;
+  @ManyToOne(()=>Media, mediaFKOption)
+  thumbnail ?: Ref<Media>;
 
   @Property()
   price : number;
 
-  @ManyToOne(()=>Media, {deleteRule : 'set null', updateRule : 'cascade'})
-  pegCapTexture ?: Media;
+  @ManyToOne(()=>Media, mediaFKOption)
+  pegCapTexture : Ref<Media>;
 
-  @ManyToOne(()=>Media, {deleteRule : 'set null', updateRule : 'cascade'})
-  pegBackTexture ?: Media;
+  @ManyToOne(()=>Media, mediaFKOption)
+  pegBackTexture : Ref<Media>;
 
   @Property({type : 'json'})
-  pegBackPivotPosition ?: Position;
+  pegBackPivotPosition : Position;
 
   @Property({type : 'float'})
   scale : number;
@@ -41,6 +45,10 @@ export class Peg extends BaseEntity {
 
   constructor(props : PegProps){
     super();
-    classAssign(this, props);
+    const {thumbnail, pegCapTexture, pegBackTexture, ..._props} = props;
+    classAssign(this, _props);
+    if(thumbnail) this.thumbnail = ref(thumbnail);
+    this.pegCapTexture = ref(pegCapTexture);
+    this.pegBackTexture = ref(pegBackTexture);
   }
 }

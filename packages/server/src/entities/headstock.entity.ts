@@ -1,37 +1,20 @@
-import { Entity, ManyToOne, Property } from "@mikro-orm/core";
+import { Entity, ManyToOne, Property, Ref, ref } from "@mikro-orm/core";
 import { BaseEntity } from "./base.entity";
 import {Position, PositionWithRotation} from "../interfaces/position.interface";
-import { EntityWithoutBase } from "../interfaces/entity-without-base.interface";
+import { EntityWithSprite, EntityWithoutBase } from "../interfaces/entity-without-base.interface";
 import { classAssign } from "../utils/class-assign.util";
 import { Media } from "./media.entity";
 import { idProperty } from "../utils/id-property.util";
 import { GuitarModel } from "./guitar-model.entity";
-import { maxDescriptionLength } from "../constants";
+import { maxDescriptionLength, mediaFKOption } from "../constants";
+import { BaseEntityWithSprite } from "./base-with-sprite.entity";
 
-export type HeadstockProps = EntityWithoutBase<Headstock>;
+export interface HeadstockProps extends EntityWithSprite<Headstock> {}
 
 @Entity()
-export class Headstock extends BaseEntity {
-  @Property()
-  name : string;
-
-  @Property({type : 'varchar', length : maxDescriptionLength})
-  description : string;
-
+export class Headstock extends BaseEntityWithSprite {
   @ManyToOne(()=>GuitarModel, {deleteRule : 'set null', updateRule : 'cascade'})
   model ?: GuitarModel;
-
-  @Property()
-  price : number;
-
-  @ManyToOne(()=>Media, {deleteRule : 'set null', updateRule : 'cascade'})
-  texture ?: Media;
-
-  @Property({type : 'float'})
-  scale : number;
-
-  @Property({type : 'json'})
-  pivotPosition : Position;
 
   @Property({type : 'smallint'})
   stringCount : number;
@@ -41,6 +24,13 @@ export class Headstock extends BaseEntity {
 
   constructor(props : HeadstockProps){
     super();
-    classAssign(this, props);
+    const {texture, thumbnail,..._props} = props;
+    classAssign(this, _props);
+    this.ctorMedias({texture, thumbnail});
+  }
+
+  async loadMedias(){
+    await this.texture?.load();
+    await this.thumbnail?.load();
   }
 }

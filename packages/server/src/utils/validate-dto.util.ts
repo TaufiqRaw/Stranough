@@ -1,20 +1,21 @@
-import { validateOrReject, validate, ValidationError  } from "class-validator";
+import { validateOrReject, validate, ValidationError, ValidatorOptions  } from "class-validator";
 import { Class } from "../interfaces/class.interface";
 import { BadRequestError } from "./classes/error.class.util";
-import {ClassTransformOptions, plainToClass, plainToInstance} from "class-transformer";
+import {plainToClass, plainToInstance} from "class-transformer";
 import { Request } from "express";
+import { deleteUndefined } from "./delete-undefined.util";
 
-export async function validateDto<T extends Object>(req : Request ,className : Class<T>, options? : ClassTransformOptions){
+export async function validateDto<T extends Object>(req : Request ,className : Class<T>, options? : ValidatorOptions){
   const data = req.body;
-  const instance = plainToInstance(className, data, {...options,excludeExtraneousValues : true});
+  const instance = plainToInstance(className, data, {excludeExtraneousValues : true});
 
-  const errors = await validate(instance);
+  const errors = await validate(instance, options);
   if(errors.length > 0){
     const messages = errors.map((error) => getErrorRecursive(error)).map((error)=>Object.values(error)).flat(3);
     throw new BadRequestError(messages as string[]);
   }
 
-  return instance;
+  return deleteUndefined(instance);
 }
 
 function getErrorRecursive(errors : ValidationError):any{

@@ -5,7 +5,7 @@ import { BaseEntityWithSpriteDto } from "./base-entity-with-sprite.dto";
 import { GuitarPickupType } from "../enums";
 import { Transform } from "class-transformer";
 
-export class PickupDto extends BaseEntityWithSpriteDto implements EntityWithoutSprite<Pickup> {
+export class PickupDto extends BaseEntityWithSpriteDto implements Partial<EntityWithoutSprite<Pickup>> {
   @IsNotEmpty({
     groups : ['create']
   })

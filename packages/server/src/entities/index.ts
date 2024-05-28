@@ -13,5 +13,7 @@ export * from './peg.entity';
 export * from './pickguard.entity';
 export * from './pickup.entity';
 export * from './switch.entity';
+export * from './guitar-model-body.pivot.entity';
+export * from './guitar-body-texture.pivot.entity';
 
 //TODO: add event listeners when entity with image is updated, delete the old image

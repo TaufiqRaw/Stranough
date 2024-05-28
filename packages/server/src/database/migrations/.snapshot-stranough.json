@@ -61,6 +61,24 @@
           "primary": false,
           "nullable": false,
           "mappedType": "string"
+        },
+        "height": {
+          "name": "height",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "width": {
+          "name": "width",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
         }
       },
       "name": "media",
@@ -159,13 +177,13 @@
           "nullable": false,
           "mappedType": "integer"
         },
-        "texture": {
-          "name": "texture",
+        "texture_id": {
+          "name": "texture_id",
           "type": "int",
-          "unsigned": true,
+          "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
+          "nullable": true,
           "mappedType": "integer"
         },
         "scale": {
@@ -217,6 +235,19 @@
           "constraintName": "knob_thumbnail_id_foreign",
           "columnNames": [
             "thumbnail_id"
+          ],
+          "localTableName": "public.knob",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.media",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "knob_texture_id_foreign": {
+          "constraintName": "knob_texture_id_foreign",
+          "columnNames": [
+            "texture_id"
           ],
           "localTableName": "public.knob",
           "referencedColumnNames": [
@@ -297,13 +328,13 @@
           "nullable": false,
           "mappedType": "integer"
         },
-        "texture": {
-          "name": "texture",
+        "texture_id": {
+          "name": "texture_id",
           "type": "int",
-          "unsigned": true,
+          "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
+          "nullable": true,
           "mappedType": "integer"
         },
         "scale": {
@@ -372,6 +403,384 @@
           "referencedTableName": "public.media",
           "deleteRule": "set null",
           "updateRule": "cascade"
+        },
+        "jack_texture_id_foreign": {
+          "constraintName": "jack_texture_id_foreign",
+          "columnNames": [
+            "texture_id"
+          ],
+          "localTableName": "public.jack",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.media",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        }
+      },
+      "nativeEnums": {}
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "unsigned": true,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "description": {
+          "name": "description",
+          "type": "varchar(1000)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 1000,
+          "mappedType": "string"
+        },
+        "thumbnail_id": {
+          "name": "thumbnail_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "fingerboard_spawn_point": {
+          "name": "fingerboard_spawn_point",
+          "type": "jsonb",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "json"
+        },
+        "bridge_spawn_point": {
+          "name": "bridge_spawn_point",
+          "type": "jsonb",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "json"
+        },
+        "allow_single_coil_pickup": {
+          "name": "allow_single_coil_pickup",
+          "type": "boolean",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "boolean"
+        },
+        "pickup_spawn_point": {
+          "name": "pickup_spawn_point",
+          "type": "jsonb",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "json"
+        },
+        "knob_spawn_point": {
+          "name": "knob_spawn_point",
+          "type": "jsonb",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "json"
+        },
+        "switch_spawn_point": {
+          "name": "switch_spawn_point",
+          "type": "jsonb",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "json"
+        },
+        "top_jack_spawn_point": {
+          "name": "top_jack_spawn_point",
+          "type": "jsonb",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "json"
+        },
+        "side_jack_spawn_point": {
+          "name": "side_jack_spawn_point",
+          "type": "jsonb",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "json"
+        }
+      },
+      "name": "guitar_model",
+      "schema": "public",
+      "indexes": [
+        {
+          "columnNames": [
+            "name"
+          ],
+          "composite": false,
+          "keyName": "guitar_model_name_unique",
+          "constraint": true,
+          "primary": false,
+          "unique": true
+        },
+        {
+          "keyName": "guitar_model_pkey",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "guitar_model_thumbnail_id_foreign": {
+          "constraintName": "guitar_model_thumbnail_id_foreign",
+          "columnNames": [
+            "thumbnail_id"
+          ],
+          "localTableName": "public.guitar_model",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.media",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        }
+      },
+      "nativeEnums": {}
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "unsigned": true,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "description": {
+          "name": "description",
+          "type": "varchar(1000)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 1000,
+          "mappedType": "string"
+        },
+        "thumbnail_id": {
+          "name": "thumbnail_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "price": {
+          "name": "price",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "texture_id": {
+          "name": "texture_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "scale": {
+          "name": "scale",
+          "type": "real",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "float"
+        },
+        "pivot_position": {
+          "name": "pivot_position",
+          "type": "jsonb",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "json"
+        },
+        "model_id": {
+          "name": "model_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "string_count": {
+          "name": "string_count",
+          "type": "smallint",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "smallint"
+        },
+        "pegs_spawn_point": {
+          "name": "pegs_spawn_point",
+          "type": "jsonb",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "json"
+        }
+      },
+      "name": "headstock",
+      "schema": "public",
+      "indexes": [
+        {
+          "columnNames": [
+            "name"
+          ],
+          "composite": false,
+          "keyName": "headstock_name_unique",
+          "constraint": true,
+          "primary": false,
+          "unique": true
+        },
+        {
+          "keyName": "headstock_pkey",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "headstock_thumbnail_id_foreign": {
+          "constraintName": "headstock_thumbnail_id_foreign",
+          "columnNames": [
+            "thumbnail_id"
+          ],
+          "localTableName": "public.headstock",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.media",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "headstock_texture_id_foreign": {
+          "constraintName": "headstock_texture_id_foreign",
+          "columnNames": [
+            "texture_id"
+          ],
+          "localTableName": "public.headstock",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.media",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "headstock_model_id_foreign": {
+          "constraintName": "headstock_model_id_foreign",
+          "columnNames": [
+            "model_id"
+          ],
+          "localTableName": "public.headstock",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.guitar_model",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
         }
       },
       "nativeEnums": {}
@@ -414,7 +823,6 @@
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "default": "1",
           "mappedType": "float"
         },
         "front_hole_mask_id": {
@@ -622,71 +1030,8 @@
           "length": 6,
           "mappedType": "datetime"
         },
-        "fingerboard_spawn_point": {
-          "name": "fingerboard_spawn_point",
-          "type": "jsonb",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "json"
-        },
-        "bridge_spawn_point": {
-          "name": "bridge_spawn_point",
-          "type": "jsonb",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "json"
-        },
-        "pickup_spawn_point": {
-          "name": "pickup_spawn_point",
-          "type": "jsonb",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "json"
-        },
-        "knob_spawn_point": {
-          "name": "knob_spawn_point",
-          "type": "jsonb",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "json"
-        },
-        "switch_spawn_point": {
-          "name": "switch_spawn_point",
-          "type": "jsonb",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "json"
-        },
-        "top_jack_spawn_point": {
-          "name": "top_jack_spawn_point",
-          "type": "jsonb",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "json"
-        },
-        "side_jack_spawn_point": {
-          "name": "side_jack_spawn_point",
-          "type": "jsonb",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "json"
-        },
-        "flat_top_back_texture_id": {
-          "name": "flat_top_back_texture_id",
+        "mask_id": {
+          "name": "mask_id",
           "type": "int",
           "unsigned": false,
           "autoincrement": false,
@@ -694,134 +1039,19 @@
           "nullable": true,
           "mappedType": "integer"
         },
-        "forearm_cut_texture_id": {
-          "name": "forearm_cut_texture_id",
-          "type": "int",
+        "mask_scale": {
+          "name": "mask_scale",
+          "type": "real",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": true,
-          "mappedType": "integer"
-        },
-        "tummy_cut_texture_id": {
-          "name": "tummy_cut_texture_id",
-          "type": "int",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "integer"
-        },
-        "forearm_tummy_cut_texture_id": {
-          "name": "forearm_tummy_cut_texture_id",
-          "type": "int",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "integer"
-        },
-        "carved_top_texture_id": {
-          "name": "carved_top_texture_id",
-          "type": "int",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "integer"
-        },
-        "carved_top_back_texture_id": {
-          "name": "carved_top_back_texture_id",
-          "type": "int",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "integer"
-        },
-        "carved_top_tummy_cut_texture_id": {
-          "name": "carved_top_tummy_cut_texture_id",
-          "type": "int",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "integer"
+          "mappedType": "float"
         }
       },
       "name": "guitar_body",
       "schema": "public",
       "indexes": [
-        {
-          "columnNames": [
-            "flat_top_back_texture_id"
-          ],
-          "composite": false,
-          "keyName": "guitar_body_flat_top_back_texture_id_unique",
-          "constraint": true,
-          "primary": false,
-          "unique": true
-        },
-        {
-          "columnNames": [
-            "forearm_cut_texture_id"
-          ],
-          "composite": false,
-          "keyName": "guitar_body_forearm_cut_texture_id_unique",
-          "constraint": true,
-          "primary": false,
-          "unique": true
-        },
-        {
-          "columnNames": [
-            "tummy_cut_texture_id"
-          ],
-          "composite": false,
-          "keyName": "guitar_body_tummy_cut_texture_id_unique",
-          "constraint": true,
-          "primary": false,
-          "unique": true
-        },
-        {
-          "columnNames": [
-            "forearm_tummy_cut_texture_id"
-          ],
-          "composite": false,
-          "keyName": "guitar_body_forearm_tummy_cut_texture_id_unique",
-          "constraint": true,
-          "primary": false,
-          "unique": true
-        },
-        {
-          "columnNames": [
-            "carved_top_texture_id"
-          ],
-          "composite": false,
-          "keyName": "guitar_body_carved_top_texture_id_unique",
-          "constraint": true,
-          "primary": false,
-          "unique": true
-        },
-        {
-          "columnNames": [
-            "carved_top_back_texture_id"
-          ],
-          "composite": false,
-          "keyName": "guitar_body_carved_top_back_texture_id_unique",
-          "constraint": true,
-          "primary": false,
-          "unique": true
-        },
-        {
-          "columnNames": [
-            "carved_top_tummy_cut_texture_id"
-          ],
-          "composite": false,
-          "keyName": "guitar_body_carved_top_tummy_cut_texture_id_unique",
-          "constraint": true,
-          "primary": false,
-          "unique": true
-        },
         {
           "keyName": "guitar_body_pkey",
           "columnNames": [
@@ -835,90 +1065,218 @@
       ],
       "checks": [],
       "foreignKeys": {
-        "guitar_body_flat_top_back_texture_id_foreign": {
-          "constraintName": "guitar_body_flat_top_back_texture_id_foreign",
+        "guitar_body_mask_id_foreign": {
+          "constraintName": "guitar_body_mask_id_foreign",
           "columnNames": [
-            "flat_top_back_texture_id"
+            "mask_id"
           ],
           "localTableName": "public.guitar_body",
           "referencedColumnNames": [
             "id"
           ],
-          "referencedTableName": "public.guitar_body_texture",
+          "referencedTableName": "public.media",
           "deleteRule": "set null",
           "updateRule": "cascade"
+        }
+      },
+      "nativeEnums": {}
+    },
+    {
+      "columns": {
+        "texture": {
+          "name": "texture",
+          "type": "serial",
+          "unsigned": true,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "mappedType": "integer"
         },
-        "guitar_body_forearm_cut_texture_id_foreign": {
-          "constraintName": "guitar_body_forearm_cut_texture_id_foreign",
-          "columnNames": [
-            "forearm_cut_texture_id"
+        "model_id": {
+          "name": "model_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "body_id": {
+          "name": "body_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "type": {
+          "name": "type",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "enumItems": [
+            "boltOnBody",
+            "neckThroughBody",
+            "setInBody"
           ],
-          "localTableName": "public.guitar_body",
+          "mappedType": "enum"
+        }
+      },
+      "name": "guitar_model_body_pivot",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "guitar_model_body_pivot_model_id_body_id_type_unique",
+          "columnNames": [
+            "model_id",
+            "body_id",
+            "type"
+          ],
+          "composite": true,
+          "constraint": true,
+          "primary": false,
+          "unique": true
+        },
+        {
+          "keyName": "guitar_model_body_pivot_pkey",
+          "columnNames": [
+            "texture"
+          ],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "guitar_model_body_pivot_model_id_foreign": {
+          "constraintName": "guitar_model_body_pivot_model_id_foreign",
+          "columnNames": [
+            "model_id"
+          ],
+          "localTableName": "public.guitar_model_body_pivot",
           "referencedColumnNames": [
             "id"
           ],
-          "referencedTableName": "public.guitar_body_texture",
-          "deleteRule": "set null",
+          "referencedTableName": "public.guitar_model",
+          "deleteRule": "cascade",
           "updateRule": "cascade"
         },
-        "guitar_body_tummy_cut_texture_id_foreign": {
-          "constraintName": "guitar_body_tummy_cut_texture_id_foreign",
+        "guitar_model_body_pivot_body_id_foreign": {
+          "constraintName": "guitar_model_body_pivot_body_id_foreign",
           "columnNames": [
-            "tummy_cut_texture_id"
+            "body_id"
           ],
-          "localTableName": "public.guitar_body",
+          "localTableName": "public.guitar_model_body_pivot",
           "referencedColumnNames": [
             "id"
           ],
-          "referencedTableName": "public.guitar_body_texture",
+          "referencedTableName": "public.guitar_body",
           "deleteRule": "set null",
           "updateRule": "cascade"
+        }
+      },
+      "nativeEnums": {}
+    },
+    {
+      "columns": {
+        "texture": {
+          "name": "texture",
+          "type": "serial",
+          "unsigned": true,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "mappedType": "integer"
         },
-        "guitar_body_forearm_tummy_cut_texture_id_foreign": {
-          "constraintName": "guitar_body_forearm_tummy_cut_texture_id_foreign",
-          "columnNames": [
-            "forearm_tummy_cut_texture_id"
+        "body_id": {
+          "name": "body_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "texture_id": {
+          "name": "texture_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "type": {
+          "name": "type",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "enumItems": [
+            "carvedTopTexture",
+            "tummyCutTexture",
+            "forearmCutTexture",
+            "flatTopBackTexture",
+            "carvedTopBackTexture",
+            "forearmTummyCutTexture",
+            "carvedTopTummyCutTexture"
           ],
-          "localTableName": "public.guitar_body",
+          "mappedType": "enum"
+        }
+      },
+      "name": "guitar_body_texture_pivot",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "guitar_body_texture_pivot_body_id_texture_id_type_unique",
+          "columnNames": [
+            "body_id",
+            "texture_id",
+            "type"
+          ],
+          "composite": true,
+          "constraint": true,
+          "primary": false,
+          "unique": true
+        },
+        {
+          "keyName": "guitar_body_texture_pivot_pkey",
+          "columnNames": [
+            "texture"
+          ],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "guitar_body_texture_pivot_body_id_foreign": {
+          "constraintName": "guitar_body_texture_pivot_body_id_foreign",
+          "columnNames": [
+            "body_id"
+          ],
+          "localTableName": "public.guitar_body_texture_pivot",
           "referencedColumnNames": [
             "id"
           ],
-          "referencedTableName": "public.guitar_body_texture",
-          "deleteRule": "set null",
+          "referencedTableName": "public.guitar_body",
+          "deleteRule": "cascade",
           "updateRule": "cascade"
         },
-        "guitar_body_carved_top_texture_id_foreign": {
-          "constraintName": "guitar_body_carved_top_texture_id_foreign",
+        "guitar_body_texture_pivot_texture_id_foreign": {
+          "constraintName": "guitar_body_texture_pivot_texture_id_foreign",
           "columnNames": [
-            "carved_top_texture_id"
+            "texture_id"
           ],
-          "localTableName": "public.guitar_body",
-          "referencedColumnNames": [
-            "id"
-          ],
-          "referencedTableName": "public.guitar_body_texture",
-          "deleteRule": "set null",
-          "updateRule": "cascade"
-        },
-        "guitar_body_carved_top_back_texture_id_foreign": {
-          "constraintName": "guitar_body_carved_top_back_texture_id_foreign",
-          "columnNames": [
-            "carved_top_back_texture_id"
-          ],
-          "localTableName": "public.guitar_body",
-          "referencedColumnNames": [
-            "id"
-          ],
-          "referencedTableName": "public.guitar_body_texture",
-          "deleteRule": "set null",
-          "updateRule": "cascade"
-        },
-        "guitar_body_carved_top_tummy_cut_texture_id_foreign": {
-          "constraintName": "guitar_body_carved_top_tummy_cut_texture_id_foreign",
-          "columnNames": [
-            "carved_top_tummy_cut_texture_id"
-          ],
-          "localTableName": "public.guitar_body",
+          "localTableName": "public.guitar_body_texture_pivot",
           "referencedColumnNames": [
             "id"
           ],
@@ -981,204 +1339,6 @@
         },
         "thumbnail_id": {
           "name": "thumbnail_id",
-          "type": "int",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "integer"
-        },
-        "bolt_on_body_id": {
-          "name": "bolt_on_body_id",
-          "type": "int",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "integer"
-        },
-        "neck_through_body_id": {
-          "name": "neck_through_body_id",
-          "type": "int",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "integer"
-        },
-        "set_in_body_id": {
-          "name": "set_in_body_id",
-          "type": "int",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "integer"
-        }
-      },
-      "name": "guitar_model",
-      "schema": "public",
-      "indexes": [
-        {
-          "columnNames": [
-            "name"
-          ],
-          "composite": false,
-          "keyName": "guitar_model_name_unique",
-          "constraint": true,
-          "primary": false,
-          "unique": true
-        },
-        {
-          "columnNames": [
-            "bolt_on_body_id"
-          ],
-          "composite": false,
-          "keyName": "guitar_model_bolt_on_body_id_unique",
-          "constraint": true,
-          "primary": false,
-          "unique": true
-        },
-        {
-          "columnNames": [
-            "neck_through_body_id"
-          ],
-          "composite": false,
-          "keyName": "guitar_model_neck_through_body_id_unique",
-          "constraint": true,
-          "primary": false,
-          "unique": true
-        },
-        {
-          "columnNames": [
-            "set_in_body_id"
-          ],
-          "composite": false,
-          "keyName": "guitar_model_set_in_body_id_unique",
-          "constraint": true,
-          "primary": false,
-          "unique": true
-        },
-        {
-          "keyName": "guitar_model_pkey",
-          "columnNames": [
-            "id"
-          ],
-          "composite": false,
-          "constraint": true,
-          "primary": true,
-          "unique": true
-        }
-      ],
-      "checks": [],
-      "foreignKeys": {
-        "guitar_model_thumbnail_id_foreign": {
-          "constraintName": "guitar_model_thumbnail_id_foreign",
-          "columnNames": [
-            "thumbnail_id"
-          ],
-          "localTableName": "public.guitar_model",
-          "referencedColumnNames": [
-            "id"
-          ],
-          "referencedTableName": "public.media",
-          "deleteRule": "set null",
-          "updateRule": "cascade"
-        },
-        "guitar_model_bolt_on_body_id_foreign": {
-          "constraintName": "guitar_model_bolt_on_body_id_foreign",
-          "columnNames": [
-            "bolt_on_body_id"
-          ],
-          "localTableName": "public.guitar_model",
-          "referencedColumnNames": [
-            "id"
-          ],
-          "referencedTableName": "public.guitar_body",
-          "deleteRule": "cascade",
-          "updateRule": "cascade"
-        },
-        "guitar_model_neck_through_body_id_foreign": {
-          "constraintName": "guitar_model_neck_through_body_id_foreign",
-          "columnNames": [
-            "neck_through_body_id"
-          ],
-          "localTableName": "public.guitar_model",
-          "referencedColumnNames": [
-            "id"
-          ],
-          "referencedTableName": "public.guitar_body",
-          "deleteRule": "cascade",
-          "updateRule": "cascade"
-        },
-        "guitar_model_set_in_body_id_foreign": {
-          "constraintName": "guitar_model_set_in_body_id_foreign",
-          "columnNames": [
-            "set_in_body_id"
-          ],
-          "localTableName": "public.guitar_model",
-          "referencedColumnNames": [
-            "id"
-          ],
-          "referencedTableName": "public.guitar_body",
-          "deleteRule": "cascade",
-          "updateRule": "cascade"
-        }
-      },
-      "nativeEnums": {}
-    },
-    {
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "serial",
-          "unsigned": true,
-          "autoincrement": true,
-          "primary": true,
-          "nullable": false,
-          "mappedType": "integer"
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamptz",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 6,
-          "mappedType": "datetime"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamptz",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 6,
-          "mappedType": "datetime"
-        },
-        "name": {
-          "name": "name",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "string"
-        },
-        "description": {
-          "name": "description",
-          "type": "varchar(500)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 500,
-          "mappedType": "string"
-        },
-        "model_id": {
-          "name": "model_id",
           "type": "int",
           "unsigned": false,
           "autoincrement": false,
@@ -1202,165 +1362,6 @@
           "autoincrement": false,
           "primary": false,
           "nullable": true,
-          "mappedType": "integer"
-        },
-        "scale": {
-          "name": "scale",
-          "type": "real",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "float"
-        },
-        "pivot_position": {
-          "name": "pivot_position",
-          "type": "jsonb",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "json"
-        },
-        "string_count": {
-          "name": "string_count",
-          "type": "smallint",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "smallint"
-        },
-        "pegs_spawn_point": {
-          "name": "pegs_spawn_point",
-          "type": "jsonb",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "json"
-        }
-      },
-      "name": "headstock",
-      "schema": "public",
-      "indexes": [
-        {
-          "keyName": "headstock_pkey",
-          "columnNames": [
-            "id"
-          ],
-          "composite": false,
-          "constraint": true,
-          "primary": true,
-          "unique": true
-        }
-      ],
-      "checks": [],
-      "foreignKeys": {
-        "headstock_model_id_foreign": {
-          "constraintName": "headstock_model_id_foreign",
-          "columnNames": [
-            "model_id"
-          ],
-          "localTableName": "public.headstock",
-          "referencedColumnNames": [
-            "id"
-          ],
-          "referencedTableName": "public.guitar_model",
-          "deleteRule": "set null",
-          "updateRule": "cascade"
-        },
-        "headstock_texture_id_foreign": {
-          "constraintName": "headstock_texture_id_foreign",
-          "columnNames": [
-            "texture_id"
-          ],
-          "localTableName": "public.headstock",
-          "referencedColumnNames": [
-            "id"
-          ],
-          "referencedTableName": "public.media",
-          "deleteRule": "set null",
-          "updateRule": "cascade"
-        }
-      },
-      "nativeEnums": {}
-    },
-    {
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "serial",
-          "unsigned": true,
-          "autoincrement": true,
-          "primary": true,
-          "nullable": false,
-          "mappedType": "integer"
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamptz",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 6,
-          "mappedType": "datetime"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamptz",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 6,
-          "mappedType": "datetime"
-        },
-        "name": {
-          "name": "name",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "string"
-        },
-        "description": {
-          "name": "description",
-          "type": "varchar(1000)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 1000,
-          "mappedType": "string"
-        },
-        "thumbnail_id": {
-          "name": "thumbnail_id",
-          "type": "int",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "integer"
-        },
-        "price": {
-          "name": "price",
-          "type": "int",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "integer"
-        },
-        "texture": {
-          "name": "texture",
-          "type": "int",
-          "unsigned": true,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
           "mappedType": "integer"
         },
         "scale": {
@@ -1430,6 +1431,19 @@
           "constraintName": "bridge_thumbnail_id_foreign",
           "columnNames": [
             "thumbnail_id"
+          ],
+          "localTableName": "public.bridge",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.media",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "bridge_texture_id_foreign": {
+          "constraintName": "bridge_texture_id_foreign",
+          "columnNames": [
+            "texture_id"
           ],
           "localTableName": "public.bridge",
           "referencedColumnNames": [
@@ -1510,13 +1524,13 @@
           "nullable": false,
           "mappedType": "integer"
         },
-        "texture": {
-          "name": "texture",
+        "texture_id": {
+          "name": "texture_id",
           "type": "int",
-          "unsigned": true,
+          "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
+          "nullable": true,
           "mappedType": "integer"
         },
         "scale": {
@@ -1586,6 +1600,19 @@
           "constraintName": "nut_thumbnail_id_foreign",
           "columnNames": [
             "thumbnail_id"
+          ],
+          "localTableName": "public.nut",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.media",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "nut_texture_id_foreign": {
+          "constraintName": "nut_texture_id_foreign",
+          "columnNames": [
+            "texture_id"
           ],
           "localTableName": "public.nut",
           "referencedColumnNames": [
@@ -1690,7 +1717,7 @@
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": true,
+          "nullable": false,
           "mappedType": "json"
         },
         "scale": {
@@ -1822,12 +1849,12 @@
         },
         "description": {
           "name": "description",
-          "type": "varchar(500)",
+          "type": "varchar(1000)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "length": 500,
+          "length": 1000,
           "mappedType": "string"
         },
         "price": {
@@ -1988,13 +2015,13 @@
           "nullable": false,
           "mappedType": "integer"
         },
-        "texture": {
-          "name": "texture",
+        "texture_id": {
+          "name": "texture_id",
           "type": "int",
-          "unsigned": true,
+          "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
+          "nullable": true,
           "mappedType": "integer"
         },
         "scale": {
@@ -2060,6 +2087,19 @@
           "constraintName": "pickup_thumbnail_id_foreign",
           "columnNames": [
             "thumbnail_id"
+          ],
+          "localTableName": "public.pickup",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.media",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "pickup_texture_id_foreign": {
+          "constraintName": "pickup_texture_id_foreign",
+          "columnNames": [
+            "texture_id"
           ],
           "localTableName": "public.pickup",
           "referencedColumnNames": [
@@ -2140,13 +2180,13 @@
           "nullable": false,
           "mappedType": "integer"
         },
-        "texture": {
-          "name": "texture",
+        "texture_id": {
+          "name": "texture_id",
           "type": "int",
-          "unsigned": true,
+          "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
+          "nullable": true,
           "mappedType": "integer"
         },
         "scale": {
@@ -2198,6 +2238,19 @@
           "constraintName": "switch_thumbnail_id_foreign",
           "columnNames": [
             "thumbnail_id"
+          ],
+          "localTableName": "public.switch",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.media",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "switch_texture_id_foreign": {
+          "constraintName": "switch_texture_id_foreign",
+          "columnNames": [
+            "texture_id"
           ],
           "localTableName": "public.switch",
           "referencedColumnNames": [

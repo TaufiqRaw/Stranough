@@ -43,6 +43,8 @@ export namespace MediaService {
       name: `${name}-${filename}`, 
       filename : outputMetadata.filename,
       mimeType: contentType(outputMetadata.format) as string,
+      height: outputMetadata.height,
+      width: outputMetadata.width,
     });
 
     await RequestContext.getEntityManager()!.persistAndFlush(newMedia);
@@ -98,9 +100,13 @@ async function convertImgAndSave(
       if (height && metadata.height > height) o.resize({ height });
     }
 
+    const outputMetadata = await o.metadata();
+
     return {
       ...(await o.png().toFile(join(Constants.imagePath, filename))),
       filename,
+      width : outputMetadata.width!,
+      height : outputMetadata.height!,
     };
   } catch (err: any) {
     throw err;

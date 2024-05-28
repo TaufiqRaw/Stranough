@@ -5,7 +5,7 @@ import { EntityWithoutSprite } from "../interfaces/entity-without-base.interface
 import { IsArray, IsNotEmpty, IsNumber, IsOptional, Length, Validate, ValidateNested } from "class-validator";
 import { PositionDto } from "./position.dto";
 
-export class BridgeDto extends BaseEntityWithSpriteDto implements EntityWithoutSprite<Bridge> {
+export class BridgeDto extends BaseEntityWithSpriteDto implements Partial<EntityWithoutSprite<Bridge>> {
   @Expose()
   @IsNotEmpty({
     groups : ['create']
@@ -14,13 +14,18 @@ export class BridgeDto extends BaseEntityWithSpriteDto implements EntityWithoutS
     groups : ['update']
   })
   @IsNumber()
-  stringCount: number;
+  stringCount?: number;
 
   //TODO: add validation for stringSpawnPoint so it length must be equal to stringCount
   @Expose()
-  @IsNotEmpty()
+  @IsNotEmpty({
+    groups : ['create']
+  })
+  @IsOptional({
+    groups : ['update']
+  })
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => PositionDto)
-  stringSpawnPoint: PositionDto[];
+  stringSpawnPoint ?: PositionDto[][];
 }

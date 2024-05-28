@@ -6,7 +6,7 @@ import { IsNotEmpty, IsNumber, IsObject, IsOptional, IsString, ValidateBy, Valid
 import { Expose, Type } from "class-transformer";
 import { PositionDto } from "./position.dto";
 
-export class BaseEntityWithSpriteDto implements EntityWithoutBase<Omit<BaseEntityWithSprite, 'thumbnail' | 'texture'>>{
+export class BaseEntityWithSpriteDto implements Partial<EntityWithoutBase<Omit<BaseEntityWithSprite, 'thumbnail' | 'texture'>>>{
   @Expose()
   @IsNotEmpty({
     groups : ['update']
@@ -25,7 +25,7 @@ export class BaseEntityWithSpriteDto implements EntityWithoutBase<Omit<BaseEntit
     groups : ['update']
   })
   @IsString()
-  name: string;
+  name?: string;
 
   @Expose()
   @IsNotEmpty({
@@ -35,7 +35,7 @@ export class BaseEntityWithSpriteDto implements EntityWithoutBase<Omit<BaseEntit
     groups : ['update']
   })
   @IsString()
-  description: string;
+  description?: string;
 
   @Expose()
   @IsNotEmpty({
@@ -47,7 +47,7 @@ export class BaseEntityWithSpriteDto implements EntityWithoutBase<Omit<BaseEntit
   @IsObject()
   @ValidateNested()
   @Type(() => PositionDto)
-  pivotPosition: Position;
+  pivotPosition?: Position;
 
   @Expose()
   @IsNotEmpty({
@@ -57,7 +57,7 @@ export class BaseEntityWithSpriteDto implements EntityWithoutBase<Omit<BaseEntit
     groups : ['update']
   })
   @IsNumber()
-  price: number;
+  price?: number;
 
   @Expose()
   @IsNotEmpty({
@@ -67,7 +67,7 @@ export class BaseEntityWithSpriteDto implements EntityWithoutBase<Omit<BaseEntit
     groups : ['update']
   })
   @IsNumber()
-  scale: number;
+  scale?: number;
 
   @Expose()
   @IsNotEmpty({
@@ -77,7 +77,7 @@ export class BaseEntityWithSpriteDto implements EntityWithoutBase<Omit<BaseEntit
     groups : ['update']
   })
   @IsNumber()
-  texture: number;
+  texture?: number;
 
   @Expose()
   @IsOptional()

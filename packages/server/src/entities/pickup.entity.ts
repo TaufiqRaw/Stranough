@@ -1,14 +1,14 @@
 import { Entity, Enum, ManyToOne, Property } from "@mikro-orm/core";
 import { BaseEntity } from "./base.entity";
 import {Position} from "../interfaces/position.interface";
-import { EntityWithoutBase } from "../interfaces/entity-without-base.interface";
+import { EntityWithSprite, EntityWithoutBase } from "../interfaces/entity-without-base.interface";
 import { classAssign } from "../utils/class-assign.util";
 import { Media } from "./media.entity";
 import { idProperty } from "../utils/id-property.util";
 import * as Enums from "../enums";
 import { BaseEntityWithSprite } from "./base-with-sprite.entity";
 
-export type PickupProps = EntityWithoutBase<Pickup>;
+export type PickupProps = EntityWithSprite<Pickup>;
 
 @Entity()
 export class Pickup extends BaseEntityWithSprite {
@@ -18,6 +18,8 @@ export class Pickup extends BaseEntityWithSprite {
 
   constructor(props : PickupProps){
     super();
-    classAssign(this, props);
+    const {thumbnail, texture, ..._props} = props;
+    classAssign(this, _props);
+    this.ctorMedias({thumbnail, texture});
   }
 }

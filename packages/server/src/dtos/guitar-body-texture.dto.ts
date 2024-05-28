@@ -15,9 +15,9 @@ export class GuitarBodyTextureDto {
   frontHoleMask ?: number;
 
   @Expose()
-  @IsNotEmpty()
+  @IsOptional()
   @IsNumber()
-  mask : number;
+  mask ?: number;
 
   @Expose()
   @IsOptional()

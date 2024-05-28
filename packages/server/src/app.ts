@@ -11,7 +11,6 @@ import { GuitarModel } from './entities/guitar-model.entity';
 import { Media } from './entities/media.entity';
 import { Bridge } from './entities/bridge.entity';
 import winston from 'winston';
-import multer from 'multer';
 import * as Constants from './constants';
 import { Headstock } from './entities/headstock.entity';
 import { Jack } from './entities/jack.entity';
@@ -22,14 +21,11 @@ import { Pickguard } from './entities/pickguard.entity';
 import { Switch } from './entities/switch.entity';
 import { GuitarBodyTexture } from './entities/guitar-body-texture.entity';
 import mikroOrmConfig from "./database/mikro-orm.config";
-import path from 'path';
 import { guitarModelController, mediaController } from './controllers';
 import { BridgeDto } from './dtos/bridge.dto';
 import { JackDto } from './dtos/jack.dto';
-import { BaseEntityWithSprite, Pickup } from './entities';
+import { Pickup } from './entities';
 import { KnobDto } from './dtos/knob.dto';
-import { BaseEntityWithSpriteDto } from './dtos/base-entity-with-sprite.dto';
-import { Class } from 'utility-types';
 import { NutDto } from './dtos/nuts.dto';
 import { PickupDto } from './dtos/pickup.dto';
 import { SwitchDto } from './dtos/switch.dto';
@@ -109,6 +105,7 @@ function initRoutes(){
     ['nuts', DI.repository.nuts, NutDto],
     ['pickups', DI.repository.pickups, PickupDto],
     ['switchs', DI.repository.switchs, SwitchDto],
+    ['headstocks', DI.repository.headstocks, Headstock],
   ] as const ).forEach(([route, repo, dto])=>{
     //@ts-ignore
     app.use(`/${route}`, entityWithSpriteRouterFactory(()=>repo, dto));

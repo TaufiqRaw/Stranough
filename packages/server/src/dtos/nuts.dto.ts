@@ -5,7 +5,7 @@ import { BaseEntityWithSpriteDto } from "./base-entity-with-sprite.dto";
 import { Expose, Type } from "class-transformer";
 import { PositionDto } from "./position.dto";
 
-export class NutDto extends BaseEntityWithSpriteDto implements EntityWithoutSprite<Nut> {
+export class NutDto extends BaseEntityWithSpriteDto implements Partial<EntityWithoutSprite<Nut>> {
   @Expose()
   @IsNotEmpty({
     groups : ['create']
@@ -14,7 +14,7 @@ export class NutDto extends BaseEntityWithSpriteDto implements EntityWithoutSpri
     groups : ['update']
   })
   @IsNumber()
-  stringCount: number;
+  stringCount?: number;
 
   //TODO: add validation for stringSpawnPoint so it length must be equal to stringCount
   @Expose()
@@ -27,5 +27,5 @@ export class NutDto extends BaseEntityWithSpriteDto implements EntityWithoutSpri
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => PositionDto)
-  stringSpawnPoint: PositionDto[];
+  stringSpawnPoint?: PositionDto[];
 }
