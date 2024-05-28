@@ -1,8 +1,9 @@
 import { Expose } from "class-transformer";
 import { IsNotEmpty, IsNumber, IsOptional } from "class-validator";
+import { ExposeAll, OptionalOnUpdate } from "./util.decorator";
 
+@ExposeAll()
 export class PositionDto {
-  @Expose()
   @IsNotEmpty()
   @IsNumber()
   x : number;
@@ -13,14 +14,9 @@ export class PositionDto {
   y : number;
 }
 
+@Expose()
 export class PositionWithRotationDto extends PositionDto {
-  @Expose()
-  @IsNotEmpty({
-    groups : ['create']
-  })
-  @IsOptional({
-    groups : ['update']
-  })
+  @OptionalOnUpdate()
   @IsNumber()
   rotation : number;
 }

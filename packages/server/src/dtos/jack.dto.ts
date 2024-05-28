@@ -1,14 +1,14 @@
 import { IsBoolean, IsNotEmpty, IsOptional } from "class-validator";
 import { Jack } from "../entities";
 import { EntityWithoutSprite } from "../interfaces/entity-without-base.interface";
-import { BaseEntityWithSpriteDto } from "./base-entity-with-sprite.dto";
+import { BaseEntityWithSpriteDto } from "./common-entity.dto";
 import { Expose } from "class-transformer";
+import { KeyOf } from "../interfaces/class-key.interface";
+import { ExposeAll } from "./util.decorator";
 
-export class JackDto extends BaseEntityWithSpriteDto implements Partial<EntityWithoutSprite<Jack>> {
-  @Expose()
-  @IsOptional({
-    groups : ['update']
-  })
+@ExposeAll()
+export class JackDto extends BaseEntityWithSpriteDto implements KeyOf<EntityWithoutSprite<Jack>> {
+  @IsOptional()
   @IsBoolean()
   isSide ?: boolean;
 }

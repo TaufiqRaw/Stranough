@@ -51,4 +51,10 @@ export class Peg extends BaseEntity {
     this.pegCapTexture = ref(pegCapTexture);
     this.pegBackTexture = ref(pegBackTexture);
   }
+
+  async loadMedias(){
+    await this.thumbnail?.load();
+    await this.pegCapTexture.load();
+    await this.pegBackTexture.load();
+  }
 }

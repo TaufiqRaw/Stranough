@@ -41,4 +41,8 @@ export class Pickguard extends BaseEntity {
     classAssign(this, props);
     this.texture = ref(texture);
   }
+
+  async loadMedias(){
+    await this.texture.load();
+  }
 }

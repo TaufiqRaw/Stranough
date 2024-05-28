@@ -10,3 +10,6 @@ export * from "./pickup-spawn-point.dto"
 export * from "./pickup.dto"
 export * from "./position.dto"
 export * from "./switch.dto"
+export * from "./headstock.dto"
+export * from './peg.dto'
+export * from './pickguard.dto'

@@ -13,8 +13,6 @@ export interface HeadstockProps extends EntityWithSprite<Headstock> {}
 
 @Entity()
 export class Headstock extends BaseEntityWithSprite {
-  @ManyToOne(()=>GuitarModel, {deleteRule : 'set null', updateRule : 'cascade'})
-  model ?: GuitarModel;
 
   @Property({type : 'smallint'})
   stringCount : number;

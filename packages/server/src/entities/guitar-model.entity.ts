@@ -68,9 +68,6 @@ export class GuitarModel extends BaseEntity {
   @OneToMany(()=>Pickguard, (p)=>p.model)
   pickguards = new Collection<Pickguard>(this);
 
-  @OneToMany(()=>Headstock, h=>h.model)
-  headstocks = new Collection<Headstock>(this);
-
   private _boltOnBody ?: GuitarBody;
   private _neckThroughBody ?: GuitarBody;
   private _setInBody ?: GuitarBody;

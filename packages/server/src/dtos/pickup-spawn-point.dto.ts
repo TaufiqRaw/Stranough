@@ -1,9 +1,10 @@
 import { IsObject, IsOptional, ValidateNested } from "class-validator";
 import { PositionDto } from "./position.dto";
 import { Expose, Type } from "class-transformer";
+import { ExposeAll } from "./util.decorator";
 
+@ExposeAll()
 export class PickupSpawnPointDto {
-  @Expose()
   @IsOptional()
   @IsObject()
   @ValidateNested()

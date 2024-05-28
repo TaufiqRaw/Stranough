@@ -29,7 +29,11 @@ import { KnobDto } from './dtos/knob.dto';
 import { NutDto } from './dtos/nuts.dto';
 import { PickupDto } from './dtos/pickup.dto';
 import { SwitchDto } from './dtos/switch.dto';
-import { entityWithSpriteRouterFactory } from './utils/entity-with-sprite-router.factory';
+import { entityWithMediaRouterFactory } from './utils/entity-with-media-router.factory';
+import { HeadstockDto } from './dtos/headstock.dto';
+import { Class } from 'utility-types';
+import * as R from 'remeda';
+import { commonEntityRoutes } from './controllers/common-entity.controller';
 require('dotenv').config({
   path : Constants.envPath
 });
@@ -96,19 +100,11 @@ export namespace App {
 }
 
 function initRoutes(){
+
   app.use('/guitar-models', guitarModelController);
   app.use('/medias', mediaController);
-  ([
-    ['bridges', DI.repository.bridges, BridgeDto],
-    ['jacks', DI.repository.jacks, JackDto],
-    ['knobs', DI.repository.knobs, KnobDto],
-    ['nuts', DI.repository.nuts, NutDto],
-    ['pickups', DI.repository.pickups, PickupDto],
-    ['switchs', DI.repository.switchs, SwitchDto],
-    ['headstocks', DI.repository.headstocks, Headstock],
-  ] as const ).forEach(([route, repo, dto])=>{
-    //@ts-ignore
-    app.use(`/${route}`, entityWithSpriteRouterFactory(()=>repo, dto));
+  commonEntityRoutes().forEach(([path, router])=>{
+    app.use(`/${path}`, router);
   })
 }
 
