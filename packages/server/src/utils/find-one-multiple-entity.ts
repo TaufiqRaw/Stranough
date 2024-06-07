@@ -2,8 +2,8 @@ import { EntityRepository } from "@mikro-orm/postgresql";
 import { BaseEntity } from "../entities/base.entity";
 import { findOneEntity } from "./find-one-entity.util";
 
-type PrimaryKeyObject = {
-  [key : string] : number | undefined
+type PrimaryKeyObject<T> = {
+  [key in keyof T] : number | undefined | null
 }
 
 /**
@@ -12,13 +12,20 @@ type PrimaryKeyObject = {
  * @param primaryKeys this is an object that maps the string key (will be used in return object) to the primary key of the entity (number)
  * @returns an object that maps the string key to the entity
  */
-export async function findEachEntity<T extends BaseEntity>(repo : EntityRepository<T>, primaryKeys : PrimaryKeyObject){
+export async function findEachEntity<T extends BaseEntity, U>(repo : EntityRepository<T>, primaryKeys : PrimaryKeyObject<U>) : Promise<{
+  [key in keyof PrimaryKeyObject<U>] : T | undefined
+}>{
   const result = {} as {
-    [key in keyof PrimaryKeyObject] : T | undefined
-  }
+    [key in keyof PrimaryKeyObject<U>] : T | undefined
+  };
 
   for(const key in primaryKeys){
-    result[key] = await findOneEntity(repo, primaryKeys[key]);
+    const v = primaryKeys[key];
+    if(!v){
+      result[key] = undefined;
+      continue;
+    }
+    result[key] = await findOneEntity(repo, v);
   }
 
   return result;

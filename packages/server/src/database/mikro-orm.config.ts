@@ -1,7 +1,6 @@
 import { Options, PostgreSqlDriver } from "@mikro-orm/postgresql";
 import { TsMorphMetadataProvider } from "@mikro-orm/reflection";
 import { Migrator } from "@mikro-orm/migrations";
-import path from "path";
 import dotenv from 'dotenv';
 import * as Constants from "../constants";
 import { GuitarModelCleanup } from "../entities/subscribers/guitar-model-cleanup";

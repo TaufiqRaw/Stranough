@@ -1,4 +1,4 @@
-import { Entity, ManyToOne, Property } from "@mikro-orm/core";
+import { Entity, Index, ManyToOne, Property } from "@mikro-orm/core";
 import { BaseEntity } from "./base.entity";
 import {Position} from "../interfaces/position.interface";
 import { EntityWithSprite, EntityWithoutBase } from "../interfaces/entity-without-base.interface";
@@ -10,6 +10,7 @@ import { BaseEntityWithSprite } from "./base-with-sprite.entity";
 export type JackProps = EntityWithSprite<Jack>;
 
 @Entity()
+@Index({ name: 'jack_hnsw_l2_idx', expression: 'CREATE INDEX "jack_hnsw_l2_idx" ON "jack" USING hnsw (embedding vector_l2_ops)' })
 export class Jack extends BaseEntityWithSprite {
 
   @Property()

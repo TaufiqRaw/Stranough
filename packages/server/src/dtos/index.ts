@@ -13,3 +13,4 @@ export * from "./switch.dto"
 export * from "./headstock.dto"
 export * from './peg.dto'
 export * from './pickguard.dto'
+export * from './wood.dto'

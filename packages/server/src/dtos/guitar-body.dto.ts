@@ -1,14 +1,30 @@
 import { Expose, Type } from "class-transformer";
-import { ArrayMinSize, IsArray, IsNotEmpty, IsNumber, IsObject, IsOptional, ValidateNested } from "class-validator";
+import { ArrayMinSize, IsArray, IsNotEmpty, IsNumber, IsObject, IsOptional, Min, ValidateNested } from "class-validator";
 import { GuitarBodyTextureDto } from "./guitar-body-texture.dto";
-import { ExposeAll } from "./util.decorator";
+import { ExposeAll, OptionalOnUpdate } from "./util.decorator";
+import { GuitarBody } from "../entities";
+import { EntityWithoutBase } from "../interfaces/entity-without-base.interface";
+import { KeyOf } from "../interfaces/class-key.interface";
 
 @ExposeAll()
-export class GuitarBodyDto {
+export class GuitarBodyDto implements KeyOf<EntityWithoutBase<GuitarBody>>{
 
   @IsOptional()
   @IsNumber()
-  mask ?: number;
+  mask ?: number | null;
+
+  @OptionalOnUpdate()
+  @IsNumber()
+  @Min(0)
+  price ?: number;
+
+  @IsOptional()
+  @IsNumber()
+  burstTop?: number | null;
+
+  @IsOptional()
+  @IsNumber()
+  burstBack?: number | null;
 
   @IsOptional()
   @IsNumber()

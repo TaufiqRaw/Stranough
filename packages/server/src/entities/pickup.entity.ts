@@ -1,4 +1,4 @@
-import { Entity, Enum, ManyToOne, Property } from "@mikro-orm/core";
+import { Entity, Enum, Index, ManyToOne, Property } from "@mikro-orm/core";
 import { BaseEntity } from "./base.entity";
 import {Position} from "../interfaces/position.interface";
 import { EntityWithSprite, EntityWithoutBase } from "../interfaces/entity-without-base.interface";
@@ -11,10 +11,14 @@ import { BaseEntityWithSprite } from "./base-with-sprite.entity";
 export type PickupProps = EntityWithSprite<Pickup>;
 
 @Entity()
+@Index({ name: 'pickup_hnsw_l2_idx', expression: 'CREATE INDEX "pickup_hnsw_l2_idx" ON "pickup" USING hnsw (embedding vector_l2_ops)' })
 export class Pickup extends BaseEntityWithSprite {
 
   @Enum(()=>Enums.GuitarPickupType)
   type : Enums.GuitarPickupType;
+
+  @Property()
+  stringCount : number;
 
   constructor(props : PickupProps){
     super();

@@ -6,7 +6,7 @@ type FunctionPropertyNames<T> = {
 }[keyof T];
 
 export type EntityWithoutBase<T> = {
-  [K in keyof Omit<Omit<T, keyof BaseEntity >, FunctionPropertyNames<T>>] : T[K]
+  [K in keyof Omit<Omit<T, keyof BaseEntity | 'lastDescription' | 'embedding' >, FunctionPropertyNames<T>>] : T[K]
 }
 
 export type EntityWithSprite<T extends BaseEntityWithSprite> = EntityWithoutBase<T> & {

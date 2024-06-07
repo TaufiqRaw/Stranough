@@ -1,188 +1,188 @@
-import { Cascade, ChangeSet, ChangeSetType, Check, Collection, Entity, FlushEventArgs, ManyToMany, ManyToOne, OneToMany, OneToOne, Property, Unique, ref, wrap } from "@mikro-orm/core";
-import { BaseEntity } from "./base.entity";
+import {
+  Cascade,
+  Collection,
+  Entity,
+  Enum,
+  Index,
+  ManyToOne,
+  OneToMany,
+  Property,
+  ref,
+} from "@mikro-orm/core";
 import { GuitarBody } from "./guitar-body.entity";
 import { EntityWithoutBase } from "../interfaces/entity-without-base.interface";
 import { classAssign } from "../utils/class-assign.util";
 import { Pickguard } from "./pickguard.entity";
-import { Headstock } from "./headstock.entity";
 import { Media } from "./media.entity";
-import { maxDescriptionLength } from "../constants";
 import { GuitarModelBodyPivot } from "./guitar-model-body.pivot.entity";
-import * as Constants from "../constants";
-import * as Enums from "../enums";
-import { Position, PositionWithRotation } from "../interfaces/position.interface";
+import {
+  Position,
+  PositionWithRotation,
+} from "../interfaces/position.interface";
+import { BaseEntityWithDesc } from "./base-with-desc.entity";
+import { Mutable } from "utility-types";
 
 export type GuitarModelProps = Omit<
-  EntityWithoutBase<GuitarModel>, 'pickguards' | 'headstocks' | 'modelBodyPivot' | 'boltOnBody' | 'neckThroughBody' | 'setInBody'
+  EntityWithoutBase<GuitarModel>,
+  "pickguards" | "headstocks" | (typeof GuitarModel.bodyKeys)[number] | 'modelBodyPivot'
 >;
 
 /* invariants : 
     bodyPivot : 
       always has 3 items, one for each body type
       on creation, all 3 items are added
+      but the bodies are not set (body is null)
     loadBodies :  will not load the body if it is already loaded or already set (by the setter)
 */
 @Entity()
-export class GuitarModel extends BaseEntity {
-  @Property()
-  @Unique()
-  name : string;
+@Index({ name: 'guitar_model_hnsw_l2_idx', expression: 'CREATE INDEX "guitar_model_hnsw_l2_idx" ON "guitar_model" USING hnsw (embedding vector_l2_ops)' })
+export class GuitarModel extends BaseEntityWithDesc {
+  static bodyKeys = Object.freeze([
+    "boltOnBody",
+    "neckThroughBody",
+    "setInBody",
+  ] as const);
 
-  @Property({type : 'varchar', length : maxDescriptionLength})
-  description : string;
+  static mediaKeys = Object.freeze([
+    "thumbnail",
+  ] as const);
 
-  @ManyToOne(()=>Media, {deleteRule : 'set null', updateRule : 'cascade'})
-  thumbnail ?: Media;
-  
-  @OneToMany(()=>GuitarModelBodyPivot, (p)=>p.model, {cascade : [Cascade.ALL]})
+  static spawnPointKeys = Object.freeze([
+    "knobSpawnPoint",
+    "bridgeSpawnPoint",
+    "pickupSpawnPoint",
+    "switchSpawnPoint",
+    "topJackSpawnPoint",
+    "sideJackSpawnPoint",
+    "fingerboardSpawnPoint",
+  ] as const);
+
+  @ManyToOne(() => Media, { deleteRule: "set null", updateRule: "cascade" })
+  thumbnail?: Media;
+
+  @OneToMany(() => GuitarModelBodyPivot, (p) => p.model, {
+    cascade: [Cascade.ALL],
+  })
   modelBodyPivot = new Collection<GuitarModelBodyPivot>(this);
 
-  @Property({type : 'json'})
-  fingerboardSpawnPoint ?: Position;
+  @Property({ type: "json" })
+  fingerboardSpawnPoint?: Position;
 
-  @Property({type : 'json'})
-  bridgeSpawnPoint ?: Position;
+  @Property({ type: "json" })
+  bridgeSpawnPoint?: Position;
 
   @Property()
-  allowSingleCoilPickup ?: boolean = true;
+  allowSingleCoilPickup?: boolean = true;
 
-  @Property({type : 'json'})
-  pickupSpawnPoint ?: {
-    bridge ?: Position;
-    middle ?: Position;
-    neck ?: Position;
+  @Property()
+  price : number;
+
+  @Property({ type: "json" })
+  pickupSpawnPoint?: {
+    bridge?: Position;
+    middle?: Position;
+    neck?: Position;
   };
 
-  @Property({type : 'json'})
-  knobSpawnPoint ?: Position[];
+  @Property()
+  isElectric?: boolean = true;
 
-  @Property({type : 'json'})
-  switchSpawnPoint ?: PositionWithRotation;
+  @Property({ type: "json" })
+  knobSpawnPoint?: Position[];
 
-  @Property({type : 'json'})
-  topJackSpawnPoint ?: PositionWithRotation;
+  @Property({ type: "json" })
+  switchSpawnPoint?: PositionWithRotation;
 
-  @Property({type : 'json'})
-  sideJackSpawnPoint ?: PositionWithRotation;
+  @Property({ type: "json" })
+  topJackSpawnPoint?: PositionWithRotation;
 
-  @OneToMany(()=>Pickguard, (p)=>p.model)
+  @Property({ type: "json" })
+  sideJackSpawnPoint?: PositionWithRotation;
+
+  @OneToMany(() => Pickguard, (p) => p.model)
   pickguards = new Collection<Pickguard>(this);
 
-  private _boltOnBody ?: GuitarBody;
-  private _neckThroughBody ?: GuitarBody;
-  private _setInBody ?: GuitarBody;
+  private _boltOnBody?: GuitarBody;
+  private _neckThroughBody?: GuitarBody;
+  private _setInBody?: GuitarBody;
 
-  @Property({type : 'any', serializer: v=>v, persist : false})
-  get boltOnBody(){
+  @Property({ type: "any", serializer: (v) => v, persist: false })
+  get boltOnBody() {
     return this._boltOnBody;
   }
-  @Property({type : 'any', serializer: v=>v, persist : false})
-  get neckThroughBody(){
+  @Property({ type: "any", serializer: (v) => v, persist: false })
+  get neckThroughBody() {
     return this._neckThroughBody;
   }
-  @Property({type : 'any', serializer: v=>v, persist : false})
-  get setInBody(){
+  @Property({ type: "any", serializer: (v) => v, persist: false })
+  get setInBody() {
     return this._setInBody;
   }
 
-  constructor(props : GuitarModelProps){
+  constructor(props: GuitarModelProps) {
     super();
     classAssign(this, props);
-    for(const pivot of Constants.modelBodiesKey){
-      this.modelBodyPivot.add(new GuitarModelBodyPivot({
-        model : this,
-        type : pivot
-      }));
+    for (const pivot of GuitarModel.bodyKeys) {
+      this.modelBodyPivot.add(
+        new GuitarModelBodyPivot({
+          model: this,
+          type: pivot,
+        })
+      );
     }
   }
 
-  private async getBoltOnBody(){
-    if(this.boltOnBody !== undefined){
+  private async loadBody(type: typeof GuitarModel.bodyKeys[number]) {
+    if(this[type] !== undefined){
       return;
     }
     await this.modelBodyPivot.load();
-    const b = this.modelBodyPivot.getItems().find(p=>p.type === Enums.GuitarBodyType.BoldOnBody);
-    if(b?.body){
-      // @ts-ignore
-      this._boltOnBody = await b.body.load();
+    const b = this.modelBodyPivot
+      .getItems()
+      .find((p) => p.type === type);
+    if (b?.body) {
+      this[`_${type}`] = await b.body.load() ?? undefined;
     }
     return b;
   }
 
-  private async getNeckThroughBody(){
-    if(this.neckThroughBody !== undefined){
-      return;
-    }
-    await this.modelBodyPivot.load();
-    const b = this.modelBodyPivot.getItems().find(p=>p.type === Enums.GuitarBodyType.NeckThrough);
-    if(b?.body){
-      // @ts-ignore
-      this._neckThroughBody = await b.body.load();
-    }
-    return b;
+  async setBoltOnBody(body: GuitarBody) {
+    await this.setBody(body, "boltOnBody");
   }
-
-  private async getSetInBody(){
-    if(this.setInBody !== undefined){
-      return;
-    }
-    await this.modelBodyPivot.load();
-    const b = this.modelBodyPivot.getItems().find(p=>p.type === Enums.GuitarBodyType.SetInBody);
-    if(b?.body){
-      // @ts-ignore
-      this._setInBody = await b.body.load();
-    }
-    return b;
+  async setNeckThroughBody(body: GuitarBody) {
+    await this.setBody(body, "neckThroughBody");
   }
-
-  async setBoltOnBody(body : GuitarBody){
+  async setSetInBody(body: GuitarBody) {
+    await this.setBody(body, "setInBody");
+  }
+  private async setBody(body: GuitarBody, type: typeof GuitarModel.bodyKeys[number]) {
     await this.modelBodyPivot.load();
-    const b = this.modelBodyPivot.getItems().find(p=>p.type === Enums.GuitarBodyType.BoldOnBody);
-    if(b){
+    const b = this.modelBodyPivot
+      .getItems()
+      .find((p) => p.type === type);
+    if (b) {
       b.body = ref(body);
-      this._boltOnBody = body;
+      this[`_${type}`] = body;
     }
   }
 
-  async setNeckThroughBody(body : GuitarBody){
-    await this.modelBodyPivot.load();
-    const b = this.modelBodyPivot.getItems().find(p=>p.type === Enums.GuitarBodyType.NeckThrough);
-    if(b){
-      b.body = ref(body);
-      this._neckThroughBody = body;
+  async loadBodies() {
+    for(const type of GuitarModel.bodyKeys){
+      await this.loadBody(type);
     }
   }
 
-  async setSetInBody(body : GuitarBody){
-    await this.modelBodyPivot.load();
-    const b = this.modelBodyPivot.getItems().find(p=>p.type === Enums.GuitarBodyType.SetInBody);
-    if(b){
-      b.body = ref(body);
-      this._setInBody = body;
-    }
-  }
-
-  async loadBodies(){
-    await this.getBoltOnBody();
-    await this.getNeckThroughBody();
-    await this.getSetInBody();
-  }
-
-  async deepLoadBodies(){
+  async deepLoadBodies() {
     await this.loadBodies();
-    if(this.boltOnBody) await this.boltOnBody.loadTextures();
-    if(this.neckThroughBody) await this.neckThroughBody.loadTextures();
-    if(this.setInBody) await this.setInBody.loadTextures();
+    for(const type of GuitarModel.bodyKeys){
+      await this[type]?.loadTextures();
+    }
 
-    await Promise.all([this.boltOnBody, this.neckThroughBody, this.setInBody].map(async (b)=>{
-      for(const textureKey of Constants.bodyTexturesKey){
-        if(b){
-          const texture = b[textureKey];
-          if(texture){
-            await texture.loadMedias();
-          }
-        }
+    for(const bodyKey of GuitarModel.bodyKeys){
+      const body = this[bodyKey];
+      for(const textureKey of GuitarBody.textureKeys){
+        await body?.[textureKey]?.loadMedias();
       }
-    }))
+    }
   }
 }

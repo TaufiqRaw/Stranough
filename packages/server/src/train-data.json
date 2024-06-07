@@ -1,0 +1,28 @@
+{
+  "intents" : {
+    "askQuestion" : [
+      "apa fungsi dari komponen ini?",
+      "jelasin dong apa itu komponen ini",
+      "komponen ini buat apa?",
+      "apa kegunaan komponen ini?",
+      "komponen ini digunakan untuk apa?",
+      "kenapa anda merekomendasikan komponen ini?",
+      "apakah komponen ini bisa digunakan untuk bermain jazz",
+      "mana yang lebih bagus?",
+      "jelaskan semua komponen yang telah saya pilih",
+      "apakah komponen ini cocok untuk saya?",
+      "apakah komponen yang telah saya pilih sudah cukup?",
+      "lebih bagus komponen ini atau itu?"
+    ],
+    "askRecommendation" : [
+      "pilihkan komponen yang bagus",
+      "rekomendasikan saya komponen",
+      "komponen yang bagus apa ya?",
+      "carikan komponen yang bagus",
+      "saya butuh komponen yang bagus",
+      "carikan yang sering digunakan oleh musisi blues",
+      "rekomendasikan saya komponen yang sering digunakan oleh musisi jazz",
+      "pilih komponen yang sering digunakan oleh musisi rock"
+    ]
+  }
+}

@@ -17,6 +17,7 @@ import { BaseEntityWithSpriteDto } from "../dtos/common-entity.dto";
 import { entityGetMiddleware } from "../middlewares/entity-get.middleware";
 import { findEachEntity } from "./find-one-multiple-entity";
 import { Position } from "../interfaces/position.interface";
+import { KeyOf } from "../interfaces/class-key.interface";
 
 export function entityWithMediaRouterFactory<
   T extends {
@@ -26,7 +27,7 @@ export function entityWithMediaRouterFactory<
     updatedAt : Date;
     loadMedias : () => Promise<void>;
   },
-  U extends Partial<Omit<T, 'createdAt' | 'updatedAt' | 'loadMedias'>>,
+  U extends Partial<Omit<T, 'createdAt' | 'updatedAt' | 'loadMedias'>> & KeyOf<T>,
 >(repository: () => EntityRepository<T>, dto: Class<U>, mediaKeys : (keyof T)[]) {
   const router = Router();
   router.get("/", entityIndexMiddleware(repository, "name"));
@@ -58,6 +59,7 @@ export function entityWithMediaRouterFactory<
     })
   );
 
+  //TODO: delete media when corresponding dto's property is null
   router.put(
     "/:id",
     asyncMiddleware(async (req, res) => {
@@ -69,6 +71,14 @@ export function entityWithMediaRouterFactory<
 
       const item = await findOneEntity(repo, id);
       if (!item) throw new BadRequestError("item not found");
+
+      for(const key of mediaKeys){
+        if(reqBody[key] === null){
+          const media = await findOneEntity(DI.repository.medias, item[key] as number);
+          if(media)
+            await DI.em.removeAndFlush(media);
+        }
+      }
 
       Object.assign(item, reqBody);
 

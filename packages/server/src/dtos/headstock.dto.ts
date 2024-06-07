@@ -1,5 +1,5 @@
 import { Expose, Type } from "class-transformer";
-import { IsArray, IsBoolean, IsNotEmpty, IsNumber, ValidateNested } from "class-validator";
+import { IsArray, IsBoolean, IsNotEmpty, IsNumber, IsOptional, ValidateNested } from "class-validator";
 import { BaseEntityWithSpriteDto } from "./common-entity.dto";
 import { EntityWithoutSprite } from "../interfaces/entity-without-base.interface";
 import { Headstock } from "../entities";
@@ -17,12 +17,14 @@ export class HeadstockDto extends BaseEntityWithSpriteDto implements KeyOf<Entit
   @OptionalOnUpdate()
   @IsArray()
   @ValidateNested({ each: true })
-  @Type(() => PositionDto)
-  stringSpawnPoint ?: PositionDto[][];
-
-  @OptionalOnUpdate()
-  @IsArray()
-  @ValidateNested({ each: true })
   @Type(() => PositionWithRotationDto)
   pegsSpawnPoint?: PositionWithRotationDto[];
+
+  @IsOptional()
+  @IsNumber()
+  backShadowTexture?: number | null;
+
+  @IsOptional()
+  @IsNumber()
+  frontShadowTexture?: number | null;
 }

@@ -1,17 +1,10 @@
 import { Cascade, ManyToOne, Property, Ref, Unique, ref} from "@mikro-orm/core";
 import { Media } from "./media.entity";
-import { idProperty } from "../utils/id-property.util";
 import { Position } from "../interfaces/position.interface";
-import { BaseEntity } from "./base.entity";
-import { maxDescriptionLength, mediaFKOption } from "../constants";
+import { mediaFKOption } from "../constants";
+import { BaseEntityWithDesc } from "./base-with-desc.entity";
 
-export abstract class BaseEntityWithSprite extends BaseEntity {
-  @Property()
-  @Unique()
-  name : string;
-
-  @Property({type : 'varchar', length : maxDescriptionLength})
-  description : string;
+export abstract class BaseEntityWithSprite extends BaseEntityWithDesc {
 
   @ManyToOne(()=>Media, mediaFKOption)
   thumbnail ?: Ref<Media>;

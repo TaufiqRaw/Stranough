@@ -6,18 +6,26 @@ import { Media } from "./media.entity";
 import {Optional} from 'utility-types'
 import { GuitarBodyTexturePivot } from "./guitar-body-texture.pivot.entity";
 import { mediaFKOption } from "../constants";
+import * as Enums from "../enums";
 
 
-export type GuitarBodyTextureProps = Omit<Optional<EntityWithoutBase<GuitarBodyTexture>, 'scale'>, 'bodyTexturePivot'>;
+export type GuitarBodyTextureProps = Omit<Optional<EntityWithoutBase<GuitarBodyTexture>, 'scale'>, 'bodyTexturePivot' | typeof GuitarBodyTexture.mediaKeys[number]> & {[key in typeof GuitarBodyTexture.mediaKeys[number]]?: Media | undefined};
 
 @Entity()
 export class GuitarBodyTexture extends BaseEntity {
+
+  static mediaKeys = Object.freeze(
+    ['frontHoleMask', 'mask', 'backMask', 'frontShadowTexture', 'backShadowTexture', 'frontSpecularTexture', 'backSpecularTexture', 'burstTop', 'burstBack'] as const
+  );
 
   @OneToMany(()=>GuitarBodyTexturePivot, (p)=>p.texture)
   bodyTexturePivot : GuitarBody;
 
   @Property({type : 'float'})
   scale : number = 1;
+
+  @Property({nullable : false, default : 0})
+  price ?: number = 0;
 
   @ManyToOne(()=>Media, mediaFKOption)
   frontHoleMask ?: Ref<Media>;
@@ -40,6 +48,12 @@ export class GuitarBodyTexture extends BaseEntity {
   @ManyToOne(()=>Media, mediaFKOption)
   backSpecularTexture ?: Ref<Media>;
 
+  @ManyToOne(() => Media, mediaFKOption)
+  burstTop?: Ref<Media>;
+
+  @ManyToOne(() => Media, mediaFKOption)
+  burstBack?: Ref<Media>;
+
   constructor(props : GuitarBodyTextureProps){
     super();
     const {frontHoleMask, mask, backMask, frontShadowTexture, backShadowTexture, frontSpecularTexture, backSpecularTexture, ..._props} = props;
@@ -55,12 +69,8 @@ export class GuitarBodyTexture extends BaseEntity {
   }
 
   async loadMedias(){
-    await this.frontHoleMask?.load();
-    await this.mask?.load();
-    await this.backMask?.load();
-    await this.frontShadowTexture?.load();
-    await this.backShadowTexture?.load();
-    await this.frontSpecularTexture?.load();
-    await this.backSpecularTexture?.load();
+    for(const key of GuitarBodyTexture.mediaKeys){
+      await this[key]?.load();
+    }
   }
 }

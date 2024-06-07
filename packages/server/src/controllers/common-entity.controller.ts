@@ -23,7 +23,8 @@ export const commonEntityRoutes = ()=>[
   t('nuts', DI.repository.nuts, Dto.NutDto, ['texture', 'thumbnail']),
   t('pickups', DI.repository.pickups, Dto.PickupDto, ['texture', 'thumbnail']),
   t('switchs', DI.repository.switchs, Dto.SwitchDto, ['texture', 'thumbnail']),
-  t('headstocks', DI.repository.headstocks, Dto.HeadstockDto, ['texture', 'thumbnail']),
+  t('headstocks', DI.repository.headstocks, Dto.HeadstockDto, ['texture', 'thumbnail', 'backShadowTexture', 'frontShadowTexture']),
   t('pegs', DI.repository.pegs, Dto.PegDto, ['thumbnail', 'pegCapTexture', 'pegBackTexture']),
-  t('pickguards', DI.repository.pickguards, Dto.PickguardDto, ['texture'])
+  t('pickguards', DI.repository.pickguards, Dto.PickguardDto, ['texture']),
+  t('woods', DI.repository.woods, Dto.WoodDto, ['texture']),
 ] as const;

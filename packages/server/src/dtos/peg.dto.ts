@@ -31,5 +31,4 @@ export class PegDto extends BaseEntityWithThumbnail implements KeyOf<EntityWitho
   @IsNumber()
   @Min(0)
   scale?: number;
-  
 }

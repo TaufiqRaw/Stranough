@@ -1,10 +1,11 @@
-import { Entity, ManyToOne, Property, Ref, Unique, ref } from "@mikro-orm/core";
+import { Entity, Index, ManyToOne, Property, Ref, Unique, ref } from "@mikro-orm/core";
 import { BaseEntity } from "./base.entity";
 import {Position} from "../interfaces/position.interface";
 import { EntityWithoutBase } from "../interfaces/entity-without-base.interface";
 import { classAssign } from "../utils/class-assign.util";
 import { Media } from "./media.entity";
 import { maxDescriptionLength, mediaFKOption } from "../constants";
+import { BaseEntityWithDesc } from "./base-with-desc.entity";
 
 export interface PegProps extends Omit<EntityWithoutBase<Peg>, 'thumbnail' | 'pegCapTexture' | 'pegBackTexture'>{
   thumbnail : Media;
@@ -13,14 +14,8 @@ export interface PegProps extends Omit<EntityWithoutBase<Peg>, 'thumbnail' | 'pe
 }
 
 @Entity()
-export class Peg extends BaseEntity {
-
-  @Property()
-  @Unique()
-  name : string;
-
-  @Property({type : 'varchar', length : maxDescriptionLength})
-  description : string;
+@Index({ name: 'peg_hnsw_l2_idx', expression: 'CREATE INDEX "peg_hnsw_l2_idx" ON "peg" USING hnsw (embedding vector_l2_ops)' })
+export class Peg extends BaseEntityWithDesc {
 
   @ManyToOne(()=>Media, mediaFKOption)
   thumbnail ?: Ref<Media>;

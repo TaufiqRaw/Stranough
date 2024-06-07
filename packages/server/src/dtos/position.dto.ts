@@ -8,15 +8,14 @@ export class PositionDto {
   @IsNumber()
   x : number;
 
-  @Expose()
   @IsNotEmpty()
   @IsNumber()
   y : number;
 }
 
-@Expose()
+@ExposeAll()
 export class PositionWithRotationDto extends PositionDto {
-  @OptionalOnUpdate()
+  @IsNotEmpty()
   @IsNumber()
   rotation : number;
 }

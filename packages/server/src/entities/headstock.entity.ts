@@ -1,4 +1,4 @@
-import { Entity, ManyToOne, Property, Ref, ref } from "@mikro-orm/core";
+import { Entity, Index, ManyToOne, OneToMany, Property, Ref, ref } from "@mikro-orm/core";
 import { BaseEntity } from "./base.entity";
 import {Position, PositionWithRotation} from "../interfaces/position.interface";
 import { EntityWithSprite, EntityWithoutBase } from "../interfaces/entity-without-base.interface";
@@ -12,6 +12,7 @@ import { BaseEntityWithSprite } from "./base-with-sprite.entity";
 export interface HeadstockProps extends EntityWithSprite<Headstock> {}
 
 @Entity()
+@Index({ name: 'headstock_hnsw_l2_idx', expression: 'CREATE INDEX "headstock_hnsw_l2_idx" ON "headstock" USING hnsw (embedding vector_l2_ops)' })
 export class Headstock extends BaseEntityWithSprite {
 
   @Property({type : 'smallint'})
@@ -19,6 +20,12 @@ export class Headstock extends BaseEntityWithSprite {
 
   @Property({type : 'json'})
   pegsSpawnPoint : PositionWithRotation[];
+
+  @ManyToOne(()=>Media,mediaFKOption)
+  frontShadowTexture ?: Ref<Media>;
+
+  @ManyToOne(()=>Media,mediaFKOption)
+  backShadowTexture ?: Ref<Media>;
 
   constructor(props : HeadstockProps){
     super();

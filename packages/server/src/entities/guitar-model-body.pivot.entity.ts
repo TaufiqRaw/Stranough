@@ -2,6 +2,7 @@ import { BeforeDelete, Cascade, ChangeSetType, Entity, Enum, EventArgs, ManyToOn
 import { GuitarBody, GuitarModel } from ".";
 import { idProperty } from '../utils/id-property.util';
 import * as Enums from "../enums";
+import { Mutable } from "utility-types";
 
 @Entity()
 @Unique({properties : ['model', 'body', 'type']})
@@ -15,13 +16,15 @@ export class GuitarModelBodyPivot {
   @ManyToOne(()=>GuitarBody, {updateRule : 'cascade', deleteRule : 'set null', cascade : [Cascade.REMOVE]})
   body ?: Ref<GuitarBody>;
 
-  @Enum(()=>Enums.GuitarBodyType)
-  type : Enums.GuitarBodyType;
+  @Enum({
+    items : ['boltOnBody', 'neckThroughBody', 'setInBody'] as Mutable<typeof GuitarModel.bodyKeys>
+  })
+  type : typeof GuitarModel.bodyKeys[number];
 
   constructor(props : {
     model : GuitarModel;
     body ?: GuitarBody;
-    type : Enums.GuitarBodyType;
+    type : typeof GuitarModel.bodyKeys[number];
   }){
     const model = ref(props.model);
     const body = props.body && ref(props.body);

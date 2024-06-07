@@ -1,265 +1,200 @@
-import { Cascade, Collection, Entity, ManyToMany, ManyToOne, OneToMany, OneToOne, Property, Ref, Unique, ref } from "@mikro-orm/core";
+import {
+  Cascade,
+  Collection,
+  Entity,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
+  Property,
+  Ref,
+  Unique,
+  ref,
+} from "@mikro-orm/core";
 import { BaseEntity } from "./base.entity";
 import { GuitarModel } from "./guitar-model.entity";
 import { GuitarBodyTexture } from "./guitar-body-texture.entity";
-import {Position, PositionWithRotation} from "../interfaces/position.interface";
 import { EntityWithoutBase } from "../interfaces/entity-without-base.interface";
 import { classAssign } from "../utils/class-assign.util";
 import { GuitarModelBodyPivot } from "./guitar-model-body.pivot.entity";
 import { GuitarBodyTexturePivot } from "./guitar-body-texture.pivot.entity";
 import * as Constants from "../constants";
-import * as Enums from "../enums";
 import { Media } from "./media.entity";
 
-export type GuitarBodyProps = Omit<EntityWithoutBase<GuitarBody>, 'modelBodyPivot' | 'mask' | 'bodyTexturePivot' | 'carvedTopTexture' | 'tummyCutTexture' | 'forearmCutTexture' | 'flatTopBackTexture' | 'carvedTopBackTexture' | 'forearmTummyCutTexture' | 'carvedTopTummyCutTexture'> & {mask ?: Media}
+export type GuitarBodyProps = Omit<
+  EntityWithoutBase<GuitarBody>,
+  | "modelBodyPivot"
+  | "bodyTexturePivot"
+  | (typeof GuitarBody.mediaKeys)[number]
+  | (typeof GuitarBody.textureKeys)[number]
+  | "maskScale"
+> & { mask?: Media };
 
 @Entity()
 export class GuitarBody extends BaseEntity {
-  @OneToMany(()=>GuitarModelBodyPivot, (p)=>p.body, {cascade : [Cascade.ALL]})
-  modelBodyPivot : GuitarModel;
+  static mediaKeys = Object.freeze([
+    "mask",
+    "burstTop",
+    "burstBack"
+  ] as const);
 
-  @OneToMany(()=>GuitarBodyTexturePivot, (p)=>p.body, {cascade : [Cascade.ALL]})
+  static textureKeys = Object.freeze([
+    "carvedTopTexture",
+    "tummyCutTexture",
+    "forearmCutTexture",
+    "flatTopBackTexture",
+    "carvedTopBackTexture",
+    "forearmTummyCutTexture",
+    "carvedTopTummyCutTexture",
+  ] as const);
+
+  @OneToMany(() => GuitarModelBodyPivot, (p) => p.body, {
+    cascade: [Cascade.ALL],
+  })
+  modelBodyPivot: GuitarModel;
+
+  @OneToMany(() => GuitarBodyTexturePivot, (p) => p.body, {
+    cascade: [Cascade.ALL],
+  })
   bodyTexturePivot = new Collection<GuitarBodyTexturePivot>(this);
 
-  @ManyToOne(()=>Media, {...Constants.mediaFKOption, serializer: v=>v})
-  mask ?: Ref<Media>;
+  @ManyToOne(() => Media, Constants.mediaFKOption)
+  mask?: Ref<Media>;
 
-  @Property({type : 'float'})
-  maskScale ?: number = 1;
+  @Property({ type: "float" })
+  maskScale?: number = 1;
 
-  private _carvedTopTexture ?: GuitarBodyTexture;
-  private _tummyCutTexture ?: GuitarBodyTexture;
-  private _forearmCutTexture ?: GuitarBodyTexture;
-  private _flatTopBackTexture ?: GuitarBodyTexture;
-  private _carvedTopBackTexture ?: GuitarBodyTexture;
-  private _forearmTummyCutTexture ?: GuitarBodyTexture;
-  private _carvedTopTummyCutTexture ?: GuitarBodyTexture;
+  @ManyToOne(() => Media, Constants.mediaFKOption)
+  burstTop?: Ref<Media>;
 
-  @Property({type : 'any', serializer: v=>v, persist : false})
-  get carvedTopTexture (){
+  @ManyToOne(() => Media, Constants.mediaFKOption)
+  burstBack?: Ref<Media>;
+
+  @Property({nullable : false, default : 0})
+  price ?: number = 0;
+
+  private _carvedTopTexture?: GuitarBodyTexture;
+  private _tummyCutTexture?: GuitarBodyTexture;
+  private _forearmCutTexture?: GuitarBodyTexture;
+  private _flatTopBackTexture?: GuitarBodyTexture;
+  private _carvedTopBackTexture?: GuitarBodyTexture;
+  private _forearmTummyCutTexture?: GuitarBodyTexture;
+  private _carvedTopTummyCutTexture?: GuitarBodyTexture;
+
+  @Property({ type: "any", serializer: (v) => v, persist: false })
+  get carvedTopTexture() {
     return this._carvedTopTexture;
-  };
+  }
 
-  @Property({type : 'any', serializer: v=>v, persist : false})
-  get tummyCutTexture (){
+  @Property({ type: "any", serializer: (v) => v, persist: false })
+  get tummyCutTexture() {
     return this._tummyCutTexture;
   }
 
-  @Property({type : 'any', serializer: v=>v, persist : false})
-  get forearmCutTexture (){
+  @Property({ type: "any", serializer: (v) => v, persist: false })
+  get forearmCutTexture() {
     return this._forearmCutTexture;
   }
 
-  @Property({type : 'any', serializer: v=>v, persist : false})
-  get flatTopBackTexture (){
+  @Property({ type: "any", serializer: (v) => v, persist: false })
+  get flatTopBackTexture() {
     return this._flatTopBackTexture;
   }
 
-  @Property({type : 'any', serializer: v=>v, persist : false})
-  get carvedTopBackTexture (){
+  @Property({ type: "any", serializer: (v) => v, persist: false })
+  get carvedTopBackTexture() {
     return this._carvedTopBackTexture;
   }
 
-  @Property({type : 'any', serializer: v=>v, persist : false})
-  get forearmTummyCutTexture (){
+  @Property({ type: "any", serializer: (v) => v, persist: false })
+  get forearmTummyCutTexture() {
     return this._forearmTummyCutTexture;
   }
 
-  @Property({type : 'any', serializer: v=>v, persist : false})
-  get carvedTopTummyCutTexture (){
+  @Property({ type: "any", serializer: (v) => v, persist: false })
+  get carvedTopTummyCutTexture() {
     return this._carvedTopTummyCutTexture;
   }
 
-  constructor(_props : GuitarBodyProps){
+  constructor(_props: GuitarBodyProps) {
     super();
-    const {mask, ...props} = _props;
+    const { mask, ...props } = _props;
     classAssign(this, props);
-    if(mask)
-      this.mask = ref(mask);
-    for(const pivot of Constants.bodyTexturesKey){
-      this.bodyTexturePivot.add(new GuitarBodyTexturePivot({
-        body : this,
-        type : pivot
-      }));
+    if (mask) this.mask = ref(mask);
+    for (const pivot of GuitarBody.textureKeys) {
+      this.bodyTexturePivot.add(
+        new GuitarBodyTexturePivot({
+          body: this,
+          type: pivot,
+        })
+      );
     }
   }
 
-  private async getCarvedTopTexture(){
-    if(this.carvedTopTexture !== undefined){
+  private async loadTexture(type: typeof GuitarBody.textureKeys[number]) {
+    if (this[type] !== undefined) {
       return;
     }
     await this.bodyTexturePivot.load();
-    const t = this.bodyTexturePivot.getItems().find(p=>p.type === Enums.GuitarBodyTextureType.CarvedTop);
-    if(t?.texture){
-      // @ts-ignore
-      this._carvedTopTexture = await t.texture.load({
-        populate : Constants.textureMediasKey
-      });
+    const t = this.bodyTexturePivot
+      .getItems()
+      .find((p) => p.type === type);
+    if (t?.texture) {
+      this[`_${type}`] = await t.texture.load({
+        populate: GuitarBodyTexture.mediaKeys,
+      }) ?? undefined;
     }
     return t;
   }
 
-  private async getTummyCutTexture(){
-    if(this.tummyCutTexture !== undefined){
-      return;
-    }
-    await this.bodyTexturePivot.load();
-    const t = this.bodyTexturePivot.getItems().find(p=>p.type === Enums.GuitarBodyTextureType.TummyCut);
-    if(t?.texture){
-      // @ts-ignore
-      this._tummyCutTexture = await t.texture.load({
-        populate : Constants.textureMediasKey
-      });
-    }
-    return t;
+  async setCarvedTopTexture(texture: GuitarBodyTexture) {
+    await this.setTexture(texture, "carvedTopTexture");
   }
 
-  private async getForearmCutTexture(){
-    if(this.forearmCutTexture !== undefined){
-      return;
-    }
-    await this.bodyTexturePivot.load();
-    const t = this.bodyTexturePivot.getItems().find(p=>p.type === Enums.GuitarBodyTextureType.ForearmCut);
-    if(t?.texture){
-      // @ts-ignore
-      this._forearmCutTexture = await t.texture.load({
-        populate : Constants.textureMediasKey
-      });
-    }
-    return t;
+  async setTummyCutTexture(texture: GuitarBodyTexture) {
+    await this.setTexture(texture, "tummyCutTexture");
   }
 
-  private async getFlatTopBackTexture(){
-    if(this.flatTopBackTexture !== undefined){
-      return;
-    }
-    await this.bodyTexturePivot.load();
-    const t = this.bodyTexturePivot.getItems().find(p=>p.type === Enums.GuitarBodyTextureType.FlatTopBack);
-    if(t?.texture){
-      // @ts-ignore
-      this._flatTopBackTexture = await t.texture.load({
-        populate : Constants.textureMediasKey
-      });
-    }
-    return t;
+  async setForearmCutTexture(texture: GuitarBodyTexture) {
+    await this.setTexture(texture, "forearmCutTexture");
   }
 
-  private async getCarvedTopBackTexture(){
-    if(this.carvedTopBackTexture !== undefined){
-      return;
-    }
-    await this.bodyTexturePivot.load();
-    const t = this.bodyTexturePivot.getItems().find(p=>p.type === Enums.GuitarBodyTextureType.CarvedTopBack);
-    if(t?.texture){
-      // @ts-ignore
-      this._carvedTopBackTexture = await t.texture.load({
-        populate : Constants.textureMediasKey
-      });
-    }
-    return t;
+  async setFlatTopBackTexture(texture: GuitarBodyTexture) {
+    await this.setTexture(texture, "flatTopBackTexture");
   }
 
-  private async getForearmTummyCutTexture(){
-    if(this.forearmTummyCutTexture !== undefined){
-      return;
-    }
-    await this.bodyTexturePivot.load();
-    const t = this.bodyTexturePivot.getItems().find(p=>p.type === Enums.GuitarBodyTextureType.ForearmTummyCut);
-    if(t?.texture){
-      // @ts-ignore
-      this._forearmTummyCutTexture = await t.texture.load({
-        populate : Constants.textureMediasKey
-      });
-    }
-    return t;
+  async setCarvedTopBackTexture(texture: GuitarBodyTexture) {
+    await this.setTexture(texture, "carvedTopBackTexture");
   }
 
-  private async getCarvedTopTummyCutTexture(){
-    if(this.carvedTopTummyCutTexture !== undefined){
-      return;
-    }
-    await this.bodyTexturePivot.load();
-    const t = this.bodyTexturePivot.getItems().find(p=>p.type === Enums.GuitarBodyTextureType.CarvedTopTummyCut);
-    if(t?.texture){
-      // @ts-ignore
-      this._carvedTopTummyCutTexture = await t.texture.load({
-        populate : Constants.textureMediasKey
-      });
-    }
-    return t;
+  async setForearmTummyCutTexture(texture: GuitarBodyTexture) {
+    await this.setTexture(texture, "forearmTummyCutTexture");
   }
 
-  async setCarvedTopTexture(texture : GuitarBodyTexture){
+  async setCarvedTopTummyCutTexture(texture: GuitarBodyTexture) {
+    await this.setTexture(texture, "carvedTopTummyCutTexture");
+  }
+  private async setTexture(
+    texture: GuitarBodyTexture,
+    type: typeof GuitarBody.textureKeys[number]
+  ) {
     await this.bodyTexturePivot.load();
-    const t = this.bodyTexturePivot.getItems().find(p=>p.type === Enums.GuitarBodyTextureType.CarvedTop);
-    if(t){
+    const t = this.bodyTexturePivot
+      .getItems()
+      .find((p) => p.type === type);
+    if (t) {
       t.texture = ref(texture);
-      this._carvedTopTexture = texture;
+      this[`_${type}`] = texture;
     }
   }
 
-  async setTummyCutTexture(texture : GuitarBodyTexture){
-    await this.bodyTexturePivot.load();
-    const t = this.bodyTexturePivot.getItems().find(p=>p.type === Enums.GuitarBodyTextureType.TummyCut);
-    if(t){
-      t.texture = ref(texture);
-      this._tummyCutTexture = texture;
+  async loadTextures() {
+    for(const media of GuitarBody.mediaKeys){
+      await this[media]?.load();
     }
-  }
 
-  async setForearmCutTexture(texture : GuitarBodyTexture){
-    await this.bodyTexturePivot.load();
-    const t = this.bodyTexturePivot.getItems().find(p=>p.type === Enums.GuitarBodyTextureType.ForearmCut);
-    if(t){
-      t.texture = ref(texture);
-      this._forearmCutTexture = texture;
+    for (const type of GuitarBody.textureKeys) {
+      await this.loadTexture(type);
     }
-  }
-
-  async setFlatTopBackTexture(texture : GuitarBodyTexture){
-    await this.bodyTexturePivot.load();
-    const t = this.bodyTexturePivot.getItems().find(p=>p.type === Enums.GuitarBodyTextureType.FlatTopBack);
-    if(t){
-      t.texture = ref(texture);
-      this._flatTopBackTexture = texture;
-    }
-  }
-
-  async setCarvedTopBackTexture(texture : GuitarBodyTexture){
-    await this.bodyTexturePivot.load();
-    const t = this.bodyTexturePivot.getItems().find(p=>p.type === Enums.GuitarBodyTextureType.CarvedTopBack);
-    if(t){
-      t.texture = ref(texture);
-      this._carvedTopBackTexture = texture;
-    }
-  }
-
-  async setForearmTummyCutTexture(texture : GuitarBodyTexture){
-    await this.bodyTexturePivot.load();
-    const t = this.bodyTexturePivot.getItems().find(p=>p.type === Enums.GuitarBodyTextureType.ForearmTummyCut);
-    if(t){
-      t.texture = ref(texture);
-      this._forearmTummyCutTexture = texture;
-    }
-  }
-
-  async setCarvedTopTummyCutTexture(texture : GuitarBodyTexture){
-    await this.bodyTexturePivot.load();
-    const t = this.bodyTexturePivot.getItems().find(p=>p.type === Enums.GuitarBodyTextureType.CarvedTopTummyCut);
-    if(t){
-      t.texture = ref(texture);
-      this._carvedTopTummyCutTexture = texture;
-    }
-  }
-
-  async loadTextures(){
-    await this.mask?.load();
-    await this.getCarvedTopTexture();
-    await this.getTummyCutTexture();
-    await this.getForearmCutTexture();
-    await this.getFlatTopBackTexture();
-    await this.getCarvedTopBackTexture();
-    await this.getForearmTummyCutTexture();
-    await this.getCarvedTopTummyCutTexture();
   }
 }

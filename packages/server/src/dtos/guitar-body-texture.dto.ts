@@ -1,40 +1,56 @@
 import { Expose } from "class-transformer";
 import { IsNotEmpty, IsNumber, IsOptional, Max, Min } from "class-validator";
-import { ExposeAll } from "./util.decorator";
+import { ExposeAll, OptionalOnUpdate } from "./util.decorator";
+import { KeyOf } from "../interfaces/class-key.interface";
+import { GuitarBodyTexture } from "../entities";
+import { EntityWithoutBase } from "../interfaces/entity-without-base.interface";
 
 @ExposeAll()
-export class GuitarBodyTextureDto { 
+export class GuitarBodyTextureDto implements KeyOf<EntityWithoutBase<GuitarBodyTexture>>{ 
   
   @IsOptional()
   @IsNumber()
   @Min(0)
   scale ?: number;
 
-  @IsOptional()
+  @OptionalOnUpdate()
   @IsNumber()
-  frontHoleMask ?: number;
+  @Min(0)
+  price ?: number;
 
   @IsOptional()
   @IsNumber()
-  mask ?: number;
+  frontHoleMask ?: number | null;
 
   @IsOptional()
   @IsNumber()
-  backMask ?: number;
+  mask ?: number | null;
 
   @IsOptional()
   @IsNumber()
-  frontShadowTexture ?: number;
+  backMask ?: number | null;
 
   @IsOptional()
   @IsNumber()
-  backShadowTexture ?: number;
+  frontShadowTexture ?: number | null;
 
   @IsOptional()
   @IsNumber()
-  frontSpecularTexture ?: number;
+  backShadowTexture ?: number | null;
 
   @IsOptional()
   @IsNumber()
-  backSpecularTexture ?: number;
+  frontSpecularTexture ?: number | null;
+
+  @IsOptional()
+  @IsNumber()
+  backSpecularTexture ?: number | null;
+
+  @IsOptional()
+  @IsNumber()
+  burstBack ?: number | null;
+
+  @IsOptional()
+  @IsNumber()
+  burstTop?: number | null;
 }

@@ -22,18 +22,13 @@ import { Switch } from './entities/switch.entity';
 import { GuitarBodyTexture } from './entities/guitar-body-texture.entity';
 import mikroOrmConfig from "./database/mikro-orm.config";
 import { guitarModelController, mediaController } from './controllers';
-import { BridgeDto } from './dtos/bridge.dto';
-import { JackDto } from './dtos/jack.dto';
-import { Pickup } from './entities';
-import { KnobDto } from './dtos/knob.dto';
-import { NutDto } from './dtos/nuts.dto';
-import { PickupDto } from './dtos/pickup.dto';
-import { SwitchDto } from './dtos/switch.dto';
-import { entityWithMediaRouterFactory } from './utils/entity-with-media-router.factory';
-import { HeadstockDto } from './dtos/headstock.dto';
-import { Class } from 'utility-types';
-import * as R from 'remeda';
+import { Pickup, Wood } from './entities';
 import { commonEntityRoutes } from './controllers/common-entity.controller';
+import * as IO from 'socket.io'
+import { initSocket } from './controllers/socket';
+import { Intents } from './entities/intents.entity';
+import { Client, Pool } from 'pg';
+import OpenAI from 'openai';
 require('dotenv').config({
   path : Constants.envPath
 });
@@ -52,6 +47,8 @@ type Repository  = {
   pickguards : EntityRepository<Pickguard>,
   switchs : EntityRepository<Switch>,
   pickups : EntityRepository<Pickup>, 
+  intents : EntityRepository<Intents>,
+  woods : EntityRepository<Wood>,
 };
 
 // Dependency Injection container
@@ -63,6 +60,8 @@ export const DI = {} as {
   em: EntityManager,
   server: http.Server,
   logger : winston.Logger,
+  io : IO.Server,
+  openAi : OpenAI,
 }
 
 export const app = express();
@@ -81,23 +80,28 @@ app.use((_, res, next)=>{
 })
 app.use(express.static('public'))
 
-export namespace App {
-  export async function main(){
-    await initDependency();
+export async function main(){
+  await initDependency();
+
+  app.use(express.json());
+  app.use(middlewares.createRequestContext);
   
-    app.use(express.json());
-    app.use(middlewares.createRequestContext);
-    
-    initRoutes();
-  
-    // app.use(middlewares.notFound);
-    app.use(middlewares.errorHandler);
-  
-    DI.server = app.listen(port, () => {
-      DI.logger.info(`Server is running on port ${port}`);
-    });
-  }
+  initRoutes();
+
+  // app.use(middlewares.notFound);
+  app.use(middlewares.errorHandler);
+
+  DI.server = app.listen(port, () => {
+    DI.logger.info(`Server is running on port ${port}`);
+  });
+  DI.io = new IO.Server(DI.server, {
+    cors : {
+      origin : process.env.NODE_ENV === 'production' ? process.env.FRONTEND_URL : '*',
+    }
+  });
+  initSocket();
 }
+
 
 function initRoutes(){
 
@@ -112,9 +116,11 @@ async function initDependency(){
   DI.orm = await MikroORM.init(mikroOrmConfig);
   DI.em = DI.orm.em;
 
+  DI.openAi = new OpenAI();
+
   initLogger();
 
-  initRepository();
+  DI.repository = initRepository(DI.em);
 }
 
 function initLogger(){
@@ -133,22 +139,27 @@ function initLogger(){
   }
 }
 
-function initRepository(){
-  DI.repository = {
-    guitarBodies : DI.orm.em.getRepository(GuitarBody),
-    guitarModels : DI.orm.em.getRepository(GuitarModel),
-    medias : DI.orm.em.getRepository(Media),
-    bridges : DI.orm.em.getRepository(Bridge),
-    headstocks : DI.orm.em.getRepository(Headstock),
-    jacks : DI.orm.em.getRepository(Jack),
-    knobs : DI.orm.em.getRepository(Knob),
-    nuts : DI.orm.em.getRepository(Nut),
-    pegs : DI.orm.em.getRepository(Peg),
-    pickguards : DI.orm.em.getRepository(Pickguard),
-    switchs : DI.orm.em.getRepository(Switch),
-    guitarBodyTextures : DI.orm.em.getRepository(GuitarBodyTexture),
-    pickups : DI.orm.em.getRepository(Pickup),
+export function initRepository(em : EntityManager){
+  return {
+    guitarBodies : em.getRepository(GuitarBody),
+    guitarModels : em.getRepository(GuitarModel),
+    medias : em.getRepository(Media),
+    bridges : em.getRepository(Bridge),
+    headstocks : em.getRepository(Headstock),
+    jacks : em.getRepository(Jack),
+    knobs : em.getRepository(Knob),
+    nuts : em.getRepository(Nut),
+    pegs : em.getRepository(Peg),
+    pickguards : em.getRepository(Pickguard),
+    switchs : em.getRepository(Switch),
+    guitarBodyTextures : em.getRepository(GuitarBodyTexture),
+    pickups : em.getRepository(Pickup),
+    intents : em.getRepository(Intents),
+    woods : em.getRepository(Wood),
   }
 }
 
-App.main();
+main().catch(err=>{
+  DI.logger.error(err);
+  process.exit(1);
+})

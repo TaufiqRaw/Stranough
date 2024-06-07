@@ -27,7 +27,7 @@ export class BaseEntityWithDescDto {
 export class BaseEntityWithThumbnail extends BaseEntityWithDescDto {
   @IsOptional()
   @IsNumber()
-  thumbnail?: number;
+  thumbnail?: number | null;
 }
 
 @ExposeAll()

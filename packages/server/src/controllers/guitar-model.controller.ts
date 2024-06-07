@@ -22,42 +22,20 @@ import { entityIndexMiddleware } from "../middlewares/entity-index.middleware";
 import { entityPostMiddleware } from "../middlewares/entity-post.middleware";
 import { entityGetMiddleware } from "../middlewares/entity-get.middleware";
 import { entityDeleteMiddleware } from "../middlewares/entity-delete.middleware";
-import {
-  bodyTexturesKey,
-  modelBodiesKey,
-  textureMediasKey,
-} from "../constants";
-import { GuitarBodyTextureType, GuitarBodyType } from "../enums";
 
-const modelSpawnPointKeys = Object.freeze([
-  "knobSpawnPoint",
-  "bridgeSpawnPoint",
-  "pickupSpawnPoint",
-  "switchSpawnPoint",
-  "topJackSpawnPoint",
-  "sideJackSpawnPoint",
-  "fingerboardSpawnPoint",
-] as const);
-
-// eg: boltOnBody.carvedTopTexture
-const bodyTextures = Object.freeze(
-  modelBodiesKey.reduce((acc, body) => {
-    bodyTexturesKey.forEach((texture) => {
-      acc.push(`${body}.${texture}`);
-    });
+function bodyMediaKeysToObject(req : {[k in typeof GuitarBody.mediaKeys[number]] ?: number | null}){
+  return GuitarBody.mediaKeys.reduce((acc, key)=>{
+    acc[key] = req[key];
     return acc;
-  }, [] as string[])
-);
+  }, {} as {[k in typeof GuitarBody.mediaKeys[number]] ?: number | null})
+}
 
-// eg: boltOnBody.carvedTopTexture.frontHoleMask
-const bodyTextureMedias = Object.freeze(
-  bodyTextures.reduce((acc, bodyTexture) => {
-    textureMediasKey.forEach((media) => {
-      acc.push(`${bodyTexture}.${media}`);
-    });
+function textureMediaKeysToObject(req : {[k in typeof GuitarBodyTexture.mediaKeys[number]] ?: number | null}){
+  return GuitarBodyTexture.mediaKeys.reduce((acc, key)=>{
+    acc[key] = req[key];
     return acc;
-  }, [] as string[])
-);
+  }, {} as {[k in typeof GuitarBodyTexture.mediaKeys[number]] ?: number | null})
+}
 
 // ---------------------------- ROUTER ------------------------------- //
 
@@ -88,9 +66,11 @@ router.post(
     const model = new GuitarModel({
       name: reqData.name!,
       description: reqData.description!,
-      ...R.pick(reqData, modelSpawnPointKeys),
+      ...R.pick(reqData, GuitarModel.spawnPointKeys),
       thumbnail: await findOneEntity(DI.repository.medias, reqData.thumbnail),
       allowSingleCoilPickup: reqData.allowSingleCoilPickup,
+      price: reqData.price!,
+      isElectric: reqData.isElectric,
     });
 
     /**
@@ -103,13 +83,12 @@ router.post(
      * ------------------------
      */
 
-    //TODO: delete the old item if request === null
-    for (let bodyKey of modelBodiesKey) {
+    for (let bodyKey of GuitarModel.bodyKeys) {
       const reqBody = reqData[bodyKey];
       if (!!reqBody) {
         // if the body data exists in the request, create it
         const body = await createAndAddBody(model, reqBody, bodyKey);
-        for (let textureKey of bodyTexturesKey) {
+        for (let textureKey of GuitarBody.textureKeys) {
           const reqBodyTexture = reqBody[textureKey] as GuitarBodyTextureDto;
           if (!!reqBodyTexture) {
             // if the texture data exists in the request, create it
@@ -142,11 +121,11 @@ router.delete(
   entityDeleteMiddleware(() => DI.repository.guitarModels, {
     itemCallback : async (item)=>{
       await item.loadBodies();
-      for(const bodyKey of modelBodiesKey){
+      for(const bodyKey of GuitarModel.bodyKeys){
         const body = item[bodyKey] as GuitarBody;
         if(!!body){
           await body.loadTextures();
-          for(const textureKey of bodyTexturesKey){
+          for(const textureKey of GuitarBody.textureKeys){
             await body[textureKey]?.loadMedias();
           }
         }
@@ -178,14 +157,10 @@ router.put(
      * ------------------------
      */
 
-    //TODO: delete the old item if request === null
 
     // update the model
-    if (!!reqData.name) {
-      model.name = reqData.name;
-    }
-    if (!!reqData.description) {
-      model.description = reqData.description;
+    if(reqData.thumbnail === null && model.thumbnail){
+      DI.em.remove(model.thumbnail);
     }
     if (!!reqData.thumbnail) {
       model.thumbnail = await findOneEntity(
@@ -193,30 +168,36 @@ router.put(
         reqData.thumbnail
       );
     }
+    const reqDataNonRelational = R.pipe(
+      reqData,
+      R.omit([...GuitarModel.bodyKeys, ...GuitarModel.mediaKeys])
+    );
 
-    if(!!reqData.allowSingleCoilPickup){
-      model.allowSingleCoilPickup = reqData.allowSingleCoilPickup;
-    }
+    Object.assign(model, reqDataNonRelational);
 
-    Object.assign(model, R.pick(reqData, modelSpawnPointKeys));
-
+    //TODO: delete the old item if request === null
     await model.deepLoadBodies();
 
-    for (let bodyKey of modelBodiesKey) {
+    for (let bodyKey of GuitarModel.bodyKeys) {
       const guitarBody = model[bodyKey] as GuitarBody;
       if (!!guitarBody) {
         // if the body exists in the model, update it
         const reqGuitarBody = reqData[bodyKey] as GuitarBodyDto;
         if (!!reqGuitarBody) {
           // if the body data exists in the request, update it
-          const medias = await findEachEntity(DI.repository.medias, {
-            mask: reqGuitarBody.mask,
-          });
+          const medias = await findEachEntity(DI.repository.medias, bodyMediaKeysToObject(reqGuitarBody));
+          // remove the old media if the new one is null
+          for(const media in bodyMediaKeysToObject(reqGuitarBody)){
+            if(bodyMediaKeysToObject(reqGuitarBody)[media as typeof GuitarBody.mediaKeys[number]] === null){
+              const rm = await model[bodyKey]?.[media as typeof GuitarBody.mediaKeys[number]]?.load();
+              rm && DI.em.remove(rm);
+            }
+          }
           Object.assign(guitarBody, {
-            mask: medias.mask,
-            ...R.omit(reqGuitarBody, [...bodyTexturesKey, 'mask'])
+            ...medias,
+            ...R.omit(reqGuitarBody, [...GuitarBody.textureKeys, ...GuitarBody.mediaKeys])
           });
-          for (let textureKey of bodyTexturesKey) {
+          for (let textureKey of GuitarBody.textureKeys) {
             const reqBodyTexture = reqGuitarBody[
               textureKey
             ] as GuitarBodyTextureDto;
@@ -227,19 +208,18 @@ router.put(
                 if (!!reqBodyTexture) {
                   const loadedReqBodyTextureMedia = await findEachEntity(
                     DI.repository.medias,
-                    {
-                      backMask: reqBodyTexture.backMask,
-                      backShadowTexture: reqBodyTexture.backShadowTexture,
-                      backSpecularTexture: reqBodyTexture.backSpecularTexture,
-                      frontHoleMask: reqBodyTexture.frontHoleMask,
-                      mask: reqBodyTexture.mask,
-                      frontShadowTexture: reqBodyTexture.frontShadowTexture,
-                      frontSpecularTexture: reqBodyTexture.frontSpecularTexture,
-                    }
+                    textureMediaKeysToObject(reqBodyTexture)
                   );
+                  // remove the old media if the new one is null
+                  for(const media in textureMediaKeysToObject(reqBodyTexture)){
+                    if(textureMediaKeysToObject(reqBodyTexture)[media as typeof GuitarBodyTexture.mediaKeys[number]] === null){
+                      const rm = await model[bodyKey]?.[textureKey]?.[media as typeof GuitarBodyTexture.mediaKeys[number]]?.load();
+                      rm && DI.em.remove(rm);
+                    }
+                  }
                   // if the texture data exists in the request, update it
                   Object.assign(guitarBody[textureKey] as GuitarBodyTexture, {
-                    scale: reqBodyTexture.scale,
+                    ...R.omit(reqBodyTexture, [...GuitarBodyTexture.mediaKeys]),
                     ...loadedReqBodyTextureMedia,
                   });
                 } else {
@@ -271,7 +251,7 @@ router.put(
         if (!!reqGuitarBody) {
           // if the body data exists in the request, create it
           const body = await createAndAddBody(model, reqGuitarBody, bodyKey);
-          for (let textureKey of bodyTexturesKey) {
+          for (let textureKey of GuitarBody.textureKeys) {
             const reqBodyTexture = reqGuitarBody[
               textureKey
             ] as GuitarBodyTextureDto;
@@ -299,7 +279,7 @@ router.put(
 async function createAndAddBody(
   model: GuitarModel,
   reqGuitarBody: GuitarBodyDto,
-  bodyKey: GuitarBodyType
+  bodyKey: typeof GuitarModel.bodyKeys[number]
 ) {
   await model.loadBodies();
   const bodySetKey = `set${bodyKey.replace(/^\w/, (c) => c.toUpperCase())}` as
@@ -307,12 +287,11 @@ async function createAndAddBody(
     | "setSetInBody"
     | "setNeckThroughBody";
   
-  const medias = await findEachEntity(DI.repository.medias, {
-    mask: reqGuitarBody.mask,
-  });
+  const medias = await findEachEntity(DI.repository.medias, bodyMediaKeysToObject(reqGuitarBody));
+
   const body = new GuitarBody({
-    mask : medias.mask,
-    ...R.omit(reqGuitarBody, ['mask', ...bodyTexturesKey]),
+    ...medias,
+    ...R.omit(reqGuitarBody, [...GuitarBody.mediaKeys, ...GuitarBody.textureKeys]),
   });
   await model[bodySetKey](body);
   DI.em.persist(body);
@@ -322,18 +301,12 @@ async function createAndAddBody(
 async function createAndAddBodyTexture(
   body: GuitarBody,
   reqBodyTexture: GuitarBodyTextureDto,
-  textureKey: GuitarBodyTextureType
+  textureKey: typeof GuitarBody.textureKeys[number]
 ) {
   await body.loadTextures();
-  const loadedReqBodyTextureMedia = await findEachEntity(DI.repository.medias, {
-    backMask: reqBodyTexture.backMask,
-    backShadowTexture: reqBodyTexture.backShadowTexture,
-    backSpecularTexture: reqBodyTexture.backSpecularTexture,
-    frontHoleMask: reqBodyTexture.frontHoleMask,
-    mask: reqBodyTexture.mask,
-    frontShadowTexture: reqBodyTexture.frontShadowTexture,
-    frontSpecularTexture: reqBodyTexture.frontSpecularTexture,
-  });
+  const loadedReqBodyTextureMedia = await findEachEntity(DI.repository.medias, 
+    textureMediaKeysToObject(reqBodyTexture)
+  )
   const { scale, ..._ } = reqBodyTexture;
   const newTexture = new GuitarBodyTexture({
     ...loadedReqBodyTextureMedia,
@@ -341,14 +314,7 @@ async function createAndAddBodyTexture(
   });
   const textureSetKey = `set${textureKey.replace(/^\w/, (c) =>
     c.toUpperCase()
-  )}` as
-    | "setCarvedTopTexture"
-    | "setTummyCutTexture"
-    | "setForearmCutTexture"
-    | "setFlatTopBackTexture"
-    | "setCarvedTopBackTexture"
-    | "setForearmTummyCutTexture"
-    | "setCarvedTopTummyCutTexture";
+  )}` as `set${Capitalize<typeof GuitarBody.textureKeys[number]>}`;
   await body[textureSetKey](newTexture);
   DI.em.persist(newTexture);
   return newTexture;
