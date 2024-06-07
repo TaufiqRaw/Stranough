@@ -2,10 +2,10 @@ import { For, Show, batch, createMemo, createSignal } from "solid-js";
 import { ServerEntities } from "stranough-server";
 import { useEditorPageContext } from "./editor-page";
 import { createQuery } from "@tanstack/solid-query";
-import { guitarModelRepository } from "~/pages/model-editor/guitar-model.repository";
+import { guitarModelRepository } from "~/pages/admin/model-editor/guitar-model.repository";
 import { ToggleableButton } from "./toggleable-button";
 import { Button } from "./button";
-import { guitarBodyTextureKey, guitarModelBodyKey } from "~/pages/model-editor/utils/constant";
+import { guitarBodyTextureKey, guitarModelBodyKey } from "~/pages/admin/model-editor/utils/constant";
 import { EditorGuiGroup } from "./editor-gui";
 import { serverImgUrl } from "../functions/server-img-url.util";
 

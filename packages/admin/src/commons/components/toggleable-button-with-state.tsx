@@ -27,7 +27,7 @@ export default function ToggleableButtonWithState(props: {
         <div class="relative w-3">
           <div class={"w-3 h-3 rounded-full absolute top-1/2 transform -translate-y-1/2  " + (props.isActive ? 'bg-blue-500' : ' border border-gray-500') + " " + props.indicatorClass} />
         </div>
-        <span class="pointer-events-none">{props.children}</span>
+        {props.children}
       </ToggleableButton>
       <Show when={props.isActive && !!props.onView}>
         <button

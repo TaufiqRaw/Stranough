@@ -40,7 +40,7 @@ export function EntityIndexFactory<T extends ServerEntities.BaseEntity & {
     }
 
     return <div class="p-3 h-full bg-slate-100">
-      <Button href={`/${props.entityName}/new`}>
+      <Button href={`new`}>
         Create New
       </Button>
       <Suspense>  
@@ -49,7 +49,7 @@ export function EntityIndexFactory<T extends ServerEntities.BaseEntity & {
             <For each={items.data![0]}>
               {item => <div class="bg-white p-2 rounded-md group relative ">
                 <div class="absolute right-2 p-2 bg-white rounded-md border border-gray-500 hidden group-hover:flex shadow-md gap-2">
-                  <Button href={`/${props.entityName}/${item.id}`}>
+                  <Button href={`${item.id}`}>
                     <i class="bi bi-pen"/>
                   </Button>
                   <Button class="!bg-red-500" onClick={()=>deleteItem(item.id)}>

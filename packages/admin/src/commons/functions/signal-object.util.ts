@@ -1,4 +1,4 @@
-import { Signal, createSignal } from "solid-js";
+import { Accessor, Signal, createMemo, createSignal } from "solid-js";
 import { SignalObject, SignalObjectArray } from "../interfaces/signal-object";
 
 export function createSignalObject<T>(): SignalObject<T | undefined>;
@@ -14,20 +14,24 @@ export function signalObjectfromSignal<T>(signal : Signal<T>) : SignalObject<T>{
   }
 }
 
-export function createSignalObjectArray<T>(newItemSignalFactory : ()=>SignalObject<T>): SignalObjectArray<T> {
-  const [signal, setSignal] = createSignal<SignalObject<T>[]>([]);
+export function createSignalObjectArray<T, U = T>(val : U[] | undefined, itemFactory ?: (item : U)=>T , defaultValue ?: U): SignalObjectArray<T, U> {
+  const [signal, setSignal] = createSignal<SignalObject<T>[]>(
+    val ? val.map(v=>createSignalObject(itemFactory? itemFactory(v) : v as unknown as T)) : []
+  );
   const selectedIndex = createSignalObject<number>();
 
   return {
-    asArray : signal,
+    state : signal,
+    setState : setSignal,
     get : (i)=>{
       return signal()[i];
     },
-    add : ()=>setSignal([...signal(), newItemSignalFactory()]),
+    add : (v ?: U)=>{setSignal([...signal(), createSignalObject( v ? itemFactory ? itemFactory(v) : v as T : itemFactory ? itemFactory(defaultValue as U): defaultValue as T)])},
     remove : (index : number)=>{
       setSignal(signal().filter((_, i)=>i!==index));
       selectedIndex.set(undefined);
     },
+    getSelectedSignal : ()=>selectedIndex.get() !== undefined ? signal()[selectedIndex.get()!] : undefined,
     selectedIndex : selectedIndex,
   }
 }

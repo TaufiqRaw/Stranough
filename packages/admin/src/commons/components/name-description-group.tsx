@@ -1,3 +1,4 @@
+import { JSX } from "solid-js";
 import { EditorGuiGroup } from "~/commons/components/editor-gui";
 import { Input } from "~/commons/components/input";
 import { Textarea } from "~/commons/components/textarea";
@@ -11,6 +12,8 @@ export function NameDescriptionGroup(
       name ?: SignalObject<string>,
       description ?: SignalObject<string>,
     }
+    children ?: JSX.Element,
+    price ?: SignalObject<number>,
   }
 ){
   return <EditorGuiGroup>
@@ -30,5 +33,14 @@ export function NameDescriptionGroup(
       value={props.description?.get() ?? props.placeholder?.description?.get()}
       oninput={(e) => props.description?.set(e.target.value)}
     />
+    <span class="text-sm -mt-1">Price</span>
+    <Input
+        class="!bg-gray-800 !text-white-950"
+        value={props.price?.get()}
+        onChange={(e) => props.price?.set(parseInt(e.target.value ?? '0'))}
+        type="number"
+        min={0}
+      />
+    {props.children}
   </EditorGuiGroup>
 }

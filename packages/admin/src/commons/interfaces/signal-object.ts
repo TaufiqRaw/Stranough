@@ -5,10 +5,14 @@ export interface SignalObject<T>{
   set : Setter<T>
 }
 
-export interface SignalObjectArray<T>{
-  asArray : ()=>SignalObject<T>[],
+export type setterParameter<T> = ((z : T | undefined)=>undefined | (T | undefined)) | undefined
+
+export interface SignalObjectArray<T, U>{
+  state : ()=>SignalObject<T>[],
+  setState : Setter<SignalObject<T>[]>,
   get :  (i:number)=>SignalObject<T>,
-  add : () => void,
+  add : (v ?: U) => void,
   remove : (index : number) => void,
+  getSelectedSignal : ()=>(SignalObject<T> | undefined),
   selectedIndex : SignalObject<number | undefined>,
 }

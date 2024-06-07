@@ -1,4 +1,6 @@
+import { Owner, runWithOwner } from "solid-js";
 import { axios } from "../axios-instance";
+import { ServerEntities } from "stranough-server";
 
 export function createCommonRepository<T extends {
   id : {
@@ -10,8 +12,15 @@ export function createCommonRepository<T extends {
   signalToDto : (b : T)=>ServerT,
 ){
   return {
-    async get (id : number, options ?: {onSave ?: (b : T)=>()=>Promise<void>}){
+    async index(page : number){
+      const {data} = await axios.get<[ServerEntities.Headstock[], number]>(`/${entityName}`, {params: {page}});
+      return data[0];
+    },
+    async get (id : number, options ?: {onSave ?: (b : T)=>()=>Promise<void>, owner ?: Owner}){
       const {data} = await axios.get(`/${entityName}/${id}`);
+      if(options?.owner){
+        return runWithOwner(options.owner, ()=>createEntity(data, options));
+      }
       return createEntity(data, options);
     },
   

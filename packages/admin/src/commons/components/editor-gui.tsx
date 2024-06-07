@@ -1,14 +1,56 @@
-import { Accessor, JSX, Setter, Show, createContext, createSignal, useContext } from "solid-js";
+import { Accessor, JSX, Setter, Show, createContext, createSignal, onCleanup, useContext } from "solid-js";
 import { ToggleableButton } from "./toggleable-button";
 import { Portal } from "solid-js/web";
 import ToggleableButtonWithState from "./toggleable-button-with-state";
+import * as R from "remeda";
+
+type Key = 'ArrowDown' | 'ArrowLeft' | 'ArrowRight' | 'ArrowUp' | 'Escape' | 'x';
+
+export function keyboardMove(key : Key, t : number, callback : (speed : {x : number, y :number})=>void){
+  const initMove = 5;
+    const speed = 0.5;
+    const acceleration = 0.01 * (t);
+    const directionX = key === "ArrowRight" ? 1 : key === "ArrowLeft" ? -1 : 0;
+    const directionY = key === "ArrowDown" ? 1 : key === "ArrowUp" ? -1 : 0;
+
+  callback({x : directionX *  (initMove +  speed * acceleration), y : directionY * (initMove +  speed * acceleration)});
+}
+
 
 const EditorGuiContext = createContext<{
   subMenuContainer: Accessor<HTMLDivElement | undefined>;
 }>();
 
-export function EditorGui(props: { children: JSX.Element }) {
+export function EditorGui(props: { 
+  children: JSX.Element,
+  onKeydown?: (key: Key, t :number) => void;
+}) {
   const [sub, setSub] = createSignal<HTMLDivElement | undefined>(undefined);
+
+  if(props.onKeydown){
+    let timePressed : number;
+    let isHold = false;
+    const listener = (e : KeyboardEvent)=>{
+      if(isHold){
+        !timePressed && (timePressed = e.timeStamp);
+        props.onKeydown!(e.key as Key, e.timeStamp - timePressed);
+      }else{
+        isHold = true;
+        props.onKeydown!(e.key as Key, 0);
+      }
+    };
+    const reset = ()=>{
+      timePressed = 0;
+      isHold = false;
+    }
+    window.addEventListener("keydown", listener);
+    window.addEventListener("keyup", reset);
+    onCleanup(() => {
+      window.removeEventListener("keydown", listener);
+      window.removeEventListener("keyup", reset);
+    });
+  }
+
   return <div class="relative h-screen flex">
       <div class=" absolute left-0 transform -translate-x-[15.5rem] top-[1vh]" ref={setSub}>
 

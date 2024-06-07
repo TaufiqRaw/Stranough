@@ -11,7 +11,7 @@ export function createPixiTextureSignal(t : Accessor<Tex>, set : Setter<Tex>): I
     get : t,
     set : (_t : ImageType | undefined)=>{
       if(t()){
-        Assets.unload(serverImgUrl(t()?.filename));
+        Assets.unload(serverImgUrl(t()?.filename) ?? "");
       }
       set(_t);
     }

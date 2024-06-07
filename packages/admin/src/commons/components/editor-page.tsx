@@ -18,45 +18,29 @@ import {
   GuitarBodyTextureKeyType,
   GuitarModel,
   GuitarModelBodyKeyType,
-} from "~/pages/model-editor/utils/types";
+} from "~/pages/admin/model-editor/utils/types";
 import { createSignalObject } from "../functions/signal-object.util";
-import { guitarModelRepository } from "~/pages/model-editor/guitar-model.repository";
-import { guitarModelToPresenter } from "~/pages/model-editor/utils/functions/guitar-model-to-presenter";
-import { EditorPageContextType } from "../interfaces/editor-page-context-type";
+import { guitarModelRepository } from "~/pages/admin/model-editor/guitar-model.repository";
+import { guitarModelToPresenter } from "~/pages/admin/model-editor/utils/functions/guitar-model-to-presenter";
+import { EditorPageContextType } from "../interfaces/common-context-type";
 import { ToggleableButton } from "./toggleable-button";
+import { headstockRepository } from "~/pages/admin/headstock-editor/headstock.repository";
 
 const EditorPageContext = createContext<
-  EditorPageContextType<{
-    target: () => Texture;
-    defaultWood: () => Texture;
-  }>
+  EditorPageContextType
 >();
 
 export function EditorPage(props: {
   presenter: () => JSX.Element;
   editorGui: () => JSX.Element;
 }) {
-  const [appContainer, setAppContainer] = createSignal<HTMLDivElement | null>(
-    null
-  );
-  const [app, setApp] = createSignal<pxApplication | null>(null);
-  onMount(() => {
-    createResizeObserver(appContainer, ({ width, height }, el) => {
-      app()?.renderer.resize(width, height);
-      if (!app()) return;
-      app()!.canvas.style.width = width + "px";
-      app()!.canvas.style.height = height + "px";
-    });
-  });
-
-  const [id, setId] = createSignal<number>();
-
   const [selectedTexture, setSelectedTexture] =
-    createSignal<GuitarBodyTextureKeyType>();
+  createSignal<GuitarBodyTextureKeyType>();
   const [selectedBody, setSelectedBody] =
-    createSignal<GuitarModelBodyKeyType>();
-
-  const [selectedModel] = createResource(id, async (i) => {
+  createSignal<GuitarModelBodyKeyType>();
+  
+  const [modelId, setModelId] = createSignal<number>();
+  const [selectedModel] = createResource(modelId, async (i) => {
     return await guitarModelRepository.get(i, {
       owner: getOwner()!,
       selectedBody: selectedBody(),
@@ -64,64 +48,43 @@ export function EditorPage(props: {
     });
   });
 
-  const isFront = createSignalObject<boolean>(true);
+  const [headstockId, setHeadstockId] = createSignal<number>();
+  const [selectedHeadstock] = createResource(headstockId, async (i) => {
+    return await headstockRepository.get(i, {
+      owner : getOwner()!
+    });
+  })
 
   const isShowModelPreview = createSignalObject<boolean>(false);
-
-  const { selectedTexture: textures, spawnpoints } =
-    guitarModelToPresenter(selectedModel);
+  const isShowHeadstockPreview = createSignalObject<boolean>(false);
 
   return (
     <div class="relative flex">
       <EditorPageContext.Provider
         value={{
           modelPreview: {
-            id,
-            setId,
+            id: modelId,
+            setId: setModelId,
             selectedModel,
-            textures,
-            spawnpoints,
             selectedTexture,
             selectedBody,
             setSelectedTexture,
             setSelectedBody,
             isShowModelPreview,
           },
-          textures: {
-            target: () => Texture.from("/assets/target.png"),
-            defaultWood: () => Texture.from("/assets/alder.jpg"),
+          headstockPreview : {
+            id: headstockId,
+            setId: setHeadstockId,
+            selectedHeadstock,
+            isShowHeadstockPreview,
           },
-          isFront,
         }}
       >
         <Suspense fallback={<div>Loading....</div>}>
-          <div class="flex-grow relative" ref={setAppContainer}>
-            <ToggleableButton
-              class="absolute left-12 top-2 w-20 h-10 z-[1] bg-blue-300 text-white !border-blue-500"
-              activeClass="!bg-blue-500"
-              isActive={isFront.get()}
-              onClick={() => isFront.set(!isFront.get())}
-            >
-              Front
-            </ToggleableButton>
-            <div class="absolute">
-              <Show when={appContainer()}>
-                <Application
-                  antialias
-                  uses={setApp}
-                  resolution={1.5}
-                  backgroundColor={new Color()}
-                >
-                  <Viewport>
-                    <Assets
-                      load={[["/assets/alder.jpg", "/assets/target.png"]]}
-                    >
-                      {props.presenter()}
-                    </Assets>
-                  </Viewport>
-                </Application>
-              </Show>
-            </div>
+          <div class="flex-grow relative">
+            <Viewport>
+              {props.presenter()}
+            </Viewport>
           </div>
         </Suspense>
         {props.editorGui()}

@@ -9,6 +9,7 @@
   "dependencies": {
     "@pixi/interaction": "^6.5.10",
     "@solid-primitives/resize-observer": "^2.0.25",
+    "@solid-primitives/websocket": "^1.2.2",
     "@solidjs/router": "^0.13.2",
     "@solidjs/start": "^1.0.0-rc.0",
     "@tanstack/solid-query": "^5.34.0",
@@ -22,6 +23,7 @@
     "pixi.js": "^8.1.0",
     "postcss": "^8.4.26",
     "remeda": "^1.61.0",
+    "socket.io-client": "^4.7.5",
     "solid-js": "^1.8.16",
     "solid-pixi": "*",
     "stranough-server": "*",

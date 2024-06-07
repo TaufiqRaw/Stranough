@@ -4,5 +4,5 @@ export interface Position {
 }
 
 export interface PositionWithRotation extends Position {
-  rotation : number
+  rotation ?: number
 }
