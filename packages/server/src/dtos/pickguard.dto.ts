@@ -14,16 +14,6 @@ export class PickguardDto extends BaseEntityWithDescDto implements KeyOf<EntityW
   model?: number;
 
   @OptionalOnUpdate()
-  @ValidateNested()
-  @Type(()=>PositionDto)
-  pivotPosition?: PositionDto;
-
-  @OptionalOnUpdate()
-  @IsNumber()
-  @Min(0)
-  scale?: number;
-
-  @OptionalOnUpdate()
   @IsNumber()
   texture?: number;
 }

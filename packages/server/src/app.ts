@@ -7,7 +7,7 @@ import { EntityManager, EntityRepository, MikroORM, RequestContext } from '@mikr
 import morgan from 'morgan';
 import * as middlewares from './middlewares';
 import { GuitarBody } from './entities/guitar-body.entity';
-import { GuitarModel } from './entities/guitar-model.entity';
+import { ElectricGuitarModel } from './entities/electric-guitar-model.entity';
 import { Media } from './entities/media.entity';
 import { Bridge } from './entities/bridge.entity';
 import winston from 'winston';
@@ -19,9 +19,9 @@ import { Nut } from './entities/nut.entity';
 import { Peg } from './entities/peg.entity';
 import { Pickguard } from './entities/pickguard.entity';
 import { Switch } from './entities/switch.entity';
-import { GuitarBodyTexture } from './entities/guitar-body-texture.entity';
+import { GuitarBodyContour } from './entities/guitar-body-contour.entity';
 import mikroOrmConfig from "./database/mikro-orm.config";
-import { guitarModelController, mediaController } from './controllers';
+import { electricGuitarModelController, mediaController } from './controllers';
 import { Pickup, Wood } from './entities';
 import { commonEntityRoutes } from './controllers/common-entity.controller';
 import * as IO from 'socket.io'
@@ -29,14 +29,16 @@ import { initSocket } from './controllers/socket';
 import { Intents } from './entities/intents.entity';
 import { Client, Pool } from 'pg';
 import OpenAI from 'openai';
+import { AcousticGuitarModel } from './entities/acoustic-guitar-model.entity';
 require('dotenv').config({
   path : Constants.envPath
 });
 
 type Repository  = {
   guitarBodies : EntityRepository<GuitarBody>,
-  guitarBodyTextures : EntityRepository<GuitarBodyTexture>,
-  guitarModels : EntityRepository<GuitarModel>,
+  guitarBodyContours : EntityRepository<GuitarBodyContour>,
+  electricModels : EntityRepository<ElectricGuitarModel>,
+  acousticModels : EntityRepository<AcousticGuitarModel>,
   medias : EntityRepository<Media>, 
   bridges : EntityRepository<Bridge>,
   headstocks : EntityRepository<Headstock>,
@@ -105,7 +107,7 @@ export async function main(){
 
 function initRoutes(){
 
-  app.use('/guitar-models', guitarModelController);
+  app.use('/electric-guitars', electricGuitarModelController);
   app.use('/medias', mediaController);
   commonEntityRoutes().forEach(([path, router])=>{
     app.use(`/${path}`, router);
@@ -139,10 +141,12 @@ function initLogger(){
   }
 }
 
-export function initRepository(em : EntityManager){
+export function initRepository(em : EntityManager) : Repository{
   return {
     guitarBodies : em.getRepository(GuitarBody),
-    guitarModels : em.getRepository(GuitarModel),
+    electricModels : em.getRepository(ElectricGuitarModel),
+    acousticModels : em.getRepository(AcousticGuitarModel),
+    guitarBodyContours : em.getRepository(GuitarBodyContour),
     medias : em.getRepository(Media),
     bridges : em.getRepository(Bridge),
     headstocks : em.getRepository(Headstock),
@@ -152,7 +156,6 @@ export function initRepository(em : EntityManager){
     pegs : em.getRepository(Peg),
     pickguards : em.getRepository(Pickguard),
     switchs : em.getRepository(Switch),
-    guitarBodyTextures : em.getRepository(GuitarBodyTexture),
     pickups : em.getRepository(Pickup),
     intents : em.getRepository(Intents),
     woods : em.getRepository(Wood),

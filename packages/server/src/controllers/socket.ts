@@ -1,10 +1,10 @@
 import { DI, initRepository } from "../app";
 import Color from "cli-color";
 import { IntentClassifierService } from "../services/intent.classifier.service";
-import { ChatbotService } from "../services/chatbot.service";
 import { ChatbotError, DontUnderstandError, invalidInputError } from "../utils/classes/chatbot.error.class";
 import { EntityManager, MikroORM } from "@mikro-orm/postgresql";
-import { SelectResponse, StepResponse } from "../interfaces/chatbot.interface";
+import { ChatbotService } from "../services/chatbot.service";
+import { GuitarBuilder } from "stranough-common";
 
 const chatbotService = new ChatbotService();
 
@@ -23,54 +23,34 @@ export function initSocket() {
     DI.logger.info(`${Color.green("[Socket]")} a user with id : ${socket.id} has ${Color.green("connected")}`);
 
     socket.emit("get-id", chatbotService.create(socket.id));
-    socket.emit("message", await chatbotService.start(socket.id));
-
-    if(process.env.NODE_ENV === "development"){
-      socket.on("debug", ()=>{
-        console.log(chatbotService.debug?.(socket.id));
-      })
+    for (const {i, msg} of chatbotService.start(socket.id).map((msg, i) => ({msg, i}))){
+      setTimeout(()=>{
+        socket.emit("message", msg);
+      }, i * 200)
     }
 
-    socket.on("message", async (message : string, ack : (response : StepResponse | string) => void)=>{
-      const intent = await IntentClassifierService.classify(message);
+    socket.on("message", async (message : string, ack : (response : any) => void)=>{
       try{
-        if(!intent) throw new DontUnderstandError();
-        const response = await chatbotService.process(socket.id, intent.intent, message, intent.embedding);
-        ack(response);
-      }catch(err){
-        console.log(err);
-        if(err instanceof ChatbotError){
-          socket.emit("message", err.message);
-          chatbotService.addToAssistantChat(socket.id, err.message);
-          return;
+        ack(await chatbotService.ask(socket.id, message));
+      }catch(e){
+        if(e instanceof ChatbotError){
+          ack(e.message);
         }else{
-          socket.emit("message", "Maaf, terjadi kesalahan pada sistem chatbot");
-          chatbotService.addToAssistantChat(socket.id, "Maaf, terjadi kesalahan pada sistem chatbot");
-          return;
+          ack("Terjadi kesalahan pada server, silahkan refresh halaman dan coba lagi.");
         }
       }
     });
 
-    socket.on("select-component", async (selected : number, ack : (res :SelectResponse)=>void)=>{
-      try{
-        if(typeof selected !== "number") throw new invalidInputError();
-        ack(await chatbotService.select(socket.id, selected));
-      }catch(err){
-        console.log(err);
-        if(err instanceof ChatbotError){
-          socket.emit("message", err.message);
-          chatbotService.addToAssistantChat(socket.id, err.message);
-          return;
-        }else{
-          socket.emit("message", "Maaf, terjadi kesalahan pada sistem chatbot");
-          chatbotService.addToAssistantChat(socket.id, "Maaf, terjadi kesalahan pada sistem chatbot");
-          return;
-        }
-      }
+    socket.on("select-component", async (selected : {
+      component : keyof GuitarBuilder.SelectedItem,
+      value : any
+    }, ack : (res :any)=>void)=>{
+      const response = chatbotService.selectComponent(socket.id, selected);
+      ack({message : response});
     })
     
     socket.on("disconnect", () => {
-      chatbotService.delete(socket.id);
+      // chatbotService.delete(socket.id);
       DI.logger.info(`${Color.green("[Socket]")} a user with id : ${socket.id} has ${Color.red("disconnected")}`);
     });
 

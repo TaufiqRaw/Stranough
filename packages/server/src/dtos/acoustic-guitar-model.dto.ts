@@ -17,10 +17,11 @@ import { PositionDto, PositionWithRotationDto } from "./position.dto";
 import { PickupSpawnPointDto } from "./pickup-spawn-point.dto";
 import { ExposeAll, OptionalOnUpdate } from "./util.decorator";
 import { KeyOf } from "../interfaces/class-key.interface";
-import { GuitarModel } from "../entities";
+import { AcousticGuitarModel } from "../entities/acoustic-guitar-model.entity";
+import { EntityWithoutBase } from "../interfaces/entity-without-base.interface";
 
 @ExposeAll()
-export class GuitarModelDto implements KeyOf<GuitarModel> {
+export class AcousticGuitarModelDto implements KeyOf<EntityWithoutBase<AcousticGuitarModel>> {
   @OptionalOnUpdate()
   @IsString()
   name?: string;
@@ -33,24 +34,26 @@ export class GuitarModelDto implements KeyOf<GuitarModel> {
   @IsNumber()
   thumbnail?: number;
 
-  @IsOptional()
-  @IsBoolean()
-  allowSingleCoilPickup?: boolean;
-
-  @OptionalOnUpdate()
-  @IsBoolean()
-  isElectric?: boolean;
-
   @OptionalOnUpdate()
   @IsNumber()
   @Min(0)
   price ?: number;
+
+  @IsOptional()
+  @IsNumber()
+  maskScale ?: number;
 
   @IsNotEmpty()
   @IsObject()
   @ValidateNested()
   @Type(() => PositionDto)
   fingerboardSpawnPoint: PositionDto;
+
+  @IsOptional()
+  @IsObject()
+  @ValidateNested()
+  @Type(() => PositionDto)
+  fingerboardBackEndSpawnPoint?: PositionDto;
 
   @IsNotEmpty()
   @IsObject()
@@ -61,49 +64,38 @@ export class GuitarModelDto implements KeyOf<GuitarModel> {
   @IsOptional()
   @IsObject()
   @ValidateNested()
-  @Type(() => PickupSpawnPointDto)
-  pickupSpawnPoint?: PickupSpawnPointDto;
-
-  @IsOptional()
-  @IsArray()
-  @ValidateNested({ each: true })
-  @ArrayMinSize(2)
-  @Type(() => PositionDto)
-  knobSpawnPoint?: PositionDto[];
-
-  @IsOptional()
-  @IsObject()
-  @ValidateNested()
   @Type(() => PositionWithRotationDto)
-  switchSpawnPoint?: PositionWithRotationDto;
+  jackSpawnPoint?: PositionWithRotationDto;
 
   @IsOptional()
-  @IsObject()
-  @ValidateNested()
-  @Type(() => PositionWithRotationDto)
-  topJackSpawnPoint?: PositionWithRotationDto;
+  @IsNumber()
+  florentineCutawayBurst?: number | null;
 
   @IsOptional()
-  @IsObject()
-  @ValidateNested()
-  @Type(() => PositionWithRotationDto)
-  sideJackSpawnPoint?: PositionWithRotationDto;
+  @IsNumber()
+  florentineCutawayMask?: number | null;
 
   @IsOptional()
-  @ValidateNested()
-  @IsObject()
-  @Type(() => GuitarBodyDto)
-  boltOnBody?: GuitarBodyDto | null;
+  @IsNumber()
+  noneCutawayBurst?: number | null;
 
   @IsOptional()
-  @ValidateNested()
-  @IsObject()
-  @Type(() => GuitarBodyDto)
-  neckThroughBody?: GuitarBodyDto | null;
+  @IsNumber()
+  noneCutawayMask?: number | null;
 
   @IsOptional()
-  @ValidateNested()
-  @IsObject()
-  @Type(() => GuitarBodyDto)
-  setInBody?: GuitarBodyDto | null;
+  @IsNumber()
+  softCutawayBurst?: number | null;
+
+  @IsOptional()
+  @IsNumber()
+  softCutawayMask?: number | null;
+
+  @IsOptional()
+  @IsNumber()
+  venetianCutawayBurst?: number | null;
+
+  @IsOptional()
+  @IsNumber()
+  venetianCutawayMask?: number | null;
 }

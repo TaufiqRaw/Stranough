@@ -20,6 +20,11 @@ router.get("/", async (req, res) => {
   );
 });
 
+router.post(`/thumbnails`,multerUpload , asyncMiddleware(Service.createGuitarTextureHandler({
+  maxWidth : 200,
+  maxHeight : 200
+})));
+
 // Create a route for each guitar part
 Object.values(Enums.GuitarPart).forEach(part => {
   router.post(`/${part}`,multerUpload , asyncMiddleware(Service.createGuitarTextureHandler(Constants.maxImageResolution[part])));

@@ -1,8 +1,8 @@
 import OpenAI from "openai";
 import * as dotenv from "dotenv";
 import { envPath } from "../constants";
-import { UserIntent } from "../interfaces/chatbot.interface";
 import { pgPool } from "../utils/pg-pool";
+import { UserIntent } from "../interfaces/chatbot.type";
 
 dotenv.config({
   path : envPath

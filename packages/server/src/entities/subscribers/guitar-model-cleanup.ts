@@ -1,9 +1,9 @@
 import { EntityName, EventArgs, EventSubscriber } from "@mikro-orm/core";
-import { GuitarModel } from "..";
+import { ElectricGuitarModel } from "..";
 
-export class GuitarModelCleanup implements EventSubscriber<GuitarModel>{
-  getSubscribedEntities(): EntityName<GuitarModel>[] {
-    return [GuitarModel];
+export class GuitarModelCleanup implements EventSubscriber<ElectricGuitarModel>{
+  getSubscribedEntities(): EntityName<ElectricGuitarModel>[] {
+    return [ElectricGuitarModel];
   }
 
   // async beforeDelete(evt : EventArgs<GuitarModel>){

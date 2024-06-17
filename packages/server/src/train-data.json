@@ -12,7 +12,11 @@
       "jelaskan semua komponen yang telah saya pilih",
       "apakah komponen ini cocok untuk saya?",
       "apakah komponen yang telah saya pilih sudah cukup?",
-      "lebih bagus komponen ini atau itu?"
+      "lebih bagus komponen ini atau itu?",
+      "halo",
+      "siapa kamu?",
+      "apa kabar?",
+      "saya ingin bertanya"
     ],
     "askRecommendation" : [
       "pilihkan komponen yang bagus",
@@ -22,7 +26,8 @@
       "saya butuh komponen yang bagus",
       "carikan yang sering digunakan oleh musisi blues",
       "rekomendasikan saya komponen yang sering digunakan oleh musisi jazz",
-      "pilih komponen yang sering digunakan oleh musisi rock"
+      "pilih komponen yang sering digunakan oleh musisi rock",
+      "saya ingin membuat gitar yang cocok untuk event outdoor, komponen apa yang harus saya pilih?"
     ]
   }
 }

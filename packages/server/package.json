@@ -14,7 +14,9 @@
     "train": "ts-node src/train.ts"
   },
   "nodemonConfig": {
-    "ignore": ["temp/*"]
+    "ignore": [
+      "temp/*"
+    ]
   },
   "keywords": [],
   "author": "TaufiqRaw",
@@ -52,7 +54,8 @@
     "sharp": "^0.33.3",
     "socket.io": "^4.7.5",
     "uuid": "^9.0.1",
-    "winston": "^3.13.0"
+    "winston": "^3.13.0",
+    "stranough-common": "*"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",

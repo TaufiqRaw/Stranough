@@ -8,24 +8,29 @@ import {
   OneToMany,
   Property,
   ref,
+  Ref,
 } from "@mikro-orm/core";
 import { GuitarBody } from "./guitar-body.entity";
 import { EntityWithoutBase } from "../interfaces/entity-without-base.interface";
 import { classAssign } from "../utils/class-assign.util";
 import { Pickguard } from "./pickguard.entity";
 import { Media } from "./media.entity";
-import { GuitarModelBodyPivot } from "./guitar-model-body.pivot.entity";
+import { ElectricModelBodyPivot } from "./electric-model-body.pivot.entity";
 import {
   Position,
   PositionWithRotation,
 } from "../interfaces/position.interface";
 import { BaseEntityWithDesc } from "./base-with-desc.entity";
 import { Mutable } from "utility-types";
+import { mediaFKOption } from "../constants";
+import { GuitarModel as cGuitarModel, GuitarBody as cGuitarBody } from "stranough-common";
 
 export type GuitarModelProps = Omit<
-  EntityWithoutBase<GuitarModel>,
-  "pickguards" | "headstocks" | (typeof GuitarModel.bodyKeys)[number] | 'modelBodyPivot'
->;
+  EntityWithoutBase<ElectricGuitarModel>,
+  "pickguards" | "headstocks" | (typeof cGuitarModel.bodyKeys)[number] | 'modelBodyPivot' | 'thumbnail'
+> & {
+  thumbnail?: Media;
+};
 
 /* invariants : 
     bodyPivot : 
@@ -35,44 +40,28 @@ export type GuitarModelProps = Omit<
     loadBodies :  will not load the body if it is already loaded or already set (by the setter)
 */
 @Entity()
-@Index({ name: 'guitar_model_hnsw_l2_idx', expression: 'CREATE INDEX "guitar_model_hnsw_l2_idx" ON "guitar_model" USING hnsw (embedding vector_l2_ops)' })
-export class GuitarModel extends BaseEntityWithDesc {
-  static bodyKeys = Object.freeze([
-    "boltOnBody",
-    "neckThroughBody",
-    "setInBody",
-  ] as const);
-
+@Index({ name: 'electric_guitar_model_hnsw_l2_idx', expression: 'CREATE INDEX "electric_guitar_model_hnsw_l2_idx" ON "electric_guitar_model" USING hnsw (embedding vector_l2_ops)' })
+export class ElectricGuitarModel extends BaseEntityWithDesc {
   static mediaKeys = Object.freeze([
     "thumbnail",
   ] as const);
 
-  static spawnPointKeys = Object.freeze([
-    "knobSpawnPoint",
-    "bridgeSpawnPoint",
-    "pickupSpawnPoint",
-    "switchSpawnPoint",
-    "topJackSpawnPoint",
-    "sideJackSpawnPoint",
-    "fingerboardSpawnPoint",
-  ] as const);
+  @ManyToOne(() => Media, mediaFKOption)
+  thumbnail?: Ref<Media>;
 
-  @ManyToOne(() => Media, { deleteRule: "set null", updateRule: "cascade" })
-  thumbnail?: Media;
-
-  @OneToMany(() => GuitarModelBodyPivot, (p) => p.model, {
+  @OneToMany(() => ElectricModelBodyPivot, (p) => p.model, {
     cascade: [Cascade.ALL],
   })
-  modelBodyPivot = new Collection<GuitarModelBodyPivot>(this);
+  modelBodyPivot = new Collection<ElectricModelBodyPivot>(this);
 
   @Property({ type: "json" })
   fingerboardSpawnPoint?: Position;
 
   @Property({ type: "json" })
-  bridgeSpawnPoint?: Position;
+  fingerboardBackEndSpawnPoint?: Position;
 
-  @Property()
-  allowSingleCoilPickup?: boolean = true;
+  @Property({ type: "json" })
+  bridgeSpawnPoint?: Position;
 
   @Property()
   price : number;
@@ -84,8 +73,8 @@ export class GuitarModel extends BaseEntityWithDesc {
     neck?: Position;
   };
 
-  @Property()
-  isElectric?: boolean = true;
+  @Property({ type: "float" })
+  maskScale?: number = 1;
 
   @Property({ type: "json" })
   knobSpawnPoint?: Position[];
@@ -119,12 +108,14 @@ export class GuitarModel extends BaseEntityWithDesc {
     return this._setInBody;
   }
 
-  constructor(props: GuitarModelProps) {
+  constructor(_props: GuitarModelProps) {
     super();
+    const { thumbnail, ...props } = _props;
+    thumbnail && (this.thumbnail = ref(thumbnail));
     classAssign(this, props);
-    for (const pivot of GuitarModel.bodyKeys) {
+    for (const pivot of cGuitarModel.bodyKeys) {
       this.modelBodyPivot.add(
-        new GuitarModelBodyPivot({
+        new ElectricModelBodyPivot({
           model: this,
           type: pivot,
         })
@@ -132,7 +123,7 @@ export class GuitarModel extends BaseEntityWithDesc {
     }
   }
 
-  private async loadBody(type: typeof GuitarModel.bodyKeys[number]) {
+  private async loadBody(type: typeof cGuitarModel.bodyKeys[number]) {
     if(this[type] !== undefined){
       return;
     }
@@ -155,7 +146,7 @@ export class GuitarModel extends BaseEntityWithDesc {
   async setSetInBody(body: GuitarBody) {
     await this.setBody(body, "setInBody");
   }
-  private async setBody(body: GuitarBody, type: typeof GuitarModel.bodyKeys[number]) {
+  private async setBody(body: GuitarBody, type: typeof cGuitarModel.bodyKeys[number]) {
     await this.modelBodyPivot.load();
     const b = this.modelBodyPivot
       .getItems()
@@ -167,20 +158,21 @@ export class GuitarModel extends BaseEntityWithDesc {
   }
 
   async loadBodies() {
-    for(const type of GuitarModel.bodyKeys){
+    await this.thumbnail?.load();
+    for(const type of cGuitarModel.bodyKeys){
       await this.loadBody(type);
     }
   }
 
   async deepLoadBodies() {
     await this.loadBodies();
-    for(const type of GuitarModel.bodyKeys){
+    for(const type of cGuitarModel.bodyKeys){
       await this[type]?.loadTextures();
     }
 
-    for(const bodyKey of GuitarModel.bodyKeys){
+    for(const bodyKey of cGuitarModel.bodyKeys){
       const body = this[bodyKey];
-      for(const textureKey of GuitarBody.textureKeys){
+      for(const textureKey of cGuitarBody.contourKeys){
         await body?.[textureKey]?.loadMedias();
       }
     }

@@ -2,7 +2,7 @@ import { Entity, Index, ManyToOne, Property, Ref, ref } from "@mikro-orm/core";
 import {Position} from "../interfaces/position.interface";
 import { EntityWithoutBase } from "../interfaces/entity-without-base.interface";
 import { classAssign } from "../utils/class-assign.util";
-import { GuitarModel } from "./guitar-model.entity";
+import { ElectricGuitarModel } from "./electric-guitar-model.entity";
 import { Media } from "./media.entity";
 import { maxDescriptionLength, mediaFKOption } from "../constants";
 import { BaseEntityWithDesc } from "./base-with-desc.entity";
@@ -21,19 +21,13 @@ export class Pickguard extends BaseEntityWithDesc {
   @ManyToOne(()=>Media, mediaFKOption)
   texture : Ref<Media>;
 
-  @Property({type : 'float'})
-  scale : number;
-
-  @Property({type : 'json'})
-  pivotPosition : Position;
-
-  @ManyToOne(()=>GuitarModel)
-  model : GuitarModel;
+  @ManyToOne(()=>ElectricGuitarModel)
+  model : ElectricGuitarModel;
 
   constructor(props : PickguardProps){
     super();
     const {texture, ..._props} = props;
-    classAssign(this, props);
+    classAssign(this, _props);
     this.texture = ref(texture);
   }
 

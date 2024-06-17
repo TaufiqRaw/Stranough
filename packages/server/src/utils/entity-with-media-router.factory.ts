@@ -5,7 +5,7 @@ import { getPagination } from "./get-pagination.util";
 import { findAndPaginateEntity } from "./find-and-paginate-entity.util";
 import { EntityRepository, Populate, Ref } from "@mikro-orm/postgresql";
 import { DI } from "../app";
-import { Class } from "utility-types";
+import { Class, Optional } from "utility-types";
 import { validateDto } from "./validate-dto.util";
 import { BaseEntityWithSprite, Media } from "../entities";
 import { BadRequestError } from "./classes/error.class.util";
@@ -28,9 +28,16 @@ export function entityWithMediaRouterFactory<
     loadMedias : () => Promise<void>;
   },
   U extends Partial<Omit<T, 'createdAt' | 'updatedAt' | 'loadMedias'>> & KeyOf<T>,
->(repository: () => EntityRepository<T>, dto: Class<U>, mediaKeys : (keyof T)[]) {
+>(repository: () => EntityRepository<T>, dto: Class<U>, mediaKeys : (keyof T)[], options? :{
+  onCreate ?: (validatedDto : U) => Promise<Optional<T>>;
+  onUpdate ?: (validatedDto : U, item : T) => Promise<void>;
+  queryMapper ?: (query : any) => any;
+}) {
   const router = Router();
-  router.get("/", entityIndexMiddleware(repository, "name"));
+  router.get("/", entityIndexMiddleware(repository, "name", {
+    populate : mediaKeys.some(key=>key === 'thumbnail') ? ['thumbnail'] : undefined,
+    queryMapper : options?.queryMapper
+  }));
 
   router.get(
     "/:id",
@@ -51,6 +58,14 @@ export function entityWithMediaRouterFactory<
         acc[key] = reqBody[key];
         return acc;
       }, {} as {[key in (keyof T)]: number}));
+
+      if(options?.onCreate){
+        return repo.create({
+          ...reqBody,
+          ...medias,
+          ...(await options.onCreate(reqBody))
+        });
+      }
 
       return repo.create({
         ...reqBody,
@@ -78,6 +93,10 @@ export function entityWithMediaRouterFactory<
           if(media)
             await DI.em.removeAndFlush(media);
         }
+      }
+
+      if(options?.onUpdate){
+        await options.onUpdate(reqBody, item);
       }
 
       Object.assign(item, reqBody);

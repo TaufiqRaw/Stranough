@@ -1,7 +1,7 @@
 export * from "./bridge.dto"
-export * from "./guitar-body-texture.dto"
+export * from "./guitar-body-contour.dto"
 export * from "./guitar-body.dto"
-export * from "./guitar-model.dto"
+export * from "./electric-guitar-model.dto"
 export * from "./image-upload.dto"
 export * from "./jack.dto"
 export * from "./knob.dto"
@@ -14,3 +14,4 @@ export * from "./headstock.dto"
 export * from './peg.dto'
 export * from './pickguard.dto'
 export * from './wood.dto'
+export * from './acoustic-guitar-model.dto'

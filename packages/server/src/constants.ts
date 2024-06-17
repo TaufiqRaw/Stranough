@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 import { Cascade, ManyToOneOptions, PropertyOptions } from "@mikro-orm/core";
 import { Media } from "./entities";
 import TrainData from "./train-data.json";
-import { UserIntent } from "./interfaces/chatbot.interface";
+import { UserIntent } from "./interfaces/chatbot.type";
 dotenv.config({
   path: path.join(__dirname, "..", "..", "..", ".env"),
 });

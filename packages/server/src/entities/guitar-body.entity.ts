@@ -12,21 +12,22 @@ import {
   ref,
 } from "@mikro-orm/core";
 import { BaseEntity } from "./base.entity";
-import { GuitarModel } from "./guitar-model.entity";
-import { GuitarBodyTexture } from "./guitar-body-texture.entity";
+import { ElectricGuitarModel } from "./electric-guitar-model.entity";
+import { GuitarBodyContour } from "./guitar-body-contour.entity";
 import { EntityWithoutBase } from "../interfaces/entity-without-base.interface";
 import { classAssign } from "../utils/class-assign.util";
-import { GuitarModelBodyPivot } from "./guitar-model-body.pivot.entity";
-import { GuitarBodyTexturePivot } from "./guitar-body-texture.pivot.entity";
+import { ElectricModelBodyPivot } from "./electric-model-body.pivot.entity";
+import { GuitarBodyContourPivot } from "./guitar-body-contour.pivot.entity";
 import * as Constants from "../constants";
 import { Media } from "./media.entity";
+import {GuitarBody as cGuitarBody} from 'stranough-common'
 
 export type GuitarBodyProps = Omit<
   EntityWithoutBase<GuitarBody>,
   | "modelBodyPivot"
   | "bodyTexturePivot"
   | (typeof GuitarBody.mediaKeys)[number]
-  | (typeof GuitarBody.textureKeys)[number]
+  | (typeof cGuitarBody.contourKeys)[number]
   | "maskScale"
 > & { mask?: Media };
 
@@ -34,35 +35,26 @@ export type GuitarBodyProps = Omit<
 export class GuitarBody extends BaseEntity {
   static mediaKeys = Object.freeze([
     "mask",
+    "backMask",
     "burstTop",
-    "burstBack"
+    "burstBack",
   ] as const);
 
-  static textureKeys = Object.freeze([
-    "carvedTopTexture",
-    "tummyCutTexture",
-    "forearmCutTexture",
-    "flatTopBackTexture",
-    "carvedTopBackTexture",
-    "forearmTummyCutTexture",
-    "carvedTopTummyCutTexture",
-  ] as const);
-
-  @OneToMany(() => GuitarModelBodyPivot, (p) => p.body, {
+  @OneToMany(() => ElectricModelBodyPivot, (p) => p.body, {
     cascade: [Cascade.ALL],
   })
-  modelBodyPivot: GuitarModel;
+  modelBodyPivot: ElectricGuitarModel;
 
-  @OneToMany(() => GuitarBodyTexturePivot, (p) => p.body, {
+  @OneToMany(() => GuitarBodyContourPivot, (p) => p.body, {
     cascade: [Cascade.ALL],
   })
-  bodyTexturePivot = new Collection<GuitarBodyTexturePivot>(this);
+  bodyTexturePivot = new Collection<GuitarBodyContourPivot>(this);
 
   @ManyToOne(() => Media, Constants.mediaFKOption)
   mask?: Ref<Media>;
 
-  @Property({ type: "float" })
-  maskScale?: number = 1;
+  @ManyToOne(() => Media, Constants.mediaFKOption)
+  backMask?: Ref<Media>;
 
   @ManyToOne(() => Media, Constants.mediaFKOption)
   burstTop?: Ref<Media>;
@@ -73,47 +65,41 @@ export class GuitarBody extends BaseEntity {
   @Property({nullable : false, default : 0})
   price ?: number = 0;
 
-  private _carvedTopTexture?: GuitarBodyTexture;
-  private _tummyCutTexture?: GuitarBodyTexture;
-  private _forearmCutTexture?: GuitarBodyTexture;
-  private _flatTopBackTexture?: GuitarBodyTexture;
-  private _carvedTopBackTexture?: GuitarBodyTexture;
-  private _forearmTummyCutTexture?: GuitarBodyTexture;
-  private _carvedTopTummyCutTexture?: GuitarBodyTexture;
+  private _topFlatContour?: GuitarBodyContour;
+  private _topCarvedContour?: GuitarBodyContour;
+  private _topForearmContour?: GuitarBodyContour;
+  private _backFlatContour?: GuitarBodyContour;
+  private _backCarvedContour?: GuitarBodyContour;
+  private _backTummyContour?: GuitarBodyContour;
 
   @Property({ type: "any", serializer: (v) => v, persist: false })
-  get carvedTopTexture() {
-    return this._carvedTopTexture;
+  get topFlatContour() {
+    return this._topFlatContour;
   }
 
   @Property({ type: "any", serializer: (v) => v, persist: false })
-  get tummyCutTexture() {
-    return this._tummyCutTexture;
+  get topCarvedContour() {
+    return this._topCarvedContour;
   }
 
   @Property({ type: "any", serializer: (v) => v, persist: false })
-  get forearmCutTexture() {
-    return this._forearmCutTexture;
+  get topForearmContour() {
+    return this._topForearmContour;
   }
 
   @Property({ type: "any", serializer: (v) => v, persist: false })
-  get flatTopBackTexture() {
-    return this._flatTopBackTexture;
+  get backFlatContour() {
+    return this._backFlatContour;
   }
 
   @Property({ type: "any", serializer: (v) => v, persist: false })
-  get carvedTopBackTexture() {
-    return this._carvedTopBackTexture;
+  get backCarvedContour() {
+    return this._backCarvedContour;
   }
 
   @Property({ type: "any", serializer: (v) => v, persist: false })
-  get forearmTummyCutTexture() {
-    return this._forearmTummyCutTexture;
-  }
-
-  @Property({ type: "any", serializer: (v) => v, persist: false })
-  get carvedTopTummyCutTexture() {
-    return this._carvedTopTummyCutTexture;
+  get backTummyContour() {
+    return this._backTummyContour;
   }
 
   constructor(_props: GuitarBodyProps) {
@@ -121,9 +107,9 @@ export class GuitarBody extends BaseEntity {
     const { mask, ...props } = _props;
     classAssign(this, props);
     if (mask) this.mask = ref(mask);
-    for (const pivot of GuitarBody.textureKeys) {
+    for (const pivot of cGuitarBody.contourKeys) {
       this.bodyTexturePivot.add(
-        new GuitarBodyTexturePivot({
+        new GuitarBodyContourPivot({
           body: this,
           type: pivot,
         })
@@ -131,7 +117,7 @@ export class GuitarBody extends BaseEntity {
     }
   }
 
-  private async loadTexture(type: typeof GuitarBody.textureKeys[number]) {
+  private async loadTexture(type: typeof cGuitarBody.contourKeys[number]) {
     if (this[type] !== undefined) {
       return;
     }
@@ -141,42 +127,39 @@ export class GuitarBody extends BaseEntity {
       .find((p) => p.type === type);
     if (t?.texture) {
       this[`_${type}`] = await t.texture.load({
-        populate: GuitarBodyTexture.mediaKeys,
+        populate: GuitarBodyContour.mediaKeys,
       }) ?? undefined;
     }
     return t;
   }
 
-  async setCarvedTopTexture(texture: GuitarBodyTexture) {
-    await this.setTexture(texture, "carvedTopTexture");
+  async setTopFlatContour(texture: GuitarBodyContour) {
+    await this.setTexture(texture, "topFlatContour");
+  }
+  
+  async setTopCarvedContour(texture: GuitarBodyContour) {
+    await this.setTexture(texture, "topCarvedContour");
   }
 
-  async setTummyCutTexture(texture: GuitarBodyTexture) {
-    await this.setTexture(texture, "tummyCutTexture");
+  async setTopForearmContour(texture: GuitarBodyContour) {
+    await this.setTexture(texture, "topForearmContour");
   }
 
-  async setForearmCutTexture(texture: GuitarBodyTexture) {
-    await this.setTexture(texture, "forearmCutTexture");
+  async setBackFlatContour(texture: GuitarBodyContour) {
+    await this.setTexture(texture, "backFlatContour");
   }
 
-  async setFlatTopBackTexture(texture: GuitarBodyTexture) {
-    await this.setTexture(texture, "flatTopBackTexture");
+  async setBackCarvedContour(texture: GuitarBodyContour) {
+    await this.setTexture(texture, "backCarvedContour");
   }
 
-  async setCarvedTopBackTexture(texture: GuitarBodyTexture) {
-    await this.setTexture(texture, "carvedTopBackTexture");
+  async setBackTummyContour(texture: GuitarBodyContour) {
+    await this.setTexture(texture, "backTummyContour");
   }
 
-  async setForearmTummyCutTexture(texture: GuitarBodyTexture) {
-    await this.setTexture(texture, "forearmTummyCutTexture");
-  }
-
-  async setCarvedTopTummyCutTexture(texture: GuitarBodyTexture) {
-    await this.setTexture(texture, "carvedTopTummyCutTexture");
-  }
   private async setTexture(
-    texture: GuitarBodyTexture,
-    type: typeof GuitarBody.textureKeys[number]
+    texture: GuitarBodyContour,
+    type: typeof cGuitarBody.contourKeys[number]
   ) {
     await this.bodyTexturePivot.load();
     const t = this.bodyTexturePivot
@@ -190,10 +173,10 @@ export class GuitarBody extends BaseEntity {
 
   async loadTextures() {
     for(const media of GuitarBody.mediaKeys){
-      await this[media]?.load();
+      await this[media]?.load?.();
     }
 
-    for (const type of GuitarBody.textureKeys) {
+    for (const type of cGuitarBody.contourKeys) {
       await this.loadTexture(type);
     }
   }

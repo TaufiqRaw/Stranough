@@ -16,26 +16,26 @@ export abstract class BaseEntityWithDesc extends BaseEntity {
   lastDescription : string | undefined;
 
   @Property({hidden : true, type : VectorType, length : 1536})
-  embedding : number[];
+  embedding ?: number[];
 
   @OnLoad()
   onLoad() {
     this.lastDescription = this.description;
   }
 
-  @BeforeUpdate()
-  async beforeUpdate(args: EventArgs<BaseEntityWithDesc>) {
-    const etty = args.entity;
-    if(etty.description && (etty.description !== this.lastDescription)){
-      this.embedding = await IntentClassifierService.createEmbedding(etty.description);
-    }
-  }
+  // @BeforeUpdate()
+  // async beforeUpdate(args: EventArgs<BaseEntityWithDesc>) {
+  //   const etty = args.entity;
+  //   if(etty.description && (etty.description !== this.lastDescription)){
+  //     this.embedding = await IntentClassifierService.createEmbedding(etty.description);
+  //   }
+  // }
 
-  @BeforeCreate()
-  async beforeCreate(args: EventArgs<BaseEntityWithDesc>) {
-    const etty = args.entity;
-    if(etty.description){
-      this.embedding = await IntentClassifierService.createEmbedding(etty.description);
-    }
-  }
+  // @BeforeCreate()
+  // async beforeCreate(args: EventArgs<BaseEntityWithDesc>) {
+  //   const etty = args.entity;
+  //   if(etty.description){
+  //     this.embedding = await IntentClassifierService.createEmbedding(etty.description);
+  //   }
+  // }
 }

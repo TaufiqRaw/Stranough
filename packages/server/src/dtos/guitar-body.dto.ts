@@ -1,6 +1,6 @@
 import { Expose, Type } from "class-transformer";
 import { ArrayMinSize, IsArray, IsNotEmpty, IsNumber, IsObject, IsOptional, Min, ValidateNested } from "class-validator";
-import { GuitarBodyTextureDto } from "./guitar-body-texture.dto";
+import { GuitarBodyContourDto } from "./guitar-body-contour.dto";
 import { ExposeAll, OptionalOnUpdate } from "./util.decorator";
 import { GuitarBody } from "../entities";
 import { EntityWithoutBase } from "../interfaces/entity-without-base.interface";
@@ -12,6 +12,10 @@ export class GuitarBodyDto implements KeyOf<EntityWithoutBase<GuitarBody>>{
   @IsOptional()
   @IsNumber()
   mask ?: number | null;
+
+  @IsOptional()
+  @IsNumber()
+  backMask ?: number | null;
 
   @OptionalOnUpdate()
   @IsNumber()
@@ -27,48 +31,38 @@ export class GuitarBodyDto implements KeyOf<EntityWithoutBase<GuitarBody>>{
   burstBack?: number | null;
 
   @IsOptional()
-  @IsNumber()
-  maskScale ?: number;
+  @IsObject()
+  @ValidateNested()
+  @Type(() => GuitarBodyContourDto)
+  topForearmContour ?: GuitarBodyContourDto | null;
 
   @IsOptional()
   @IsObject()
   @ValidateNested()
-  @Type(() => GuitarBodyTextureDto)
-  forearmCutTexture?: GuitarBodyTextureDto | null;
+  @Type(() => GuitarBodyContourDto)
+  topCarvedContour ?: GuitarBodyContourDto | null;
 
   @IsOptional()
   @IsObject()
   @ValidateNested()
-  @Type(() => GuitarBodyTextureDto)
-  flatTopBackTexture?: GuitarBodyTextureDto | null;
+  @Type(() => GuitarBodyContourDto)
+  topFlatContour ?: GuitarBodyContourDto | null;
 
   @IsOptional()
   @IsObject()
   @ValidateNested()
-  @Type(() => GuitarBodyTextureDto)
-  tummyCutTexture?: GuitarBodyTextureDto | null;
+  @Type(() => GuitarBodyContourDto)
+  backTummyContour ?: GuitarBodyContourDto | null;
 
   @IsOptional()
   @IsObject()
   @ValidateNested()
-  @Type(() => GuitarBodyTextureDto)
-  forearmTummyCutTexture?: GuitarBodyTextureDto | null;
+  @Type(() => GuitarBodyContourDto)
+  backCarvedContour ?: GuitarBodyContourDto | null;
 
   @IsOptional()
   @IsObject()
   @ValidateNested()
-  @Type(() => GuitarBodyTextureDto)
-  carvedTopTexture?: GuitarBodyTextureDto | null;
-
-  @IsOptional()
-  @IsObject()
-  @ValidateNested()
-  @Type(() => GuitarBodyTextureDto)
-  carvedTopBackTexture?: GuitarBodyTextureDto | null;
-
-  @IsOptional()
-  @IsObject()
-  @ValidateNested()
-  @Type(() => GuitarBodyTextureDto)
-  carvedTopTummyCutTexture?: GuitarBodyTextureDto | null;
+  @Type(() => GuitarBodyContourDto)
+  backFlatContour ?: GuitarBodyContourDto | null;
 }

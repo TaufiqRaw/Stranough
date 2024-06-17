@@ -5,7 +5,7 @@ import { EntityWithSprite, EntityWithoutBase } from "../interfaces/entity-withou
 import { classAssign } from "../utils/class-assign.util";
 import { Media } from "./media.entity";
 import { idProperty } from "../utils/id-property.util";
-import { GuitarModel } from "./guitar-model.entity";
+import { ElectricGuitarModel } from "./electric-guitar-model.entity";
 import { maxDescriptionLength, mediaFKOption } from "../constants";
 import { BaseEntityWithSprite } from "./base-with-sprite.entity";
 
