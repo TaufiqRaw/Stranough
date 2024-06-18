@@ -77,24 +77,12 @@ export function EditorGuiGroup(props: { children: JSX.Element; parent?: boolean,
 }
 
 export function EditorGuiSubMenu(props : {
-  title : JSX.Element | string,
   children : JSX.Element,
-  onClick : () => void
   isActive : boolean,
-  isExist ?: boolean,
-  onReset ?: () => void
 }){
   const {subMenuContainer} = useContext(EditorGuiContext)!;
 
   return <>
-  <ToggleableButtonWithState
-    isFocus={props.isActive}
-    isActive={props.isExist ?? false}
-    onClick={props.onClick}
-    onReset={props.onReset}
-  >
-    {props.title}
-  </ToggleableButtonWithState>
   <Portal mount={subMenuContainer()}>
     <Show when={props.isActive}>
       <div class="bg-gray-900 flex-col gap-2 text-white rounded-lg overflow-y-auto relative w-[15rem] h-[98vh]">

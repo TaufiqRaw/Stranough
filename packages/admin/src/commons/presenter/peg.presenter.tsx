@@ -16,6 +16,7 @@ import { Container, Sprite } from "solid-pixi";
 import { createPixiTexture } from "~/commons/functions/create-texture";
 import { Position } from "~/commons/interfaces/position";
 import { useHeadstockContext } from "./headstock.presenter";
+import { useGuitarBodyPresenterContext } from "./guitar-model/guitar-model.presenter";
 
 export function PegPresenter(_props: {
   texture ?: {
@@ -25,14 +26,15 @@ export function PegPresenter(_props: {
   pivot?: Position;
   backPivot?: Position;
   scale?: number;
-  isFront?: boolean;
+  isFront?: ()=>boolean | undefined;
   onCapClick?: (e: Point) => void;
   onBackClick?: (e: Point) => void;
   children?: JSX.Element;
   backChildren ?: JSX.Element;
   zIndex?: number;
 }) {
-  const props = mergeProps({ isFront: true }, _props);
+  const guitarBodyCtx = useGuitarBodyPresenterContext();
+  const props = mergeProps({ isFront: guitarBodyCtx?.isFront ?? (()=>true) }, _props);
   const headstockCtx = useHeadstockContext();
   
   const selectedTex = {
@@ -46,7 +48,7 @@ export function PegPresenter(_props: {
         <Container
           position={headstockCtx?.childSpawnPos ?? { x: 0, y: 0 }}
           rotation={headstockCtx?.childSpawnPos?.rotation ?? 0}
-          zIndex={props.isFront ? 2 : 0}
+          zIndex={props.isFront() ? 2 : 0}
           interactive
           uses={[
             (container) => {
@@ -72,7 +74,7 @@ export function PegPresenter(_props: {
         <Container
           position={headstockCtx?.childSpawnPos ?? { x: 0, y: 0 }}
           rotation={headstockCtx?.childSpawnPos?.rotation ?? 0}
-          zIndex={props.isFront ? 0 : 2}
+          zIndex={props.isFront() ? 0 : 2}
           interactive
           uses={[
             (container) => {

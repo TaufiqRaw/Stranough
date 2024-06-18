@@ -4,14 +4,14 @@ import { useEditorPageContext } from "~/commons/components/editor-page";
 import { Position } from "~/commons/interfaces/position";
 import { Constants } from "~/constants";
 import { useGuitarHeadstock } from "../headstock-editor.page";
-import { FingerboardPresenter } from "~/commons/presenter/fingerboard.presenter";
+import { NeckPresenter } from "~/commons/presenter/fingerboard.presenter";
 import { headstockToPresenter } from "../utils/headstock-to-presenter";
 import { Color, Sprite as pxSprite, Texture } from "pixi.js";
 import { SignalObject } from "~/commons/interfaces/signal-object";
 import { useViewportContext } from "~/commons/components/viewport";
 import { HeadstockPresenter } from "~/commons/presenter/headstock.presenter";
-import { GuitarModelPresenter } from "~/commons/presenter/guitar-model.presenter";
-import { guitarModelToPresenter } from "../../model-editor/utils/functions/guitar-model-to-presenter";
+import { guitarModelToPresenter } from "../../electric-model-editor/utils/functions/guitar-model-to-presenter";
+import { GuitarModelPresenter } from "~/commons/presenter/guitar-model/guitar-model.presenter";
 
 export function HeadstockEditorPresenter() {
   const headstock = createMemo(() => useGuitarHeadstock().get());
@@ -26,7 +26,7 @@ export function HeadstockEditorPresenter() {
   const Headstock = () => (
     <HeadstockPresenter
       {...headstockPresenterProps()}
-      isFront={isFront?.()}
+      isFront={isFront}
       onClick={(p) => {
         if (headstock()?.selectedItem.get() === "pivot") {
           headstock()?.pivotPosition.set((prev) => {
@@ -66,7 +66,7 @@ export function HeadstockEditorPresenter() {
         {...guitarModelToPresenter(editorCtx!.modelPreview.selectedModel)}
         isFront={isFront?.()}
         fingerboard={() => (
-          <FingerboardPresenter isFront={isFront?.()} headstock={Headstock} />
+          <NeckPresenter isFront={isFront} headstock={Headstock} />
         )}
       />
     </Show>

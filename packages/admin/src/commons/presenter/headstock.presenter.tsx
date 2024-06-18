@@ -22,10 +22,11 @@ import {
 } from "solid-js";
 import { Container, Sprite, useParent } from "solid-pixi";
 import { useEditorPageContext } from "~/commons/components/editor-page";
-import { useFingerboardContext } from "~/commons/presenter/fingerboard.presenter";
+import { useNeckContext } from "~/commons/presenter/fingerboard.presenter";
 import { useViewportContext } from "~/commons/components/viewport";
 import { createPixiTexture } from "~/commons/functions/create-texture";
 import { Position, PositionWithRotation } from "~/commons/interfaces/position";
+import { useGuitarBodyPresenterContext } from "./guitar-model/guitar-model.presenter";
 
 const headstockCtx = createContext<{
   childSpawnPos?: PositionWithRotation;
@@ -46,12 +47,13 @@ export function HeadstockPresenter(_props: {
   scale?: number;
   onClick?: (e: Point) => void;
   children?: JSX.Element;
-  isFront?: boolean;
+  isFront?: ()=>boolean | undefined;
   pegs?: (() => JSX.Element)[];
   pegsSpawnPoint ?: PositionWithRotation[];
 }) {
-  const props = mergeProps({ isFront: true, pegSpawnPoints : [] }, _props);
-  const fingerboardCtx = useFingerboardContext();
+  const guitarBodyCtx = useGuitarBodyPresenterContext();
+  const props = mergeProps({ isFront: guitarBodyCtx?.isFront ?? (()=>true), pegSpawnPoints : [] }, _props);
+  const fingerboardCtx = useNeckContext();
   const viewportCtx = useViewportContext();
   const [maskSprite, setMaskSprite] = createSignal<pxSprite | undefined>();
   const [maskForFingerboard, setMaskForFingerboard] = createSignal<pxSprite | undefined>();
@@ -114,14 +116,14 @@ export function HeadstockPresenter(_props: {
                 texture={selectedTex.woodTexture() ?? viewportCtx?.textures.defaultWood() ?? Texture.EMPTY}
               />
             </Show>
-            <Show when={props.isFront}>
+            <Show when={props.isFront()}>
               <Sprite
                 zIndex={1}
                 pivot={props.pivot ?? { x: 0, y: 0 }}
                 texture={selectedTex.frontShadow() ?? Texture.EMPTY}
               />
             </Show>
-            <Show when={!props.isFront}>
+            <Show when={!props.isFront()}>
               <Sprite
                 zIndex={1}
                 pivot={props.pivot ?? { x: 0, y: 0 }}

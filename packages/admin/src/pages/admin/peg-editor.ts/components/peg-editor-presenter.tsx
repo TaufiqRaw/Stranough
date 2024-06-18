@@ -6,14 +6,14 @@ import { Constants } from "~/constants";
 import { useGuitarPeg } from "../peg-editor.page";
 import { CommonPresenter } from "~/commons/presenter/common.presenter";
 import { Texture } from "pixi.js";
-import { FingerboardPresenter } from "~/commons/presenter/fingerboard.presenter";
+import { NeckPresenter } from "~/commons/presenter/fingerboard.presenter";
 import { headstockToPresenter } from "~/pages/admin/headstock-editor/utils/headstock-to-presenter";
 import { pegToPresenter } from "../utils/peg-to-presenter";
 import { useViewportContext } from "~/commons/components/viewport";
 import { PegPresenter } from "~/commons/presenter/peg.presenter";
-import { GuitarModelPresenter } from "~/commons/presenter/guitar-model.presenter";
+import { GuitarModelPresenter } from "~/commons/presenter/guitar-model/guitar-model.presenter";
 import { HeadstockPresenter } from "~/commons/presenter/headstock.presenter";
-import { guitarModelToPresenter } from "../../model-editor/utils/functions/guitar-model-to-presenter";
+import { guitarModelToPresenter } from "../../electric-model-editor/utils/functions/guitar-model-to-presenter";
 
 export function PegEditorPresenter() {
   const peg = createMemo(() => useGuitarPeg().get());
@@ -24,7 +24,7 @@ export function PegEditorPresenter() {
 
   const Peg = () => <PegPresenter
     {...pegToPresenter(peg()!)}
-    isFront={isFront()}
+    isFront={isFront}
     onCapClick={(p: Position) => {
       if(peg()?.selectedItem.get() === 'pivot')
         peg()?.pivotPosition.set((prev) => {
@@ -82,11 +82,12 @@ export function PegEditorPresenter() {
       <GuitarModelPresenter
         isFront={isFront()}
         {...guitarModelToPresenter(editorCtx!.modelPreview.selectedModel)}
-        fingerboard={()=><FingerboardPresenter
-          isFront={isFront()}
+        spawnpoints={guitarModelToPresenter(editorCtx!.modelPreview.selectedModel)?.spawnpoints}
+        fingerboard={()=><NeckPresenter
+          isFront={isFront}
           headstock={()=><Show when={editorCtx?.headstockPreview.isShowHeadstockPreview.get()}><HeadstockPresenter
             {...headstockToPresenter(editorCtx!.headstockPreview.selectedHeadstock()!)}
-            isFront={isFront()}
+            isFront={isFront}
             pegs={Array.from({length : 10}, (_,i)=>Peg)}
           /></Show>}
         />}

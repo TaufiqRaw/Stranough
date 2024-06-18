@@ -1,11 +1,13 @@
-import { ServerDtos} from "stranough-server";
+import { ServerDtos, ServerEntities} from "stranough-server";
 import { Headstock } from "./utils/types";
 import { createCommonRepository } from "~/commons/functions/create-common-repository";
 import { createHeadstock } from "./utils/create-headstock";
 import { nullOrValue } from "~/commons/functions/null-or-value";
 import * as R from "remeda";
 
-export const headstockRepository = createCommonRepository(
+export const headstockRepository = createCommonRepository<Headstock, ServerDtos.HeadstockDto, {
+  stringCount ?: number,
+}>(
   "headstocks",
   createHeadstock,
   signalToDto

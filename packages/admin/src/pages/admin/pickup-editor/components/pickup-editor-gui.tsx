@@ -2,12 +2,12 @@ import { For, createMemo } from "solid-js";
 import { EditorGui, EditorGuiGroup, keyboardMove } from "~/commons/components/editor-gui";
 import ImageInput from "~/commons/components/image-input";
 import { Button } from "~/commons/components/button";
-import { GuitarModelPreviewExplorer } from "~/commons/components/guitar-model-preview-explorer";
 import { NameDescriptionGroup } from "~/commons/components/name-description-group";
 import { useGuitarPickup } from "../pickup-editor.page";
 import { Checkbox } from "~/commons/components/checkbox";
 import { ToggleableButton } from "~/commons/components/toggleable-button";
 import { Option, Select } from "~/commons/components/select";
+import { ElectricModelPreviewExplorer } from "~/commons/components/electric-model-preview-explorer";
 
 export function PickupEditorGui() {
   const pickup = createMemo(() => useGuitarPickup().get());
@@ -38,12 +38,13 @@ export function PickupEditorGui() {
       <EditorGuiGroup parent>
         <span class="font-bold text-center mx-3">Pickup</span>
       </EditorGuiGroup>
-      <GuitarModelPreviewExplorer />
+      <ElectricModelPreviewExplorer />
       <NameDescriptionGroup
         description={pickup()?.description}
         name={pickup()?.name}
         placeholder={pickup()?.placeholder}
         price={pickup()?.price}
+        thumbnail={pickup()?.thumbnail}
       />
       <EditorGuiGroup>
         <div class="flex gap-2 items-center">

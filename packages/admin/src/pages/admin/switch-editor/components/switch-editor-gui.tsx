@@ -2,12 +2,12 @@ import { For, createMemo } from "solid-js";
 import { EditorGui, EditorGuiGroup, keyboardMove } from "~/commons/components/editor-gui";
 import ImageInput from "~/commons/components/image-input";
 import { Button } from "~/commons/components/button";
-import { GuitarModelPreviewExplorer } from "~/commons/components/guitar-model-preview-explorer";
 import { NameDescriptionGroup } from "~/commons/components/name-description-group";
 import { useGuitarSwitch } from "../switch-editor.page";
 import { Checkbox } from "~/commons/components/checkbox";
 import { ToggleableButton } from "~/commons/components/toggleable-button";
 import { Option, Select } from "~/commons/components/select";
+import { ElectricModelPreviewExplorer } from "~/commons/components/electric-model-preview-explorer";
 
 export function SwitchEditorGui() {
   const gSwitch = createMemo(() => useGuitarSwitch().get());
@@ -38,12 +38,13 @@ export function SwitchEditorGui() {
       <EditorGuiGroup parent>
         <span class="font-bold text-center mx-3">Pickup</span>
       </EditorGuiGroup>
-      <GuitarModelPreviewExplorer />
+      <ElectricModelPreviewExplorer />
       <NameDescriptionGroup
         description={gSwitch()?.description}
         name={gSwitch()?.name}
         placeholder={gSwitch()?.placeholder}
         price={gSwitch()?.price}
+        thumbnail={gSwitch()?.thumbnail}
       />
       <EditorGuiGroup>
         <ImageInput

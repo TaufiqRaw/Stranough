@@ -15,4 +15,20 @@ export namespace Constants {
     x: 0,
     y: 0,
   };
+
+  export const woodUrl = {
+    'alder' : '/assets/woods/alder.jpg',
+    'korina-black' : '/assets/woods/korina-black.jpg',
+    'korina-white' : '/assets/woods/korina-white.jpg',
+    'mahogany' : '/assets/woods/mahogany.jpg',
+    'maple-burl' : '/assets/woods/maple-burl.jpg',
+    'plain-maple' : '/assets/woods/plain-maple.jpg',
+    'flamed-maple' : '/assets/woods/flamed-maple.jpg',
+    'quilted-maple' : '/assets/woods/quilted-maple.jpg',
+    'spalted-maple' : '/assets/woods/spalted-maple.jpg',
+    'rosewood' : '/assets/woods/rosewood.jpg',
+    'swamp-ash' : '/assets/woods/swamp-ash.jpg',
+    'walnut' : '/assets/woods/walnut.jpg',
+  }
+  export const getWoodUrl = (key ?: keyof typeof woodUrl) => key ? woodUrl[key] : undefined;
 }

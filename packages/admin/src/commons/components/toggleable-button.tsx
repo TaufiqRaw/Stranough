@@ -1,6 +1,6 @@
 import { Accessor, JSX, splitProps } from "solid-js";
 
-export function ToggleableButton(props: {
+export type ToggleableButtonProps ={
   inactiveClass?: string;
   activeClass?: string;
   isActive: boolean;
@@ -9,7 +9,9 @@ export function ToggleableButton(props: {
   onClick: (e: MouseEvent) => void;
   class?: string;
   children?: JSX.Element | ((isActive : boolean)=>JSX.Element);
-}) {
+}
+
+export function ToggleableButton(props: ToggleableButtonProps) {
   return (
     <button
       class={

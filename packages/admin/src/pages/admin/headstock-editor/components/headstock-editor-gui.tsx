@@ -7,10 +7,10 @@ import * as R from "remeda";
 import { Constants } from "~/constants";
 import { Button } from "~/commons/components/button";
 import { ToggleableButton } from "~/commons/components/toggleable-button";
-import { GuitarModelPreviewExplorer } from "~/commons/components/guitar-model-preview-explorer";
 import { NameDescriptionGroup } from "~/commons/components/name-description-group";
 import { useGuitarHeadstock } from "../headstock-editor.page";
 import { Range } from "~/commons/components/range";
+import { ElectricModelPreviewExplorer } from "~/commons/components/electric-model-preview-explorer";
 
 export function HeadstockEditorGui() {
   const headstock = createMemo(() => useGuitarHeadstock().get());
@@ -41,12 +41,13 @@ export function HeadstockEditorGui() {
       <EditorGuiGroup parent>
         <span class="font-bold text-center mx-3">Headstock</span>
       </EditorGuiGroup>
-      <GuitarModelPreviewExplorer />
+      <ElectricModelPreviewExplorer />
       <NameDescriptionGroup
         description={headstock()?.description}
         name={headstock()?.name}
         placeholder={headstock()?.placeholder}
         price={headstock()?.price}
+        thumbnail={headstock()?.thumbnail}
       />
       <EditorGuiGroup parent>
         <span class="font-bold text-center mx-3">Textures</span>

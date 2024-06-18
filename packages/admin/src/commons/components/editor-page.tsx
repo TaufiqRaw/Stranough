@@ -16,15 +16,15 @@ import { Viewport } from "./viewport";
 import { createResizeObserver } from "@solid-primitives/resize-observer";
 import {
   GuitarBodyTextureKeyType,
-  GuitarModel,
+  ElectricModel,
   GuitarModelBodyKeyType,
-} from "~/pages/admin/model-editor/utils/types";
+} from "~/pages/admin/electric-model-editor/utils/types";
 import { createSignalObject } from "../functions/signal-object.util";
-import { guitarModelRepository } from "~/pages/admin/model-editor/guitar-model.repository";
-import { guitarModelToPresenter } from "~/pages/admin/model-editor/utils/functions/guitar-model-to-presenter";
+import { guitarModelToPresenter } from "~/pages/admin/electric-model-editor/utils/functions/guitar-model-to-presenter";
 import { EditorPageContextType } from "../interfaces/common-context-type";
 import { ToggleableButton } from "./toggleable-button";
 import { headstockRepository } from "~/pages/admin/headstock-editor/headstock.repository";
+import { electricModelRepository } from "~/pages/admin/electric-model-editor/electric-model.repository";
 
 const EditorPageContext = createContext<
   EditorPageContextType
@@ -41,10 +41,9 @@ export function EditorPage(props: {
   
   const [modelId, setModelId] = createSignal<number>();
   const [selectedModel] = createResource(modelId, async (i) => {
-    return await guitarModelRepository.get(i, {
+    return await electricModelRepository.get(i, {
       owner: getOwner()!,
       selectedBody: selectedBody(),
-      selectedBodyTexture: selectedTexture(),
     });
   });
 

@@ -25,7 +25,8 @@ export function AdminApp(props: any) {
           </div>
           <div class="p-3 flex flex-col gap-3">
             
-            <Link href="/admin/guitar-models">Model</Link>
+            <Link href="/admin/electric-guitar-models">Electric Guitar</Link>
+            <Link href="/admin/acoustic-guitar-models">Acoustic Guitar</Link>
             <Link href="/admin/headstocks">Headstock</Link>
             <Link href="/admin/bridges">Bridge</Link>
             <Link href="/admin/jacks">Jack</Link>
@@ -34,6 +35,7 @@ export function AdminApp(props: any) {
             <Link href="/admin/pegs">Tuning Machine</Link>
             <Link href="/admin/pickups">Pickup</Link>
             <Link href="/admin/switchs">Switch</Link>
+            <Link href="/admin/pickguards">Pickguard</Link>
           </div>
         </nav>
       </div>

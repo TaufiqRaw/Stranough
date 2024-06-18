@@ -1,45 +1,31 @@
 import { io } from "socket.io-client";
 import { Owner, createMemo, createSignal, runWithOwner } from "solid-js";
-import { Chatbot, ChatbotCommonResponse, ChatbotSelectResponse, Satisfies } from "stranough-server";
 import { createSignalObjectArray } from "~/commons/functions/signal-object.util";
-import { IGuitarComponent } from "./types";
-import { createModel } from "~/pages/admin/model-editor/utils/functions/create-model";
+import { IGuitarBuilder } from "./types";
+import { createModel } from "~/pages/admin/electric-model-editor/utils/functions/create-model";
 import { Constants } from "~/constants";
-import { useSelectedGuitarComponent } from "../guitar-builder";
+import { useGuitarBuilderContext } from "../guitar-builder";
 import { createHeadstock } from "~/pages/admin/headstock-editor/utils/create-headstock";
 import { GuitarBody } from "stranough-server/dist/entities";
-
-const onSelectProcessor : {[k in Chatbot.ChatbotStepsType] ?: (owner : Owner,selectedComponent : IGuitarComponent,selectedItem : any)=>void}={
-  "guitar-type" : (o, c, i)=>{
-    c.isElectric.set(i.isElectric);
-  },
-  "guitar-model" : (o, c, i)=>{
-    runWithOwner(o, ()=>{
-      c.guitarModel.set(createModel(i));
-    });
-  },
-  "orientation" : (o, c, i)=>{
-    c.isLeftHanded.set(!!i.id);
-  },
-  "guitar-contour" : (o,c,i : {name : typeof GuitarBody.textureKeys[number]})=>{
-    c.guitarModel.get()?.getSelectedBodySignal()?.selectedBodyTexture.set(i.name);
-  },
-  "headstock-type" : (o, c, i)=>{
-    runWithOwner(o, ()=>{
-      console.log(i);
-      c.headstock.set(createHeadstock(i));
-    })
-  },
-}
+import { GuitarBuilder } from "stranough-common";
+import { createBridge } from "~/pages/admin/bridge-editor/utils/create-bridge";
+import { createJack } from "~/pages/admin/jack-editor/utils/create-jack";
+import { createKnob } from "~/pages/admin/knob-editor/utils/create-knob";
+import { createPeg } from "~/pages/admin/peg-editor.ts/utils/create-peg";
 
 export function chatSocket(props : {
   owner : Owner,
+  guitarComponent : Omit<IGuitarBuilder, 'socket' | 'isBottomSideMenuSwiped'>,
 }){
-  const selectedComponent = useSelectedGuitarComponent()!;
+  const selectedComponent = useGuitarBuilderContext()!;
   const {
     add : addMessage,
     state : _messages,
-  } = createSignalObjectArray<{data : string | Omit<ChatbotCommonResponse, 'itemAsMessage'> , isUser : boolean}>([]);
+    setState : setMessages,
+  } = createSignalObjectArray<{data : {
+    message : string,
+    metadata ?: {[k : string] : any}
+  } , isUser : boolean}>([]);
 
   const messages = createMemo(()=>_messages().map(m=>m.get()));
 
@@ -56,45 +42,71 @@ export function chatSocket(props : {
     setStatus('error');
   });
 
-  socket.on('message', (message : string | ChatbotCommonResponse)=>{
-    if(typeof message === 'string'){
-      return addMessage({data: message, isUser : false});
-    } else {
-      return addMessage({data : message, isUser : false});
-    }
+  socket.on('message', (message : string)=>{
+    return addMessage({data: {
+      message,
+    }, isUser : false});
   });
 
-  function selectComponent(id : number){
+  function selectComponent(component : keyof GuitarBuilder.SelectedItem, value : any){
     setIsAnswering(true);
-    socket.emit('select-component', id, (response : ChatbotSelectResponse)=>{
+    socket.emit('select-component', {
+      component,
+      value,
+    }, (response : any)=>{
       setIsAnswering(false);
-      onSelectProcessor[selectedComponent.context.get()]?.(props.owner, selectedComponent, response.selectedItem);
-      selectedComponent.context.set(response.context.currentStep);
-      if(response.items){
-        addMessage({data : {
-          message : response.message,
-          items : response.items,
-          total : response.total!,
-        }, isUser : false})
-      }else{
-        addMessage({data : response.message, isUser : false})
-      }
+      setMessages([..._messages().filter(m=>m.get().data.metadata?.type !=='guide')])
+      addMessage({data : {
+        message : response.message,
+        metadata: {
+          type : 'guide'
+        }
+      }, isUser : false});
     });
   }
 
   function sendMessage(message : string){
     setIsAnswering(true);
-    addMessage({data : message, isUser : true});
-    socket.emit('message', message, (response : ChatbotCommonResponse | string)=>{
+    addMessage({data : {message}, isUser : true});
+    socket.emit('message', message, (response : any)=>{
       setIsAnswering(false);
       if(typeof response === 'string'){
-        addMessage({data : response, isUser : false});
-      } else {
-        addMessage({data : {
-          message : response.message,
-          items : response.items,
-          total : response.total,
-        }, isUser : false})
+        addMessage({data : {message : response}, isUser : false});
+      }else{
+        if(response.metadata){
+          addMessage({data : response.message, isUser : false});
+        }else{
+          let res = response as {[k in keyof GuitarBuilder.SelectedItem] ?: any};
+          console.log(res);
+          if(res.guitarModel)
+            props.guitarComponent.guitarModel.set(createModel(res.guitarModel));
+          if(res.constructionMethod)
+            props.guitarComponent.constructionMethod.set(res.constructionMethod);
+          if(res.headstock)
+            props.guitarComponent.headstock.set(createHeadstock(res.headstock));
+          if(res.backContour)
+            props.guitarComponent.backContour.set(res.backContour);
+          if(res.topContour)
+            props.guitarComponent.topContour.set(res.topContour);
+          if(res.bridge)
+            props.guitarComponent.bridge.set(createBridge(res.bridge));
+          if(res.jack)
+            props.guitarComponent.jack.set(createJack(res.jack));
+          if(res.knob)
+            props.guitarComponent.knob.set(createKnob(res.knob));
+          if(res.peg)
+            props.guitarComponent.peg.set(createPeg(res.peg));
+          if(res.bodyColorType && GuitarBuilder.bodyColorType.some(b=>b.key === res.bodyColorType)){
+            props.guitarComponent.bodyColorType.set(res.bodyColorType);
+          }
+          if(res.neckWood && GuitarBuilder.neckWoods.some(b=>b.key === res.neckWood)){
+            props.guitarComponent.neckWood.set(res.neckWood);
+          }
+  
+          addMessage({data : {
+            message  : "Gitar telah diubah sesuai dengan masukkan"
+          }, isUser : false});
+        }
       }
     });
   }

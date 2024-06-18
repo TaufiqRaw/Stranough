@@ -2,13 +2,13 @@ import { For, createMemo } from "solid-js";
 import { EditorGui, EditorGuiGroup, keyboardMove } from "~/commons/components/editor-gui";
 import ImageInput from "~/commons/components/image-input";
 import { Button } from "~/commons/components/button";
-import { GuitarModelPreviewExplorer } from "~/commons/components/guitar-model-preview-explorer";
 import { NameDescriptionGroup } from "~/commons/components/name-description-group";
 import { useGuitarPeg } from "../peg-editor.page";
 import { Checkbox } from "~/commons/components/checkbox";
 import { ToggleableButton } from "~/commons/components/toggleable-button";
 import { GuitarHeadstockPreviewExplorer } from "~/commons/components/guitar-headstock-preview-explorer";
 import { Range } from "~/commons/components/range";
+import { ElectricModelPreviewExplorer } from "~/commons/components/electric-model-preview-explorer";
 
 export function PegEditorGui() {
   const peg = createMemo(() => useGuitarPeg().get());
@@ -39,13 +39,14 @@ export function PegEditorGui() {
       <EditorGuiGroup parent>
         <span class="font-bold text-center mx-3">Peg</span>
       </EditorGuiGroup>
-      <GuitarModelPreviewExplorer />
+      <ElectricModelPreviewExplorer />
       <GuitarHeadstockPreviewExplorer/>
       <NameDescriptionGroup
         description={peg()?.description}
         name={peg()?.name}
         placeholder={peg()?.placeholder}
         price={peg()?.price}
+        thumbnail={peg()?.thumbnail}
       />
       <EditorGuiGroup parent>
         <span class="font-bold text-center mx-3">Textures</span>

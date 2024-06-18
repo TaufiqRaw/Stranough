@@ -7,9 +7,9 @@ import * as R from "remeda";
 import { Constants } from "~/constants";
 import { Button } from "~/commons/components/button";
 import { ToggleableButton } from "~/commons/components/toggleable-button";
-import { GuitarModelPreviewExplorer } from "~/commons/components/guitar-model-preview-explorer";
 import { NameDescriptionGroup } from "~/commons/components/name-description-group";
 import { useGuitarNut } from "../nut-editor.page";
+import { ElectricModelPreviewExplorer } from "~/commons/components/electric-model-preview-explorer";
 
 export function NutEditorGui() {
   const nut = createMemo(() => useGuitarNut().get());
@@ -40,12 +40,13 @@ export function NutEditorGui() {
       <EditorGuiGroup parent>
         <span class="font-bold text-center mx-3">Nut</span>
       </EditorGuiGroup>
-      <GuitarModelPreviewExplorer />
+      <ElectricModelPreviewExplorer />
       <NameDescriptionGroup
         description={nut()?.description}
         name={nut()?.name}
         placeholder={nut()?.placeholder}
         price={nut()?.price}
+        thumbnail={nut()?.thumbnail}
       />
       <EditorGuiGroup>
         <ImageInput

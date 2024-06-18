@@ -2,11 +2,11 @@ import { For, createMemo } from "solid-js";
 import { EditorGui, EditorGuiGroup, keyboardMove } from "~/commons/components/editor-gui";
 import ImageInput from "~/commons/components/image-input";
 import { Button } from "~/commons/components/button";
-import { GuitarModelPreviewExplorer } from "~/commons/components/guitar-model-preview-explorer";
 import { NameDescriptionGroup } from "~/commons/components/name-description-group";
 import { useGuitarKnob } from "../knob-editor.page";
 import { Checkbox } from "~/commons/components/checkbox";
 import { ToggleableButton } from "~/commons/components/toggleable-button";
+import { ElectricModelPreviewExplorer } from "~/commons/components/electric-model-preview-explorer";
 
 export function KnobEditorGui() {
   const knob = createMemo(() => useGuitarKnob().get());
@@ -37,12 +37,13 @@ export function KnobEditorGui() {
       <EditorGuiGroup parent>
         <span class="font-bold text-center mx-3">Knob</span>
       </EditorGuiGroup>
-      <GuitarModelPreviewExplorer />
+      <ElectricModelPreviewExplorer />
       <NameDescriptionGroup
         description={knob()?.description}
         name={knob()?.name}
         placeholder={knob()?.placeholder}
         price={knob()?.price}
+        thumbnail={knob()?.thumbnail}
       />
       <EditorGuiGroup>
         <ImageInput

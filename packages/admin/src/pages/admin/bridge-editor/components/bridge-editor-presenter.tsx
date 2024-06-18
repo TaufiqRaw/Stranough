@@ -7,8 +7,8 @@ import { useGuitarBridge } from "../bridge-editor.page";
 import { CommonPresenter } from "~/commons/presenter/common.presenter";
 import { Texture } from "pixi.js";
 import { useViewportContext } from "~/commons/components/viewport";
-import { GuitarModelPresenter } from "~/commons/presenter/guitar-model.presenter";
-import { guitarModelToPresenter } from "../../model-editor/utils/functions/guitar-model-to-presenter";
+import { GuitarModelPresenter } from "~/commons/presenter/guitar-model/guitar-model.presenter";
+import { guitarModelToPresenter } from "../../electric-model-editor/utils/functions/guitar-model-to-presenter";
 
 export function BridgeEditorPresenter() {
   const bridge = createMemo(() => useGuitarBridge().get());

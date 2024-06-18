@@ -6,14 +6,18 @@ export function createCommonRepository<T extends {
   id : {
     get : ()=>number | undefined,
   }
-}, ServerT>(
+}, ServerDTO, P extends {
+  [x: string]: any;
+} = {}>(
   entityName : string,
   createEntity : (...args : any[])=>T,
-  signalToDto : (b : T)=>ServerT,
+  signalToDto : (b : T)=>ServerDTO,
 ){
   return {
-    async index(page : number){
-      const {data} = await axios.get<[ServerEntities.Headstock[], number]>(`/${entityName}`, {params: {page}});
+    async index(page : number, options ?: {limit ?: number} & P){
+      const {data} = await axios.get<[ServerEntities.Headstock[], number]>(`/${entityName}`, {params: {
+        page, ...options
+      }});
       return data[0];
     },
     async get (id : number, options ?: {onSave ?: (b : T)=>()=>Promise<void>, owner ?: Owner}){
@@ -39,10 +43,9 @@ export function createCommonRepository<T extends {
       await axios.delete<void>(`/${entityName}/${id}`);
     },
   
-    queryKey: (props?: { id?: number; page?: number }) : [string, {[x: string]: any}] => {
+    queryKey: (props?: { id?: number; page?: number, limit ?:number } & P) : [string, {[x: string]: any}] => {
       const option: { [x: string]: any } = {};
-      props?.id && (option.id = props?.id);
-      props?.page && (option.page = props?.page);
+      Object.assign(option, props);
   
       return [entityName, option];
     },

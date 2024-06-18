@@ -8,7 +8,7 @@ import { Input } from "~/commons/components/input";
 import { ImageType } from "~/commons/interfaces/image-type";
 
 export default function (_props: {
-  partType : GuitarPartEnumType;
+  partType : GuitarPartEnumType | 'thumbnail';
   onLoad: (image: ImageType) => void;
   onError ?: (error: ErrorEvent) => void;
   onRemove: () => void;
@@ -23,10 +23,21 @@ export default function (_props: {
     mutationFn : async () =>{
       if(!fileInput || !fileInput.files || fileInput.files?.length === 0) 
         throw new Error("No file selected");
-      const res = await axios.postForm<ServerEntities.Media>(`${Constants.serverUrl}/medias/${props.partType}`, {
-        file: fileInput.files[0],
-        name : props.partType
-      });
+
+      let res;
+      
+      if(props.partType === 'thumbnail'){
+        res = await axios.postForm<ServerEntities.Media>(`${Constants.serverUrl}/medias/thumbnails`, {
+          file: fileInput.files[0],
+          name : 'thumbnail'
+        });
+      }else{
+        res = await axios.postForm<ServerEntities.Media>(`${Constants.serverUrl}/medias/${props.partType}`, {
+          file: fileInput.files[0],
+          name : props.partType
+        });
+      }
+      
       const selectedImage = new Image();
       selectedImage.src = `${Constants.serverImgUrl}/${res.data.filename}`;
       props.onLoad({

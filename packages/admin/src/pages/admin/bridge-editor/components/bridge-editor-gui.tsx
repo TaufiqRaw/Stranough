@@ -7,9 +7,9 @@ import * as R from "remeda";
 import { Constants } from "~/constants";
 import { Button } from "~/commons/components/button";
 import { ToggleableButton } from "~/commons/components/toggleable-button";
-import { GuitarModelPreviewExplorer } from "~/commons/components/guitar-model-preview-explorer";
 import { NameDescriptionGroup } from "~/commons/components/name-description-group";
 import { useGuitarBridge } from "../bridge-editor.page";
+import { ElectricModelPreviewExplorer } from "~/commons/components/electric-model-preview-explorer";
 
 export function BridgeEditorGui() {
   const bridge = createMemo(() => useGuitarBridge().get());
@@ -40,12 +40,13 @@ export function BridgeEditorGui() {
       <EditorGuiGroup parent>
         <span class="font-bold text-center mx-3">Bridge</span>
       </EditorGuiGroup>
-      <GuitarModelPreviewExplorer />
+      <ElectricModelPreviewExplorer />
       <NameDescriptionGroup
         description={bridge()?.description}
         name={bridge()?.name}
         placeholder={bridge()?.placeholder}
         price={bridge()?.price}
+        thumbnail={bridge()?.thumbnail}
       />
       <EditorGuiGroup>
         <ImageInput

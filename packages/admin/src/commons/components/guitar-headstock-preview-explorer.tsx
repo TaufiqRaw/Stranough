@@ -2,10 +2,10 @@ import { For, Show, batch, createMemo, createSignal } from "solid-js";
 import { ServerEntities } from "stranough-server";
 import { useEditorPageContext } from "./editor-page";
 import { createQuery } from "@tanstack/solid-query";
-import { guitarModelRepository } from "~/pages/admin/model-editor/guitar-model.repository";
+import { electricModelRepository } from "~/pages/admin/electric-model-editor/guitar-model.repository";
 import { ToggleableButton } from "./toggleable-button";
 import { Button } from "./button";
-import { guitarBodyTextureKey, guitarModelBodyKey } from "~/pages/admin/model-editor/utils/constant";
+import { guitarBodyContourKey, guitarModelBodyKey } from "~/pages/admin/electric-model-editor/utils/constant";
 import { EditorGuiGroup } from "./editor-gui";
 import { serverImgUrl } from "../functions/server-img-url.util";
 import { headstockRepository } from "~/pages/admin/headstock-editor/headstock.repository";
@@ -30,7 +30,7 @@ export function GuitarHeadstockPreviewExplorer() {
           Headstock Preview
         </ToggleableButton>
         <Button
-          class="w-14 h-14 border hover:border-white border-gray-500 rounded-md !bg-transparent"
+          class="w-14 h-14 border hover:border-white border-gray-500 rounded-md !bg-transparent overflow-hidden !p-0"
           onClick={() => setIsShowModelExplorer((p) => !p)}
         >
           <Show
