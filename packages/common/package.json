@@ -1,0 +1,25 @@
+{
+  "name": "stranough-common",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build" : "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "utility-types": "^3.11.0"
+  },
+  "types": "dist/index.d.ts",
+  "exports": {
+    "." : {
+      "import": "./src/index.ts",
+      "require": "./dist/index.js"
+    }
+  }
+}
