@@ -69,8 +69,7 @@ router.post(
 
     // @ts-ignore
     const model = new ElectricGuitarModel({
-      ...reqData,
-      ...R.pick(reqData, Common.GuitarModel.spawnPointKeys),
+      ...R.omit(reqData, Common.GuitarModel.bodyKeys),
     });
 
     /**

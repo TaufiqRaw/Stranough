@@ -5,15 +5,17 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build:solid-pixi": "cd packages/solid-pixi && vite build && tsc"
+    "build:solid-pixi": "cd packages/solid-pixi && vite build && tsc",
+    "dev:admin": "cd packages/admin && npm run dev",
+    "build:server:type": "cd packages/server && npm run build:type"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "workspaces": [
-    "packages/admin",
     "packages/client",
     "packages/server",
-    "packages/solid-pixi"
+    "packages/solid-pixi",
+    "packages/common"
   ]
 }
