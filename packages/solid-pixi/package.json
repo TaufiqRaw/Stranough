@@ -97,6 +97,11 @@
       "import": "./dist/Spritesheet.mjs",
       "types": "./dist/Spritesheet.d.ts",
       "require": "./dist/Spritesheet.umd.js"
+    },
+    "./RenderedGraphics": {
+      "import": "./dist/RenderedGraphics.mjs",
+      "types": "./dist/RenderedGraphics.d.ts",
+      "require": "./dist/RenderedGraphics.umd.js"
     }
   },
   "scripts": {

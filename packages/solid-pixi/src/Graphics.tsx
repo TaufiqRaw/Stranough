@@ -61,6 +61,7 @@ export function Graphics<Data extends object = object>(props: GraphicsProps<Data
 
   createEffect(() => {
     if (ours.draw) {
+      graphics.clear()
       ours.draw.forEach(([method, ...args]) => {
         ;(graphics[method] as any).bind(graphics)(...args)
       })
