@@ -1,7 +1,7 @@
 {
 	"compilerOptions": {
-		"target": "ESNext",
-		"module": "ESNext",
+		"target": "ES2022",
+		"module": "ES2022",
 		"moduleResolution": "node",
 		"allowSyntheticDefaultImports": true,
 		"esModuleInterop": true,
@@ -10,10 +10,12 @@
 		"allowJs": true,
 		"noEmit": true,
 		"strict": true,
-		"types": ["vinxi/client"],
+    "skipLibCheck": true,
+		"types": ["vite/client"],
 		"isolatedModules": true,
 		"paths": {
       "~/*": ["./src/*"]
     }
-	}
+	},
+  "exclude": ["node_modules"]
 }
