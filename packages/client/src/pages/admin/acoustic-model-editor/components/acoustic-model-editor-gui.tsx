@@ -60,7 +60,7 @@ export function AcousticModelEditorGui() {
           min={0.25}
           max={2}
         />
-        <For each={AcousticModel.cutawayKeys}>
+        {/* <For each={AcousticModel.cutawayKeys}>
           { key => <>
             <span class="text-sm -mt-1">{key}</span>
             <ImageInput
@@ -76,7 +76,7 @@ export function AcousticModelEditorGui() {
             />
           </>
           }
-        </For>
+        </For> */}
         
       </EditorGuiGroup>
       <EditorGuiGroup parent>

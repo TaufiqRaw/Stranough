@@ -5,7 +5,7 @@ import { ImageType } from "~/commons/interfaces/image-type";
 import { Position } from "~/commons/interfaces/position";
 import { createSignal } from "solid-js";
 import { createPixiTextureSignal } from "~/commons/functions/create-pixi-texture-signal";
-import { GuitarPickupType } from "stranough-server/dist/enums";
+import { Pickup as PickupConfig } from "stranough-common";
 
 export function createPickup(
   b?: ServerEntities.Pickup,
@@ -42,7 +42,7 @@ export function createPickup(
     ),
     price: createSignalObject(b ? b.price : 0),
     scale: createSignalObject(b ? b.scale : 1),
-    type: createSignalObject(b ? b.type as `${GuitarPickupType}` : undefined),
+    type: createSignalObject(b ? b.type as `${PickupConfig.PickupType}` : undefined),
     selectedItem: createSignalObject<'pivot'>(),
     getSelectedItem: () => {
       switch (obj.selectedItem.get()) {

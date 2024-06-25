@@ -17,7 +17,7 @@ export function ModelSubmenu(){
     }),
     queryFn : async ()=>await electricModelRepository.index(1,{
       // isElectric : guitarBuilderCtx?.isElectric.get(),
-      limit : 100,      
+      limit : 100,
     })
   }))
   return <GuitarBuilderSubmenu>
@@ -59,10 +59,10 @@ export function ModelSubmenu(){
                     const modelData = await electricModelRepository.get(model.id, {
                       owner : getOwner()!,
                     })
-                    guitarBuilderCtx.socket.selectComponent('guitarModel', modelData?.name.get());
-                    guitarBuilderCtx?.constructionMethod.set(modelData?.selectedBody.get() ?? undefined);
-                    guitarBuilderCtx?.topContour.set(modelData?.getSelectedBodySignal()?.selectedTopContour.get() ?? undefined);
-                    guitarBuilderCtx?.backContour.set(modelData?.getSelectedBodySignal()?.selectedBackContour.get() ?? undefined);
+                    // guitarBuilderCtx.socket.selectComponent('guitarModel', modelData?.name.get());
+                    guitarBuilderCtx?.constructionMethod.set(modelData?.selectedConstruction.get() ?? undefined);
+                    guitarBuilderCtx?.topContour.set(modelData?.selectedTopContour.get() ?? undefined);
+                    guitarBuilderCtx?.backContour.set(modelData?.selectedBackContour.get() ?? undefined);
                     guitarBuilderCtx?.guitarModel.set(modelData);
                   }}
                   //@ts-ignore
@@ -76,4 +76,4 @@ export function ModelSubmenu(){
       {/* </Show> */}
     </GuitarBuilderSubmenuGroup>
   </GuitarBuilderSubmenu>
-} 
+}

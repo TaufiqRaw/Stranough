@@ -11,23 +11,23 @@ export function ConstructionAndContourSubmenu(){
       <span class="text-sm -mt-1">Construction Method</span>
       <div class="grid gap-2 grid-cols-2">
         <GuitarBuilderImageButton
-          isActive={guitarBuilderCtx.constructionMethod.get() === 'boltOnBody'}
+          isActive={guitarBuilderCtx.constructionMethod.get() === 'boltOnConstruction'}
           onClick={() =>{
-            guitarBuilderCtx.constructionMethod.set('boltOnBody');
+            guitarBuilderCtx.constructionMethod.set('boltOnConstruction');
           }}
           src="/assets/gui/bolt-on.png"
           title="Bolt On"/>
         <GuitarBuilderImageButton
-          isActive={guitarBuilderCtx.constructionMethod.get() === 'setInBody'}
+          isActive={guitarBuilderCtx.constructionMethod.get() === 'setInConstruction'}
           onClick={() =>{
-            guitarBuilderCtx.constructionMethod.set('setInBody');
+            guitarBuilderCtx.constructionMethod.set('setInConstruction');
           }}
           src="/assets/gui/set-neck.png"
           title="Set Neck"/>
         <GuitarBuilderImageButton
-          isActive={guitarBuilderCtx.constructionMethod.get() === 'neckThroughBody'}
+          isActive={guitarBuilderCtx.constructionMethod.get() === 'neckThroughConstruction'}
           onClick={() =>{
-            guitarBuilderCtx.constructionMethod.set('neckThroughBody');
+            guitarBuilderCtx.constructionMethod.set('neckThroughConstruction');
           }}
           src="/assets/gui/neck-through.png"
           title="Neck Through"/>
@@ -37,23 +37,23 @@ export function ConstructionAndContourSubmenu(){
       <span class="text-sm -mt-1">Top Contour</span>
       <div class="grid gap-2 grid-cols-2">
         <GuitarBuilderImageButton
-          isActive={guitarBuilderCtx.topContour.get() === 'topFlatContour'}
+          isActive={guitarBuilderCtx.topContour.get() === 'flatContour'}
           onClick={() =>{
-            guitarBuilderCtx.topContour.set('topFlatContour');
+            guitarBuilderCtx.topContour.set('flatContour');
           }}
           src="/assets/gui/top-flat-contour.png"
           title="Flat"/>
         <GuitarBuilderImageButton
-          isActive={guitarBuilderCtx.topContour.get() === 'topForearmContour'}
+          isActive={guitarBuilderCtx.topContour.get() === 'forearmContour'}
           onClick={() =>{
-            guitarBuilderCtx.topContour.set('topForearmContour');
+            guitarBuilderCtx.topContour.set('forearmContour');
           }}
           src="/assets/gui/top-forearm-contour.png"
           title="Forearm"/>
         <GuitarBuilderImageButton
-          isActive={guitarBuilderCtx.topContour.get() === 'topCarvedContour'}
+          isActive={guitarBuilderCtx.topContour.get() === 'carvedContour'}
           onClick={() =>{
-            guitarBuilderCtx.topContour.set('topCarvedContour');
+            guitarBuilderCtx.topContour.set('carvedContour');
           }}
           src="/assets/gui/top-carved-contour.png"
           title="Carved"/>
@@ -63,23 +63,23 @@ export function ConstructionAndContourSubmenu(){
       <span class="text-sm -mt-1">Back Contour</span>
       <div class="grid gap-2 grid-cols-2">
         <GuitarBuilderImageButton
-          isActive={guitarBuilderCtx.backContour.get() === 'backFlatContour'}
+          isActive={guitarBuilderCtx.backContour.get() === 'flatContour'}
           onClick={() =>{
-            guitarBuilderCtx.backContour.set('backFlatContour');
+            guitarBuilderCtx.backContour.set('flatContour');
           }}
           src="/assets/gui/back-flat-contour.png"
           title="Flat"/>
         <GuitarBuilderImageButton
-          isActive={guitarBuilderCtx.backContour.get() === 'backTummyContour'}
+          isActive={guitarBuilderCtx.backContour.get() === 'tummyContour'}
           onClick={() =>{
-            guitarBuilderCtx.backContour.set('backTummyContour');
+            guitarBuilderCtx.backContour.set('tummyContour');
           }}
           src="/assets/gui/back-tummy-contour.png"
           title="Tummy"/>
         <GuitarBuilderImageButton
-          isActive={guitarBuilderCtx.backContour.get() === 'backCarvedContour'}
+          isActive={guitarBuilderCtx.backContour.get() === 'carvedContour'}
           onClick={() =>{
-            guitarBuilderCtx.backContour.set('backCarvedContour');
+            guitarBuilderCtx.backContour.set('carvedContour');
           }}
           src="/assets/gui/back-carved-contour.png"
           title="Carved"/>
