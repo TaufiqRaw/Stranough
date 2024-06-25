@@ -1,6 +1,4 @@
 import { Accessor, Component, JSX } from "solid-js";
-import { ServerEntities } from "stranough-server";
-import { orientationList } from "stranough-server/dist/chat-step";
 import { SignalObject } from "~/commons/interfaces/signal-object";
 import { Constants } from "~/constants";
 import { Headstock } from "~/pages/admin/headstock-editor/utils/types";
