@@ -39,7 +39,11 @@ jobs:
           cache: 'npm'
       - name: Install dependencies
         run: npm ci
-      - name: Build
+      - name: Build Common
+        run: npm run build --workspace=packages/common
+      - name: Build Server
+        run: npm run build --workspace=packages/server
+      - name: Build Client
         run: npm run build --workspace=packages/client
       - name: Setup Pages
         uses: actions/configure-pages@v4
