@@ -43,6 +43,8 @@ jobs:
         run: npm run build --workspace=packages/common
       - name: Build Server
         run: npm run build --workspace=packages/server
+      - name: Build Solid-Pixi
+        run: npm run build --workspace=packages/solid-pixi
       - name: Build Client
         run: npm run build --workspace=packages/client
       - name: Setup Pages
