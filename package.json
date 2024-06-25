@@ -7,8 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:solid-pixi": "cd packages/solid-pixi && vite build && tsc",
     "dev:admin": "cd packages/admin && npm run dev",
-    "build:server:type": "cd packages/server && npm run build:type",
-    "build:client" : "cd packages/client && tsc && vite build"
+    "build:server:type": "cd packages/server && npm run build:type"
   },
   "keywords": [],
   "author": "",
