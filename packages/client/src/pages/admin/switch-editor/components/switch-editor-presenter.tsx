@@ -8,8 +8,8 @@ import { CommonPresenter } from "~/commons/presenter/common.presenter";
 import { Texture } from "pixi.js";
 import { useViewportContext } from "~/commons/components/viewport";
 import { DropShadowFilter } from "pixi-filters";
-import { GuitarModelPresenter } from "~/commons/presenter/guitar-model/guitar-model.presenter";
-import { guitarModelToPresenter } from "../../electric-model-editor/utils/functions/guitar-model-to-presenter";
+import { electricModelToPresenter } from "../../electric-model-editor/utils/functions/electric-model-to-presenter";
+import { ElectricModelPresenter } from "~/commons/presenter/guitar-model/electric-model.presenter";
 
 export function SwitchEditorPresenter() {
   const gSwitch = createMemo(() => useGuitarSwitch().get());
@@ -57,8 +57,8 @@ export function SwitchEditorPresenter() {
       }
       fallback={Switch()}
     >
-      <GuitarModelPresenter
-        {...guitarModelToPresenter(editorCtx!.modelPreview.selectedModel)}
+      <ElectricModelPresenter
+        {...electricModelToPresenter(editorCtx!.modelPreview.selectedModel)}
         switch={Switch}
       />
     </Show>

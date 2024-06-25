@@ -1,7 +1,10 @@
 import { JSX, Show, createEffect, createSignal, onCleanup, onMount, useContext } from "solid-js";
 import { createContext } from "solid-js";
 
-const SelectContext = createContext<{value ?: string, onClick: (value: {
+const SelectContext = createContext<{
+  subscribeValue: (c: ((s : string | undefined)=>void)) => void,
+  unsubscribeValue: (c: ((s : string | undefined)=>void)) => void,
+  onClick: (value: {
   label : ()=>JSX.Element,
   value ?: string,
 }) => void}>();
@@ -14,7 +17,6 @@ export function Select(props : {
   placeholder ?: string,
 }){
   const [isExpanded, setIsExpanded] = createSignal(false);
-  const [selectedValue, setSelectedValue] = createSignal(props.value);
   const [selectedLabel, setSelectedLabel] = createSignal<()=>JSX.Element>();
   let containerRef : HTMLDivElement | undefined = undefined;
   onMount(()=>{
@@ -29,8 +31,15 @@ export function Select(props : {
     })
   })
 
+  const valueSubscribers : ((s : string | undefined)=>void)[] = [];
+
+  createEffect(()=>{
+    valueSubscribers.forEach(v=>v(props.value))
+  })
+  
   return <SelectContext.Provider value={{
-    value : props.value,
+    subscribeValue : (c)=>valueSubscribers.push(c),
+    unsubscribeValue : (c)=>valueSubscribers.filter(v=>v!==c),
     onClick : ({label, value})=>{
       setIsExpanded(false);
       setSelectedLabel(()=>label);
@@ -63,20 +72,28 @@ export function Option(props : {
   activeClass ?: string,
   children : JSX.Element
 }){
-  const optionCtx = useContext(SelectContext)!;
-  onMount(()=>{
-    if(optionCtx.value === props.value){
-      optionCtx.onClick({
+  const selectCtx = useContext(SelectContext)!;
+  const [selected, setSelected] = createSignal(false); 
+
+  const valueSubscribers = (s : string | undefined)=>{
+    if(s === props.value){
+      selectCtx.onClick({
         label : ()=>props.children,
       })
+      setSelected(true);
+    }else{
+      setSelected(false);
     }
-  })
+  };
+
+  selectCtx.subscribeValue(valueSubscribers)
+  onCleanup(()=>selectCtx.unsubscribeValue(valueSubscribers))
 
   return <div class={ props.class + " " + " px-2 py-1 " + " " +
-    (optionCtx.value === props.value 
+    (selected() 
       ? (props.activeClass + " bg-blue-500")
       : "hover:bg-blue-400")
-  } onClick={()=>optionCtx.onClick({
+  } onClick={()=>selectCtx.onClick({
     label : ()=>props.children,
     value : props.value,
   })}>

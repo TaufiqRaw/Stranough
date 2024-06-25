@@ -6,6 +6,7 @@ import * as Dto from "../dtos";
 import { entityWithMediaRouterFactory } from "../utils/entity-with-media-router.factory";
 import { findOneEntity } from "../utils/find-one-entity.util";
 import { AcousticModel } from "stranough-common";
+import { AcousticGuitarModel, ElectricGuitarModel } from "../entities";
 
 function t<
     T extends {
@@ -31,9 +32,8 @@ export const commonEntityRoutes = ()=>[
   t('headstocks', DI.repository.headstocks, Dto.HeadstockDto, ['texture', 'thumbnail', 'backShadowTexture', 'frontShadowTexture']),
   t('pegs', DI.repository.pegs, Dto.PegDto, ['thumbnail', 'pegCapTexture', 'pegBackTexture']),
   t('woods', DI.repository.woods, Dto.WoodDto, ['texture']),
-  t('acoustic-guitars', DI.repository.acousticModels, Dto.AcousticGuitarModelDto, [
-    'thumbnail', ...AcousticModel.cutawayBurstKeys, ...AcousticModel.cutawayKeys 
-  ]),
+  t('electric-guitars', DI.repository.electricModels, Dto.ElectricGuitarModelDto, Array.from(ElectricGuitarModel.mediaKeys)),
+  t('acoustic-guitars', DI.repository.acousticModels, Dto.AcousticGuitarModelDto, Array.from(AcousticGuitarModel.mediaKeys)),
   t('pickguards', DI.repository.pickguards, Dto.PickguardDto, ['texture'],{
     onCreate : async (dto)=>{
       const modelId = dto.model;

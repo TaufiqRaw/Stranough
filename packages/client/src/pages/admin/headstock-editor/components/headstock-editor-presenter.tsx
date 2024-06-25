@@ -1,17 +1,17 @@
-import { For, Setter, Show, createMemo } from "solid-js";
+import { For, Setter, Show, createEffect, createMemo } from "solid-js";
 import { Container, Graphics, Sprite } from "solid-pixi";
 import { useEditorPageContext } from "~/commons/components/editor-page";
 import { Position } from "~/commons/interfaces/position";
 import { Constants } from "~/constants";
 import { useGuitarHeadstock } from "../headstock-editor.page";
-import { NeckPresenter } from "~/commons/presenter/fingerboard.presenter";
 import { headstockToPresenter } from "../utils/headstock-to-presenter";
 import { Color, Sprite as pxSprite, Texture } from "pixi.js";
 import { SignalObject } from "~/commons/interfaces/signal-object";
 import { useViewportContext } from "~/commons/components/viewport";
 import { HeadstockPresenter } from "~/commons/presenter/headstock.presenter";
-import { guitarModelToPresenter } from "../../electric-model-editor/utils/functions/guitar-model-to-presenter";
-import { GuitarModelPresenter } from "~/commons/presenter/guitar-model/guitar-model.presenter";
+import { electricModelToPresenter } from "../../electric-model-editor/utils/functions/electric-model-to-presenter";
+import { ElectricModelPresenter } from "~/commons/presenter/guitar-model/electric-model.presenter";
+import { NeckPresenter } from "~/commons/presenter/neck.presenter";
 
 export function HeadstockEditorPresenter() {
   const headstock = createMemo(() => useGuitarHeadstock().get());
@@ -62,8 +62,8 @@ export function HeadstockEditorPresenter() {
       }
       fallback={Headstock()}
     >
-      <GuitarModelPresenter
-        {...guitarModelToPresenter(editorCtx!.modelPreview.selectedModel)}
+      <ElectricModelPresenter
+        {...electricModelToPresenter(editorCtx!.modelPreview.selectedModel)}
         isFront={isFront?.()}
         fingerboard={() => (
           <NeckPresenter isFront={isFront} headstock={Headstock} />

@@ -7,8 +7,8 @@ import { useGuitarKnob } from "../knob-editor.page";
 import { CommonPresenter } from "~/commons/presenter/common.presenter";
 import { Texture } from "pixi.js";
 import { useViewportContext } from "~/commons/components/viewport";
-import { guitarModelToPresenter } from "../../electric-model-editor/utils/functions/guitar-model-to-presenter";
-import { GuitarModelPresenter } from "~/commons/presenter/guitar-model/guitar-model.presenter";
+import { electricModelToPresenter } from "../../electric-model-editor/utils/functions/electric-model-to-presenter";
+import { ElectricModelPresenter } from "~/commons/presenter/guitar-model/electric-model.presenter";
 
 export function KnobEditorPresenter() {
   const knob = createMemo(() => useGuitarKnob().get());
@@ -53,8 +53,8 @@ export function KnobEditorPresenter() {
       }
       fallback={Knob()}
     >
-      <GuitarModelPresenter
-        {...guitarModelToPresenter(editorCtx!.modelPreview.selectedModel)}
+      <ElectricModelPresenter
+        {...electricModelToPresenter(editorCtx!.modelPreview.selectedModel)}
         knobs={Array.from({ length: 4 }, (_, i) => Knob)}
       />
     </Show>

@@ -1,63 +1,52 @@
 import {
-  Cascade,
-  Collection,
   Entity,
-  Enum,
   Index,
   ManyToOne,
-  OneToMany,
   Property,
   ref,
   Ref,
 } from "@mikro-orm/core";
-import { GuitarBody } from "./guitar-body.entity";
 import { EntityWithoutBase } from "../interfaces/entity-without-base.interface";
 import { classAssign } from "../utils/class-assign.util";
-import { Pickguard } from "./pickguard.entity";
 import { Media } from "./media.entity";
-import { ElectricModelBodyPivot } from "./electric-model-body.pivot.entity";
 import {
   Position,
   PositionWithRotation,
 } from "../interfaces/position.interface";
 import { BaseEntityWithDesc } from "./base-with-desc.entity";
-import { Mutable } from "utility-types";
 import { mediaFKOption } from "../constants";
 import {
-  GuitarModel as cGuitarModel,
-  GuitarBody as cGuitarBody,
-  AcousticModel,
+  AcousticModel as AcousticModelConfig,
 } from "stranough-common";
+import R from "remeda";
 
 export type AcousticModelProps = Omit<
   EntityWithoutBase<AcousticGuitarModel>,
   | "pickguards"
   | "headstocks"
-  | (typeof cGuitarModel.bodyKeys)[number]
+  | (typeof AcousticModelConfig.cutawayMaskKeys)[number]
+  | (typeof AcousticModelConfig.cutawayBurstKeys)[number]
   | "modelBodyPivot"
   | "thumbnail"
 > & {
   thumbnail?: Media;
+} & {
+  [k in typeof AcousticModelConfig.cutawayMaskKeys[number]]?: Media;
+} & {
+  [k in typeof AcousticModelConfig.cutawayBurstKeys[number]]?: Media;
 };
 
-/* invariants : 
-    acousticCutaway : 
-      always has 4 items,
-      on creation, all 4 items are added
-      none, soft, venetian, florentine
-    loadBodies :  will not load the body if it is already loaded or already set (by the setter)
-*/
 @Entity()
-@Index({
-  name: "acoustic_guitar_model_hnsw_l2_idx",
-  expression:
-    'CREATE INDEX "acoustic_guitar_model_hnsw_l2_idx" ON "acoustic_guitar_model" USING hnsw (embedding vector_l2_ops)',
-})
+// @Index({
+//   name: "acoustic_guitar_model_hnsw_l2_idx",
+//   expression:
+//     'CREATE INDEX "acoustic_guitar_model_hnsw_l2_idx" ON "acoustic_guitar_model" USING hnsw (embedding vector_l2_ops)',
+// })
 export class AcousticGuitarModel extends BaseEntityWithDesc {
   static mediaKeys = Object.freeze([
     "thumbnail",
-    ...AcousticModel.cutawayKeys,
-    ...AcousticModel.cutawayBurstKeys,
+    ...AcousticModelConfig.cutawayMaskKeys,
+    ...AcousticModelConfig.cutawayBurstKeys,
   ] as const);
 
   @ManyToOne(() => Media, mediaFKOption)
@@ -71,6 +60,9 @@ export class AcousticGuitarModel extends BaseEntityWithDesc {
 
   @Property({ type: "json" })
   bridgeSpawnPoint?: Position;
+
+  @Property({ type: "json" })
+  pickguardSpawnPoint?: Position;
 
   @Property()
   price: number;
@@ -107,10 +99,17 @@ export class AcousticGuitarModel extends BaseEntityWithDesc {
 
   constructor(_props: AcousticModelProps) {
     super();
-    const { thumbnail, ...props } = _props;
-    thumbnail && (this.thumbnail = ref(thumbnail));
+    const props = R.pick(_props, AcousticGuitarModel.mediaKeys);
+    const propsNonMedia = R.omit(_props, AcousticGuitarModel.mediaKeys);
+    classAssign(this, propsNonMedia);
 
-    classAssign(this, props);
+    // set medias
+    let prop : typeof AcousticGuitarModel.mediaKeys[number]
+    for(prop in props){
+      if(props[prop]){
+        this[prop] = ref(props[prop]!);
+      }
+    }
   }
 
   async loadMedias() {

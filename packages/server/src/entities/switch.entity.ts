@@ -6,7 +6,7 @@ import { BaseEntityWithSprite } from "./base-with-sprite.entity";
 export type SwitchProps = EntityWithSprite<Switch>;
 
 @Entity()
-@Index({ name: 'switch_hnsw_l2_idx', expression: 'CREATE INDEX "switch_hnsw_l2_idx" ON "switch" USING hnsw (embedding vector_l2_ops)' })
+// @Index({ name: 'switch_hnsw_l2_idx', expression: 'CREATE INDEX "switch_hnsw_l2_idx" ON "switch" USING hnsw (embedding vector_l2_ops)' })
 export class Switch extends BaseEntityWithSprite {
 
   constructor(props : SwitchProps){

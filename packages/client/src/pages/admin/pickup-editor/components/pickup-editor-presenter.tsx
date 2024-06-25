@@ -8,8 +8,9 @@ import { CommonPresenter } from "~/commons/presenter/common.presenter";
 import { Texture } from "pixi.js";
 import { useViewportContext } from "~/commons/components/viewport";
 import { DropShadowFilter } from "pixi-filters";
-import { guitarModelToPresenter } from "../../electric-model-editor/utils/functions/guitar-model-to-presenter";
-import { GuitarModelPresenter } from "~/commons/presenter/guitar-model/guitar-model.presenter";
+import { electricModelToPresenter } from "../../electric-model-editor/utils/functions/electric-model-to-presenter";
+import { ElectricModelPresenter } from "~/commons/presenter/guitar-model/electric-model.presenter";
+import { Pickup as PickupConfig} from "stranough-common";
 
 export function PickupEditorPresenter() {
   const pickup = createMemo(() => useGuitarPickup().get());
@@ -57,13 +58,12 @@ export function PickupEditorPresenter() {
       }
       fallback={Pickup()}
     >
-      <GuitarModelPresenter
-        {...guitarModelToPresenter(editorCtx!.modelPreview.selectedModel)}
-        pickup={{
-          bridge: ()=><Pickup />,
-          neck: ()=><Pickup />,
-          middle: ()=><Pickup />,
-        }}
+      <ElectricModelPresenter
+        {...electricModelToPresenter(editorCtx!.modelPreview.selectedModel)}
+        pickup={ pickup()?.type.get() ? {
+          type : [pickup()?.type.get()! as PickupConfig.PickupType],
+          items : [Pickup]
+        } : undefined}
       />
     </Show>
   );

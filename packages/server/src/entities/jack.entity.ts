@@ -10,7 +10,7 @@ import { BaseEntityWithSprite } from "./base-with-sprite.entity";
 export type JackProps = EntityWithSprite<Jack>;
 
 @Entity()
-@Index({ name: 'jack_hnsw_l2_idx', expression: 'CREATE INDEX "jack_hnsw_l2_idx" ON "jack" USING hnsw (embedding vector_l2_ops)' })
+// @Index({ name: 'jack_hnsw_l2_idx', expression: 'CREATE INDEX "jack_hnsw_l2_idx" ON "jack" USING hnsw (embedding vector_l2_ops)' })
 export class Jack extends BaseEntityWithSprite {
 
   @Property()

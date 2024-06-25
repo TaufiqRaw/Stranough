@@ -20,10 +20,6 @@ export function BodyCoreWoodSubmenu() {
                 isActive={guitarBuilderCtx.bodyCoreWood.get() === wood.key}
                 onClick={() => {
                   guitarBuilderCtx.bodyCoreWood.set(wood.key);
-                  guitarBuilderCtx.socket.selectComponent(
-                    "bodyCoreWood",
-                    wood.name
-                  );
                 }}
                 src={Constants.woodUrl[wood.key]}
                 title={wood.name}

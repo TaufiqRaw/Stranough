@@ -14,7 +14,6 @@ export function ConstructionAndContourSubmenu(){
           isActive={guitarBuilderCtx.constructionMethod.get() === 'boltOnBody'}
           onClick={() =>{
             guitarBuilderCtx.constructionMethod.set('boltOnBody');
-            guitarBuilderCtx.socket.selectComponent('constructionMethod', 'Bolt On')
           }}
           src="/assets/gui/bolt-on.png"
           title="Bolt On"/>
@@ -22,7 +21,6 @@ export function ConstructionAndContourSubmenu(){
           isActive={guitarBuilderCtx.constructionMethod.get() === 'setInBody'}
           onClick={() =>{
             guitarBuilderCtx.constructionMethod.set('setInBody');
-            guitarBuilderCtx.socket.selectComponent('constructionMethod', 'Set In')
           }}
           src="/assets/gui/set-neck.png"
           title="Set Neck"/>
@@ -30,7 +28,6 @@ export function ConstructionAndContourSubmenu(){
           isActive={guitarBuilderCtx.constructionMethod.get() === 'neckThroughBody'}
           onClick={() =>{
             guitarBuilderCtx.constructionMethod.set('neckThroughBody');
-            guitarBuilderCtx.socket.selectComponent('constructionMethod', 'Neck Through')
           }}
           src="/assets/gui/neck-through.png"
           title="Neck Through"/>
@@ -43,7 +40,6 @@ export function ConstructionAndContourSubmenu(){
           isActive={guitarBuilderCtx.topContour.get() === 'topFlatContour'}
           onClick={() =>{
             guitarBuilderCtx.topContour.set('topFlatContour');
-            guitarBuilderCtx.socket.selectComponent('topContour', 'Flat');
           }}
           src="/assets/gui/top-flat-contour.png"
           title="Flat"/>
@@ -51,7 +47,6 @@ export function ConstructionAndContourSubmenu(){
           isActive={guitarBuilderCtx.topContour.get() === 'topForearmContour'}
           onClick={() =>{
             guitarBuilderCtx.topContour.set('topForearmContour');
-            guitarBuilderCtx.socket.selectComponent('topContour', 'Forearm')
           }}
           src="/assets/gui/top-forearm-contour.png"
           title="Forearm"/>
@@ -59,7 +54,6 @@ export function ConstructionAndContourSubmenu(){
           isActive={guitarBuilderCtx.topContour.get() === 'topCarvedContour'}
           onClick={() =>{
             guitarBuilderCtx.topContour.set('topCarvedContour');
-            guitarBuilderCtx.socket.selectComponent('topContour', 'Carved')
           }}
           src="/assets/gui/top-carved-contour.png"
           title="Carved"/>
@@ -72,7 +66,6 @@ export function ConstructionAndContourSubmenu(){
           isActive={guitarBuilderCtx.backContour.get() === 'backFlatContour'}
           onClick={() =>{
             guitarBuilderCtx.backContour.set('backFlatContour');
-            guitarBuilderCtx.socket.selectComponent('backContour', 'Flat')
           }}
           src="/assets/gui/back-flat-contour.png"
           title="Flat"/>
@@ -80,7 +73,6 @@ export function ConstructionAndContourSubmenu(){
           isActive={guitarBuilderCtx.backContour.get() === 'backTummyContour'}
           onClick={() =>{
             guitarBuilderCtx.backContour.set('backTummyContour');
-            guitarBuilderCtx.socket.selectComponent('backContour', 'Tummy')
           }}
           src="/assets/gui/back-tummy-contour.png"
           title="Tummy"/>
@@ -88,7 +80,6 @@ export function ConstructionAndContourSubmenu(){
           isActive={guitarBuilderCtx.backContour.get() === 'backCarvedContour'}
           onClick={() =>{
             guitarBuilderCtx.backContour.set('backCarvedContour');
-            guitarBuilderCtx.socket.selectComponent('backContour', 'Carved')
           }}
           src="/assets/gui/back-carved-contour.png"
           title="Carved"/>

@@ -32,7 +32,6 @@ export function JackSubmenu() {
                   const item = await jackRepository.get(jack.id);
                   if(!item) return;
                   guitarBuilderCtx.jack.set(item);
-                  guitarBuilderCtx.socket.selectComponent('jack', item.name.get());
                 }}
                 // @ts-ignore
                 src={serverImgUrl(jack.thumbnail?.filename)}

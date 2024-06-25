@@ -7,11 +7,10 @@ import { useAcousticGuitarModel } from "../acoustic-guitar-model-editor.page";
 import { CommonPresenter } from "~/commons/presenter/common.presenter";
 import { Color, Texture } from "pixi.js";
 import { useViewportContext } from "~/commons/components/viewport";
-import { GuitarModelPresenter } from "~/commons/presenter/guitar-model/guitar-model.presenter";
-import { guitarModelToPresenter } from "../../electric-model-editor/utils/functions/guitar-model-to-presenter";
+import { electricModelToPresenter } from "../../electric-model-editor/utils/functions/electric-model-to-presenter";
 import { AcousticModelPresenter } from "~/commons/presenter/guitar-model/acoustic-model.presenter";
-import { NeckPresenter } from "~/commons/presenter/fingerboard.presenter";
 import { acousticModelToPresenter } from "../utils/acoustic-model-to-presenter";
+import { NeckPresenter } from "~/commons/presenter/neck.presenter";
 
 export function AcousticModelEditorPresenter() {
   const model = useAcousticGuitarModel()!.get;

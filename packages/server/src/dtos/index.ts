@@ -1,6 +1,4 @@
 export * from "./bridge.dto"
-export * from "./guitar-body-contour.dto"
-export * from "./guitar-body.dto"
 export * from "./electric-guitar-model.dto"
 export * from "./image-upload.dto"
 export * from "./jack.dto"

@@ -21,25 +21,24 @@ import {
   Assets,
   Color,
 } from "pixi.js";
-import { guitarModelToPresenter } from "~/pages/admin/electric-model-editor/utils/functions/guitar-model-to-presenter";
 import { Constants } from "~/constants";
 import { useElectricModel } from "../electric-model-editor.page";
-import { NeckPresenter } from "~/commons/presenter/fingerboard.presenter";
 import { useViewportContext } from "~/commons/components/viewport";
-import { GuitarModelPresenter } from "~/commons/presenter/guitar-model/guitar-model.presenter";
+import { electricModelToPresenter } from "../utils/functions/electric-model-to-presenter";
+import { ElectricModelPresenter } from "~/commons/presenter/guitar-model/electric-model.presenter";
+import { NeckPresenter } from "~/commons/presenter/neck.presenter";
 
-export function ModelEditorPresenter() {
+export function ElectricModelEditorPresenter() {
   const model = createMemo(()=>useElectricModel().get())
 
   const viewportCtx = useViewportContext();
   const isFront = createMemo(()=>viewportCtx?.isFront.get())
   
   return (
-    <Show when={!!model()?.getSelectedBodySignal()}>
-      <GuitarModelPresenter
+    <Show when={!!model()?.selectedConstruction.get()}>
+      <ElectricModelPresenter
         isFront={isFront?.()}
-        body={{...guitarModelToPresenter(model)?.body, type : model()?.selectedBody.get() ?? undefined}}
-        spawnpoints={guitarModelToPresenter(model)?.spawnpoints}
+        {...electricModelToPresenter(model)}
         onGuitarClick={(e) => {
           model()
             ?.spawnPoints.getSelectedSignal()
@@ -48,7 +47,7 @@ export function ModelEditorPresenter() {
         fingerboard={model()?.spawnPoints.fingerboard.isShow.get() ? ()=><NeckPresenter isFront={isFront}/> : undefined}
       >
         <SpawnPointsIndicator />
-      </GuitarModelPresenter>
+      </ElectricModelPresenter>
     </Show>
   );
 }

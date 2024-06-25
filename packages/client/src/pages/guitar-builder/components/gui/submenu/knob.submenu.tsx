@@ -31,7 +31,6 @@ export function KnobSubmenu() {
                   const item = await knobRepository.get(knob.id);
                   if(!item) return;
                   guitarBuilderCtx.knob.set(item);
-                  guitarBuilderCtx.socket.selectComponent('knob', item.name.get());
                 }}
                 // @ts-ignore
                 src={serverImgUrl(knob.thumbnail?.filename)}

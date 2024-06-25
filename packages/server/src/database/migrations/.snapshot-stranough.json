@@ -15,65 +15,6 @@
           "nullable": false,
           "mappedType": "integer"
         },
-        "intent": {
-          "name": "intent",
-          "type": "varchar(100)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 100,
-          "mappedType": "string"
-        },
-        "utterance": {
-          "name": "utterance",
-          "type": "vector(1536)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 1536,
-          "mappedType": "unknown"
-        }
-      },
-      "name": "intents",
-      "schema": "public",
-      "indexes": [
-        {
-          "keyName": "intents_hnsw_l2_idx",
-          "columnNames": [],
-          "composite": false,
-          "constraint": false,
-          "primary": false,
-          "unique": false,
-          "expression": "CREATE INDEX \"intents_hnsw_l2_idx\" ON \"intents\" USING hnsw (utterance vector_l2_ops)"
-        },
-        {
-          "keyName": "intents_pkey",
-          "columnNames": [
-            "id"
-          ],
-          "composite": false,
-          "constraint": true,
-          "primary": true,
-          "unique": true
-        }
-      ],
-      "checks": [],
-      "foreignKeys": {},
-      "nativeEnums": {}
-    },
-    {
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "serial",
-          "unsigned": true,
-          "autoincrement": true,
-          "primary": true,
-          "nullable": false,
-          "mappedType": "integer"
-        },
         "created_at": {
           "name": "created_at",
           "type": "timestamptz",
@@ -218,16 +159,6 @@
           "length": 1000,
           "mappedType": "string"
         },
-        "embedding": {
-          "name": "embedding",
-          "type": "vector(1536)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "length": 1536,
-          "mappedType": "unknown"
-        },
         "thumbnail_id": {
           "name": "thumbnail_id",
           "type": "int",
@@ -286,15 +217,6 @@
           "constraint": true,
           "primary": false,
           "unique": true
-        },
-        {
-          "keyName": "knob_hnsw_l2_idx",
-          "columnNames": [],
-          "composite": false,
-          "constraint": false,
-          "primary": false,
-          "unique": false,
-          "expression": "CREATE INDEX \"knob_hnsw_l2_idx\" ON \"knob\" USING hnsw (embedding vector_l2_ops)"
         },
         {
           "keyName": "knob_pkey",
@@ -388,16 +310,6 @@
           "length": 1000,
           "mappedType": "string"
         },
-        "embedding": {
-          "name": "embedding",
-          "type": "vector(1536)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "length": 1536,
-          "mappedType": "unknown"
-        },
         "thumbnail_id": {
           "name": "thumbnail_id",
           "type": "int",
@@ -465,15 +377,6 @@
           "constraint": true,
           "primary": false,
           "unique": true
-        },
-        {
-          "keyName": "jack_hnsw_l2_idx",
-          "columnNames": [],
-          "composite": false,
-          "constraint": false,
-          "primary": false,
-          "unique": false,
-          "expression": "CREATE INDEX \"jack_hnsw_l2_idx\" ON \"jack\" USING hnsw (embedding vector_l2_ops)"
         },
         {
           "keyName": "jack_pkey",
@@ -566,16 +469,6 @@
           "nullable": false,
           "length": 1000,
           "mappedType": "string"
-        },
-        "embedding": {
-          "name": "embedding",
-          "type": "vector(1536)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "length": 1536,
-          "mappedType": "unknown"
         },
         "thumbnail_id": {
           "name": "thumbnail_id",
@@ -671,15 +564,6 @@
           "constraint": true,
           "primary": false,
           "unique": true
-        },
-        {
-          "keyName": "headstock_hnsw_l2_idx",
-          "columnNames": [],
-          "composite": false,
-          "constraint": false,
-          "primary": false,
-          "unique": false,
-          "expression": "CREATE INDEX \"headstock_hnsw_l2_idx\" ON \"headstock\" USING hnsw (embedding vector_l2_ops)"
         },
         {
           "keyName": "headstock_pkey",
@@ -780,364 +664,6 @@
           "length": 6,
           "mappedType": "datetime"
         },
-        "price": {
-          "name": "price",
-          "type": "int",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "default": "0",
-          "mappedType": "integer"
-        },
-        "shadow_texture_id": {
-          "name": "shadow_texture_id",
-          "type": "int",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "integer"
-        },
-        "specular_texture_id": {
-          "name": "specular_texture_id",
-          "type": "int",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "integer"
-        }
-      },
-      "name": "guitar_body_contour",
-      "schema": "public",
-      "indexes": [
-        {
-          "keyName": "guitar_body_contour_pkey",
-          "columnNames": [
-            "id"
-          ],
-          "composite": false,
-          "constraint": true,
-          "primary": true,
-          "unique": true
-        }
-      ],
-      "checks": [],
-      "foreignKeys": {
-        "guitar_body_contour_shadow_texture_id_foreign": {
-          "constraintName": "guitar_body_contour_shadow_texture_id_foreign",
-          "columnNames": [
-            "shadow_texture_id"
-          ],
-          "localTableName": "public.guitar_body_contour",
-          "referencedColumnNames": [
-            "id"
-          ],
-          "referencedTableName": "public.media",
-          "deleteRule": "set null",
-          "updateRule": "cascade"
-        },
-        "guitar_body_contour_specular_texture_id_foreign": {
-          "constraintName": "guitar_body_contour_specular_texture_id_foreign",
-          "columnNames": [
-            "specular_texture_id"
-          ],
-          "localTableName": "public.guitar_body_contour",
-          "referencedColumnNames": [
-            "id"
-          ],
-          "referencedTableName": "public.media",
-          "deleteRule": "set null",
-          "updateRule": "cascade"
-        }
-      },
-      "nativeEnums": {}
-    },
-    {
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "serial",
-          "unsigned": true,
-          "autoincrement": true,
-          "primary": true,
-          "nullable": false,
-          "mappedType": "integer"
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamptz",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 6,
-          "mappedType": "datetime"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamptz",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 6,
-          "mappedType": "datetime"
-        },
-        "mask_id": {
-          "name": "mask_id",
-          "type": "int",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "integer"
-        },
-        "back_mask_id": {
-          "name": "back_mask_id",
-          "type": "int",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "integer"
-        },
-        "burst_top_id": {
-          "name": "burst_top_id",
-          "type": "int",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "integer"
-        },
-        "burst_back_id": {
-          "name": "burst_back_id",
-          "type": "int",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "integer"
-        },
-        "price": {
-          "name": "price",
-          "type": "int",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "default": "0",
-          "mappedType": "integer"
-        }
-      },
-      "name": "guitar_body",
-      "schema": "public",
-      "indexes": [
-        {
-          "keyName": "guitar_body_pkey",
-          "columnNames": [
-            "id"
-          ],
-          "composite": false,
-          "constraint": true,
-          "primary": true,
-          "unique": true
-        }
-      ],
-      "checks": [],
-      "foreignKeys": {
-        "guitar_body_mask_id_foreign": {
-          "constraintName": "guitar_body_mask_id_foreign",
-          "columnNames": [
-            "mask_id"
-          ],
-          "localTableName": "public.guitar_body",
-          "referencedColumnNames": [
-            "id"
-          ],
-          "referencedTableName": "public.media",
-          "deleteRule": "set null",
-          "updateRule": "cascade"
-        },
-        "guitar_body_back_mask_id_foreign": {
-          "constraintName": "guitar_body_back_mask_id_foreign",
-          "columnNames": [
-            "back_mask_id"
-          ],
-          "localTableName": "public.guitar_body",
-          "referencedColumnNames": [
-            "id"
-          ],
-          "referencedTableName": "public.media",
-          "deleteRule": "set null",
-          "updateRule": "cascade"
-        },
-        "guitar_body_burst_top_id_foreign": {
-          "constraintName": "guitar_body_burst_top_id_foreign",
-          "columnNames": [
-            "burst_top_id"
-          ],
-          "localTableName": "public.guitar_body",
-          "referencedColumnNames": [
-            "id"
-          ],
-          "referencedTableName": "public.media",
-          "deleteRule": "set null",
-          "updateRule": "cascade"
-        },
-        "guitar_body_burst_back_id_foreign": {
-          "constraintName": "guitar_body_burst_back_id_foreign",
-          "columnNames": [
-            "burst_back_id"
-          ],
-          "localTableName": "public.guitar_body",
-          "referencedColumnNames": [
-            "id"
-          ],
-          "referencedTableName": "public.media",
-          "deleteRule": "set null",
-          "updateRule": "cascade"
-        }
-      },
-      "nativeEnums": {}
-    },
-    {
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "serial",
-          "unsigned": true,
-          "autoincrement": true,
-          "primary": true,
-          "nullable": false,
-          "mappedType": "integer"
-        },
-        "body_id": {
-          "name": "body_id",
-          "type": "int",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "integer"
-        },
-        "texture_id": {
-          "name": "texture_id",
-          "type": "int",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "integer"
-        },
-        "type": {
-          "name": "type",
-          "type": "text",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "enumItems": [
-            "topFlatContour",
-            "topCarvedContour",
-            "topForearmContour",
-            "backFlatContour",
-            "backCarvedContour",
-            "backTummyContour"
-          ],
-          "mappedType": "enum"
-        }
-      },
-      "name": "guitar_body_contour_pivot",
-      "schema": "public",
-      "indexes": [
-        {
-          "keyName": "guitar_body_contour_pivot_body_id_texture_id_type_unique",
-          "columnNames": [
-            "body_id",
-            "texture_id",
-            "type"
-          ],
-          "composite": true,
-          "constraint": true,
-          "primary": false,
-          "unique": true
-        },
-        {
-          "keyName": "guitar_body_contour_pivot_pkey",
-          "columnNames": [
-            "id"
-          ],
-          "composite": false,
-          "constraint": true,
-          "primary": true,
-          "unique": true
-        }
-      ],
-      "checks": [],
-      "foreignKeys": {
-        "guitar_body_contour_pivot_body_id_foreign": {
-          "constraintName": "guitar_body_contour_pivot_body_id_foreign",
-          "columnNames": [
-            "body_id"
-          ],
-          "localTableName": "public.guitar_body_contour_pivot",
-          "referencedColumnNames": [
-            "id"
-          ],
-          "referencedTableName": "public.guitar_body",
-          "deleteRule": "cascade",
-          "updateRule": "cascade"
-        },
-        "guitar_body_contour_pivot_texture_id_foreign": {
-          "constraintName": "guitar_body_contour_pivot_texture_id_foreign",
-          "columnNames": [
-            "texture_id"
-          ],
-          "localTableName": "public.guitar_body_contour_pivot",
-          "referencedColumnNames": [
-            "id"
-          ],
-          "referencedTableName": "public.guitar_body_contour",
-          "deleteRule": "set null",
-          "updateRule": "cascade"
-        }
-      },
-      "nativeEnums": {}
-    },
-    {
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "serial",
-          "unsigned": true,
-          "autoincrement": true,
-          "primary": true,
-          "nullable": false,
-          "mappedType": "integer"
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamptz",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 6,
-          "mappedType": "datetime"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamptz",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 6,
-          "mappedType": "datetime"
-        },
         "name": {
           "name": "name",
           "type": "varchar(255)",
@@ -1157,16 +683,6 @@
           "length": 1000,
           "mappedType": "string"
         },
-        "embedding": {
-          "name": "embedding",
-          "type": "vector(1536)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "length": 1536,
-          "mappedType": "unknown"
-        },
         "thumbnail_id": {
           "name": "thumbnail_id",
           "type": "int",
@@ -1174,6 +690,15 @@
           "autoincrement": false,
           "primary": false,
           "nullable": true,
+          "mappedType": "integer"
+        },
+        "price": {
+          "name": "price",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
           "mappedType": "integer"
         },
         "fingerboard_spawn_point": {
@@ -1203,14 +728,14 @@
           "nullable": true,
           "mappedType": "json"
         },
-        "price": {
-          "name": "price",
-          "type": "int",
+        "pickguard_spawn_point": {
+          "name": "pickguard_spawn_point",
+          "type": "jsonb",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
-          "mappedType": "integer"
+          "nullable": true,
+          "mappedType": "json"
         },
         "pickup_spawn_point": {
           "name": "pickup_spawn_point",
@@ -1265,6 +790,105 @@
           "primary": false,
           "nullable": true,
           "mappedType": "json"
+        },
+        "bolt_on_construction_mask_id": {
+          "name": "bolt_on_construction_mask_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "set_in_construction_mask_id": {
+          "name": "set_in_construction_mask_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "neck_through_construction_mask_id": {
+          "name": "neck_through_construction_mask_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "flat_contour_shadow_id": {
+          "name": "flat_contour_shadow_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "flat_contour_spec_id": {
+          "name": "flat_contour_spec_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "forearm_contour_shadow_id": {
+          "name": "forearm_contour_shadow_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "forearm_contour_spec_id": {
+          "name": "forearm_contour_spec_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "tummy_contour_shadow_id": {
+          "name": "tummy_contour_shadow_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "tummy_contour_spec_id": {
+          "name": "tummy_contour_spec_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "carved_contour_shadow_id": {
+          "name": "carved_contour_shadow_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "carved_contour_spec_id": {
+          "name": "carved_contour_spec_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
         }
       },
       "name": "electric_guitar_model",
@@ -1279,15 +903,6 @@
           "constraint": true,
           "primary": false,
           "unique": true
-        },
-        {
-          "keyName": "electric_guitar_model_hnsw_l2_idx",
-          "columnNames": [],
-          "composite": false,
-          "constraint": false,
-          "primary": false,
-          "unique": false,
-          "expression": "CREATE INDEX \"electric_guitar_model_hnsw_l2_idx\" ON \"electric_guitar_model\" USING hnsw (embedding vector_l2_ops)"
         },
         {
           "keyName": "electric_guitar_model_pkey",
@@ -1314,105 +929,147 @@
           "referencedTableName": "public.media",
           "deleteRule": "set null",
           "updateRule": "cascade"
-        }
-      },
-      "nativeEnums": {}
-    },
-    {
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "serial",
-          "unsigned": true,
-          "autoincrement": true,
-          "primary": true,
-          "nullable": false,
-          "mappedType": "integer"
         },
-        "model_id": {
-          "name": "model_id",
-          "type": "int",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "integer"
-        },
-        "body_id": {
-          "name": "body_id",
-          "type": "int",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "integer"
-        },
-        "type": {
-          "name": "type",
-          "type": "text",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "enumItems": [
-            "boltOnBody",
-            "neckThroughBody",
-            "setInBody"
-          ],
-          "mappedType": "enum"
-        }
-      },
-      "name": "electric_model_body_pivot",
-      "schema": "public",
-      "indexes": [
-        {
-          "keyName": "electric_model_body_pivot_model_id_body_id_type_unique",
+        "electric_guitar_model_bolt_on_construction_mask_id_foreign": {
+          "constraintName": "electric_guitar_model_bolt_on_construction_mask_id_foreign",
           "columnNames": [
-            "model_id",
-            "body_id",
-            "type"
+            "bolt_on_construction_mask_id"
           ],
-          "composite": true,
-          "constraint": true,
-          "primary": false,
-          "unique": true
-        },
-        {
-          "keyName": "electric_model_body_pivot_pkey",
-          "columnNames": [
-            "id"
-          ],
-          "composite": false,
-          "constraint": true,
-          "primary": true,
-          "unique": true
-        }
-      ],
-      "checks": [],
-      "foreignKeys": {
-        "electric_model_body_pivot_model_id_foreign": {
-          "constraintName": "electric_model_body_pivot_model_id_foreign",
-          "columnNames": [
-            "model_id"
-          ],
-          "localTableName": "public.electric_model_body_pivot",
+          "localTableName": "public.electric_guitar_model",
           "referencedColumnNames": [
             "id"
           ],
-          "referencedTableName": "public.electric_guitar_model",
-          "deleteRule": "cascade",
+          "referencedTableName": "public.media",
+          "deleteRule": "set null",
           "updateRule": "cascade"
         },
-        "electric_model_body_pivot_body_id_foreign": {
-          "constraintName": "electric_model_body_pivot_body_id_foreign",
+        "electric_guitar_model_set_in_construction_mask_id_foreign": {
+          "constraintName": "electric_guitar_model_set_in_construction_mask_id_foreign",
           "columnNames": [
-            "body_id"
+            "set_in_construction_mask_id"
           ],
-          "localTableName": "public.electric_model_body_pivot",
+          "localTableName": "public.electric_guitar_model",
           "referencedColumnNames": [
             "id"
           ],
-          "referencedTableName": "public.guitar_body",
+          "referencedTableName": "public.media",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "electric_guitar_model_neck_through_construction_mask_id_foreign": {
+          "constraintName": "electric_guitar_model_neck_through_construction_mask_id_foreign",
+          "columnNames": [
+            "neck_through_construction_mask_id"
+          ],
+          "localTableName": "public.electric_guitar_model",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.media",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "electric_guitar_model_flat_contour_shadow_id_foreign": {
+          "constraintName": "electric_guitar_model_flat_contour_shadow_id_foreign",
+          "columnNames": [
+            "flat_contour_shadow_id"
+          ],
+          "localTableName": "public.electric_guitar_model",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.media",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "electric_guitar_model_flat_contour_spec_id_foreign": {
+          "constraintName": "electric_guitar_model_flat_contour_spec_id_foreign",
+          "columnNames": [
+            "flat_contour_spec_id"
+          ],
+          "localTableName": "public.electric_guitar_model",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.media",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "electric_guitar_model_forearm_contour_shadow_id_foreign": {
+          "constraintName": "electric_guitar_model_forearm_contour_shadow_id_foreign",
+          "columnNames": [
+            "forearm_contour_shadow_id"
+          ],
+          "localTableName": "public.electric_guitar_model",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.media",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "electric_guitar_model_forearm_contour_spec_id_foreign": {
+          "constraintName": "electric_guitar_model_forearm_contour_spec_id_foreign",
+          "columnNames": [
+            "forearm_contour_spec_id"
+          ],
+          "localTableName": "public.electric_guitar_model",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.media",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "electric_guitar_model_tummy_contour_shadow_id_foreign": {
+          "constraintName": "electric_guitar_model_tummy_contour_shadow_id_foreign",
+          "columnNames": [
+            "tummy_contour_shadow_id"
+          ],
+          "localTableName": "public.electric_guitar_model",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.media",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "electric_guitar_model_tummy_contour_spec_id_foreign": {
+          "constraintName": "electric_guitar_model_tummy_contour_spec_id_foreign",
+          "columnNames": [
+            "tummy_contour_spec_id"
+          ],
+          "localTableName": "public.electric_guitar_model",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.media",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "electric_guitar_model_carved_contour_shadow_id_foreign": {
+          "constraintName": "electric_guitar_model_carved_contour_shadow_id_foreign",
+          "columnNames": [
+            "carved_contour_shadow_id"
+          ],
+          "localTableName": "public.electric_guitar_model",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.media",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "electric_guitar_model_carved_contour_spec_id_foreign": {
+          "constraintName": "electric_guitar_model_carved_contour_spec_id_foreign",
+          "columnNames": [
+            "carved_contour_spec_id"
+          ],
+          "localTableName": "public.electric_guitar_model",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.media",
           "deleteRule": "set null",
           "updateRule": "cascade"
         }
@@ -1468,16 +1125,6 @@
           "nullable": false,
           "length": 1000,
           "mappedType": "string"
-        },
-        "embedding": {
-          "name": "embedding",
-          "type": "vector(1536)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "length": 1536,
-          "mappedType": "unknown"
         },
         "thumbnail_id": {
           "name": "thumbnail_id",
@@ -1555,15 +1202,6 @@
           "constraint": true,
           "primary": false,
           "unique": true
-        },
-        {
-          "keyName": "bridge_hnsw_l2_idx",
-          "columnNames": [],
-          "composite": false,
-          "constraint": false,
-          "primary": false,
-          "unique": false,
-          "expression": "CREATE INDEX \"bridge_hnsw_l2_idx\" ON \"bridge\" USING hnsw (embedding vector_l2_ops)"
         },
         {
           "keyName": "bridge_pkey",
@@ -1657,16 +1295,6 @@
           "length": 1000,
           "mappedType": "string"
         },
-        "embedding": {
-          "name": "embedding",
-          "type": "vector(1536)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "length": 1536,
-          "mappedType": "unknown"
-        },
         "thumbnail_id": {
           "name": "thumbnail_id",
           "type": "int",
@@ -1696,6 +1324,15 @@
         },
         "bridge_spawn_point": {
           "name": "bridge_spawn_point",
+          "type": "jsonb",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "json"
+        },
+        "pickguard_spawn_point": {
+          "name": "pickguard_spawn_point",
           "type": "jsonb",
           "unsigned": false,
           "autoincrement": false,
@@ -1815,15 +1452,6 @@
           "constraint": true,
           "primary": false,
           "unique": true
-        },
-        {
-          "keyName": "acoustic_guitar_model_hnsw_l2_idx",
-          "columnNames": [],
-          "composite": false,
-          "constraint": false,
-          "primary": false,
-          "unique": false,
-          "expression": "CREATE INDEX \"acoustic_guitar_model_hnsw_l2_idx\" ON \"acoustic_guitar_model\" USING hnsw (embedding vector_l2_ops)"
         },
         {
           "keyName": "acoustic_guitar_model_pkey",
@@ -2008,16 +1636,6 @@
           "length": 1000,
           "mappedType": "string"
         },
-        "embedding": {
-          "name": "embedding",
-          "type": "vector(1536)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "length": 1536,
-          "mappedType": "unknown"
-        },
         "thumbnail_id": {
           "name": "thumbnail_id",
           "type": "int",
@@ -2094,15 +1712,6 @@
           "constraint": true,
           "primary": false,
           "unique": true
-        },
-        {
-          "keyName": "nut_hnsw_l2_idx",
-          "columnNames": [],
-          "composite": false,
-          "constraint": false,
-          "primary": false,
-          "unique": false,
-          "expression": "CREATE INDEX \"nut_hnsw_l2_idx\" ON \"nut\" USING hnsw (embedding vector_l2_ops)"
         },
         {
           "keyName": "nut_pkey",
@@ -2196,16 +1805,6 @@
           "length": 1000,
           "mappedType": "string"
         },
-        "embedding": {
-          "name": "embedding",
-          "type": "vector(1536)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "length": 1536,
-          "mappedType": "unknown"
-        },
         "thumbnail_id": {
           "name": "thumbnail_id",
           "type": "int",
@@ -2282,15 +1881,6 @@
           "constraint": true,
           "primary": false,
           "unique": true
-        },
-        {
-          "keyName": "peg_hnsw_l2_idx",
-          "columnNames": [],
-          "composite": false,
-          "constraint": false,
-          "primary": false,
-          "unique": false,
-          "expression": "CREATE INDEX \"peg_hnsw_l2_idx\" ON \"peg\" USING hnsw (embedding vector_l2_ops)"
         },
         {
           "keyName": "peg_pkey",
@@ -2397,16 +1987,6 @@
           "length": 1000,
           "mappedType": "string"
         },
-        "embedding": {
-          "name": "embedding",
-          "type": "vector(1536)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "length": 1536,
-          "mappedType": "unknown"
-        },
         "price": {
           "name": "price",
           "type": "int",
@@ -2425,6 +2005,15 @@
           "nullable": true,
           "mappedType": "integer"
         },
+        "pivot_position": {
+          "name": "pivot_position",
+          "type": "jsonb",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "json"
+        },
         "model_id": {
           "name": "model_id",
           "type": "int",
@@ -2433,6 +2022,15 @@
           "primary": false,
           "nullable": false,
           "mappedType": "integer"
+        },
+        "scale": {
+          "name": "scale",
+          "type": "real",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "float"
         }
       },
       "name": "pickguard",
@@ -2447,15 +2045,6 @@
           "constraint": true,
           "primary": false,
           "unique": true
-        },
-        {
-          "keyName": "pickguard_hnsw_l2_idx",
-          "columnNames": [],
-          "composite": false,
-          "constraint": false,
-          "primary": false,
-          "unique": false,
-          "expression": "CREATE INDEX \"pickguard_hnsw_l2_idx\" ON \"pickguard\" USING hnsw (embedding vector_l2_ops)"
         },
         {
           "keyName": "pickguard_pkey",
@@ -2548,16 +2137,6 @@
           "length": 1000,
           "mappedType": "string"
         },
-        "embedding": {
-          "name": "embedding",
-          "type": "vector(1536)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "length": 1536,
-          "mappedType": "unknown"
-        },
         "thumbnail_id": {
           "name": "thumbnail_id",
           "type": "int",
@@ -2639,15 +2218,6 @@
           "constraint": true,
           "primary": false,
           "unique": true
-        },
-        {
-          "keyName": "pickup_hnsw_l2_idx",
-          "columnNames": [],
-          "composite": false,
-          "constraint": false,
-          "primary": false,
-          "unique": false,
-          "expression": "CREATE INDEX \"pickup_hnsw_l2_idx\" ON \"pickup\" USING hnsw (embedding vector_l2_ops)"
         },
         {
           "keyName": "pickup_pkey",
@@ -2741,16 +2311,6 @@
           "length": 1000,
           "mappedType": "string"
         },
-        "embedding": {
-          "name": "embedding",
-          "type": "vector(1536)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "length": 1536,
-          "mappedType": "unknown"
-        },
         "thumbnail_id": {
           "name": "thumbnail_id",
           "type": "int",
@@ -2809,15 +2369,6 @@
           "constraint": true,
           "primary": false,
           "unique": true
-        },
-        {
-          "keyName": "switch_hnsw_l2_idx",
-          "columnNames": [],
-          "composite": false,
-          "constraint": false,
-          "primary": false,
-          "unique": false,
-          "expression": "CREATE INDEX \"switch_hnsw_l2_idx\" ON \"switch\" USING hnsw (embedding vector_l2_ops)"
         },
         {
           "keyName": "switch_pkey",
@@ -2911,16 +2462,6 @@
           "length": 1000,
           "mappedType": "string"
         },
-        "embedding": {
-          "name": "embedding",
-          "type": "vector(1536)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "length": 1536,
-          "mappedType": "unknown"
-        },
         "price": {
           "name": "price",
           "type": "int",
@@ -2952,15 +2493,6 @@
           "constraint": true,
           "primary": false,
           "unique": true
-        },
-        {
-          "keyName": "wood_hnsw_l2_idx",
-          "columnNames": [],
-          "composite": false,
-          "constraint": false,
-          "primary": false,
-          "unique": false,
-          "expression": "CREATE INDEX \"wood_hnsw_l2_idx\" ON \"wood\" USING hnsw (embedding vector_l2_ops)"
         },
         {
           "keyName": "wood_pkey",

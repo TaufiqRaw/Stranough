@@ -6,14 +6,14 @@ import { Constants } from "~/constants";
 import { useGuitarPeg } from "../peg-editor.page";
 import { CommonPresenter } from "~/commons/presenter/common.presenter";
 import { Texture } from "pixi.js";
-import { NeckPresenter } from "~/commons/presenter/fingerboard.presenter";
 import { headstockToPresenter } from "~/pages/admin/headstock-editor/utils/headstock-to-presenter";
 import { pegToPresenter } from "../utils/peg-to-presenter";
 import { useViewportContext } from "~/commons/components/viewport";
 import { PegPresenter } from "~/commons/presenter/peg.presenter";
-import { GuitarModelPresenter } from "~/commons/presenter/guitar-model/guitar-model.presenter";
 import { HeadstockPresenter } from "~/commons/presenter/headstock.presenter";
-import { guitarModelToPresenter } from "../../electric-model-editor/utils/functions/guitar-model-to-presenter";
+import { electricModelToPresenter } from "../../electric-model-editor/utils/functions/electric-model-to-presenter";
+import { ElectricModelPresenter } from "~/commons/presenter/guitar-model/electric-model.presenter";
+import { NeckPresenter } from "~/commons/presenter/neck.presenter";
 
 export function PegEditorPresenter() {
   const peg = createMemo(() => useGuitarPeg().get());
@@ -79,10 +79,10 @@ export function PegEditorPresenter() {
       }
       fallback={Peg()}
     >
-      <GuitarModelPresenter
+      <ElectricModelPresenter
         isFront={isFront()}
-        {...guitarModelToPresenter(editorCtx!.modelPreview.selectedModel)}
-        spawnpoints={guitarModelToPresenter(editorCtx!.modelPreview.selectedModel)?.spawnpoints}
+        {...electricModelToPresenter(editorCtx!.modelPreview.selectedModel)}
+        spawnpoints={electricModelToPresenter(editorCtx!.modelPreview.selectedModel)?.spawnpoints}
         fingerboard={()=><NeckPresenter
           isFront={isFront}
           headstock={()=><Show when={editorCtx?.headstockPreview.isShowHeadstockPreview.get()}><HeadstockPresenter

@@ -1,2 +1,3 @@
-export declare const cutawayKeys: readonly ["noneCutawayMask", "softCutawayMask", "venetianCutawayMask", "florentineCutawayMask"];
-export declare const cutawayBurstKeys: readonly ["noneCutawayBurst", "softCutawayBurst", "venetianCutawayBurst", "florentineCutawayBurst"];
+export declare const cutawayKeys: readonly ["noneCutaway", "softCutaway", "venetianCutaway", "florentineCutaway"];
+export declare const cutawayBurstKeys: ("noneCutawayBurst" | "softCutawayBurst" | "venetianCutawayBurst" | "florentineCutawayBurst")[];
+export declare const cutawayMaskKeys: ("noneCutawayMask" | "softCutawayMask" | "venetianCutawayMask" | "florentineCutawayMask")[];

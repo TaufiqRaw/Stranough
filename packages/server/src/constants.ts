@@ -3,8 +3,6 @@ import * as Enums from "./enums";
 import dotenv from "dotenv";
 import { Cascade, ManyToOneOptions, PropertyOptions } from "@mikro-orm/core";
 import { Media } from "./entities";
-import TrainData from "./train-data.json";
-import { UserIntent } from "./interfaces/chatbot.type";
 dotenv.config({
   path: path.join(__dirname, "..", "..", "..", ".env"),
 });
@@ -19,7 +17,6 @@ export const serverImagesUrl = process.env.SERVER_IMAGES_URL || "images";
 
 export const imagePath = join(__dirname, "..", "public", serverImagesUrl);
 
-export const UserIntentList = Object.keys(TrainData.intents) as UserIntent[];
 
 export const errorMessage = Object.freeze({
   404: "Not Found",

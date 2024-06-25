@@ -9,7 +9,7 @@ import { EntityWithoutBase } from "../interfaces/entity-without-base.interface";
 export type WoodProps = Omit<EntityWithoutBase<Wood>, 'texture'> & { texture : Media };
 
 @Entity()
-@Index({ name: 'wood_hnsw_l2_idx', expression: 'CREATE INDEX "wood_hnsw_l2_idx" ON "wood" USING hnsw (embedding vector_l2_ops)' })
+// @Index({ name: 'wood_hnsw_l2_idx', expression: 'CREATE INDEX "wood_hnsw_l2_idx" ON "wood" USING hnsw (embedding vector_l2_ops)' })
 export class Wood extends BaseEntityWithDesc {
 
   @Property()

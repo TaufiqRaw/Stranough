@@ -31,7 +31,6 @@ export function HeadstockTypeSubmenu(){
                   const h = await headstockRepository.get(headstock.id);
                   if(!h) return;
                   guitarBuilderCtx.headstock.set(h);
-                  guitarBuilderCtx.socket.selectComponent('headstock', h.name.get());
                 }}
                 // @ts-ignore
                 src={serverImgUrl(headstock.thumbnail?.filename)}

@@ -6,10 +6,10 @@ import { Constants } from "~/constants";
 import { useGuitarNut } from "../nut-editor.page";
 import { CommonPresenter } from "~/commons/presenter/common.presenter";
 import { Texture } from "pixi.js";
-import { NeckPresenter } from "~/commons/presenter/fingerboard.presenter";
 import { useViewportContext } from "~/commons/components/viewport";
-import { GuitarModelPresenter } from "~/commons/presenter/guitar-model/guitar-model.presenter";
-import { guitarModelToPresenter } from "../../electric-model-editor/utils/functions/guitar-model-to-presenter";
+import { electricModelToPresenter } from "../../electric-model-editor/utils/functions/electric-model-to-presenter";
+import { ElectricModelPresenter } from "~/commons/presenter/guitar-model/electric-model.presenter";
+import { NeckPresenter } from "~/commons/presenter/neck.presenter";
 
 export function NutEditorPresenter() {
   const nut = createMemo(() => useGuitarNut().get());
@@ -58,9 +58,9 @@ export function NutEditorPresenter() {
       }
       fallback={Nut()}
     >
-      <GuitarModelPresenter
+      <ElectricModelPresenter
         isFront={isFront?.()}
-        {...guitarModelToPresenter(editorCtx!.modelPreview.selectedModel!)}
+        {...electricModelToPresenter(editorCtx!.modelPreview.selectedModel!)}
         fingerboard={()=><NeckPresenter
           nut={Nut}
         />}

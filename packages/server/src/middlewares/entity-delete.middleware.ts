@@ -6,7 +6,7 @@ import { BadRequestError } from "../utils/classes/error.class.util";
 import { DI } from "../app";
 
 export function entityDeleteMiddleware<T extends BaseEntity>(repository : ()=>EntityRepository<T>, options ?: {
-  itemCallback ?: (item : T)=>Promise<void>
+  beforeDelete ?: (item : T)=>Promise<void>
 }){
   return asyncMiddleware(async(req,res)=>{ 
     const repo = repository();
@@ -14,7 +14,7 @@ export function entityDeleteMiddleware<T extends BaseEntity>(repository : ()=>En
     const item = await findOneEntity(repo, id);
     if(!item)
       throw new BadRequestError('item not found');
-    options?.itemCallback && await options.itemCallback(item);
+    options?.beforeDelete && await options.beforeDelete(item);
     await DI.em.removeAndFlush(item);
     return res.json('ok');
   })

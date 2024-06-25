@@ -15,7 +15,6 @@ export function BodyTopWoodSubmenu() {
             isActive={!guitarBuilderCtx.bodyTopWood.get()}
             onClick={() => {
               guitarBuilderCtx.bodyTopWood.set(undefined);
-              guitarBuilderCtx.socket.selectComponent('bodyTopWood', 'None');
             }}
             icon={() => <i class="bi bi-ban text-5xl" />}
             title="None"
@@ -26,7 +25,6 @@ export function BodyTopWoodSubmenu() {
                 isActive={guitarBuilderCtx.bodyTopWood.get() === wood.key}
                 onClick={() => {
                   guitarBuilderCtx.bodyTopWood.set(wood.key)
-                  guitarBuilderCtx.socket.selectComponent('bodyTopWood', wood.name)
                 }}
                 src={Constants.woodUrl[wood.key]}
                 title={wood.name}

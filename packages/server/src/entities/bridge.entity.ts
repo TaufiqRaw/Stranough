@@ -10,7 +10,7 @@ import { BaseEntityWithSprite } from "./base-with-sprite.entity";
 export type BridgeProps = EntityWithSprite<Bridge>;
 
 @Entity()
-@Index({ name: 'bridge_hnsw_l2_idx', expression: 'CREATE INDEX "bridge_hnsw_l2_idx" ON "bridge" USING hnsw (embedding vector_l2_ops)' })
+// @Index({ name: 'bridge_hnsw_l2_idx', expression: 'CREATE INDEX "bridge_hnsw_l2_idx" ON "bridge" USING hnsw (embedding vector_l2_ops)' })
 export class Bridge extends BaseEntityWithSprite{
 
   @Property({type : 'smallint'})

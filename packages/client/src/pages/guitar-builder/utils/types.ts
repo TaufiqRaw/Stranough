@@ -43,21 +43,6 @@ export type IGuitarBuilder = UtilTypes.Satisfies< Omit<GuitarBuilder.SelectedIte
   bridge : SignalObject<Bridge | undefined>,
   knob : SignalObject<Knob | undefined>,
   jack : SignalObject<Jack | undefined>,
-  socket : {
-    messages: Accessor<{
-        data: {
-          message: string;
-          metadata?: {
-              type: string;
-          };
-        };
-        isUser: boolean;
-    }[]>;
-    status: Accessor<"success" | "error" | "connecting">;
-    isAnswering: Accessor<boolean>;
-    selectComponent: (component : keyof GuitarBuilder.SelectedItem, id: any) => void;
-    sendMessage: (message: string) => void;
-  }
 }>;
 
 export interface IGuitarBuilderMenuChildren {

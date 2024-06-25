@@ -2,7 +2,6 @@ import { For, createMemo } from "solid-js";
 import { EditorGui, EditorGuiGroup, keyboardMove } from "~/commons/components/editor-gui";
 import ImageInput from "~/commons/components/image-input";
 import { Button } from "~/commons/components/button";
-import { GuitarModelPreviewExplorer } from "~/commons/components/guitar-model-preview-explorer";
 import { NameDescriptionGroup } from "~/commons/components/name-description-group";
 import { useGuitarPickguard } from "../pickguard-editor.page";
 import { Checkbox } from "~/commons/components/checkbox";
@@ -12,6 +11,7 @@ import { ServerEntities } from "stranough-server";
 import { useEditorPageContext } from "~/commons/components/editor-page";
 import { createQuery } from "@tanstack/solid-query";
 import { electricModelRepository } from "../../electric-model-editor/electric-model.repository";
+import { ElectricModelPreviewExplorer } from "~/commons/components/electric-model-preview-explorer";
 
 export function PickguardEditorGui() {
   const pickguard = createMemo(() => useGuitarPickguard().get());
@@ -26,10 +26,32 @@ export function PickguardEditorGui() {
   }));
 
   return (
-    <EditorGui>
+    <EditorGui onKeydown={(key, t)=>{
+      switch(key){
+        case 'ArrowUp' :
+        case 'ArrowDown' :
+        case 'ArrowLeft' :
+        case 'ArrowRight' : {
+          keyboardMove(key, t, (speed) => pickguard()?.getSelectedItem()?.set((prev) => ({
+            x: ((prev?.x ?? 0) + speed.x),
+            y: ((prev?.y ?? 0) + speed.y),
+          })));
+          break;
+        }
+        case 'x' : {
+          pickguard()?.getSelectedItem()?.set((prev)=>({x : 0, y : prev?.y ?? 0}));
+          break;
+        }
+        case 'Escape' : {
+          pickguard()?.selectedItem.set();
+          break;
+        }
+      }
+    }}>
       <EditorGuiGroup parent>
         <span class="font-bold text-center mx-3">Pickguard</span>
       </EditorGuiGroup>
+      <ElectricModelPreviewExplorer />
       <NameDescriptionGroup
         description={pickguard()?.description}
         name={pickguard()?.name}
@@ -66,6 +88,24 @@ export function PickguardEditorGui() {
           }}
           imageFilename={pickguard()?.texture.get()?.filename}
         />
+        <span>Scale</span>
+        <input
+          type="range"
+          value={pickguard()?.scale.get()}
+          oninput={(e) => pickguard()?.scale.set(parseFloat(e.target.value))}
+          step={0.01}
+          min={0.25}
+          max={2}
+        />
+      </EditorGuiGroup>
+      <EditorGuiGroup parent>
+        <span class="font-bold text-center mx-3">Points</span>
+        <ToggleableButton
+          isActive={pickguard()?.selectedItem?.get() === "pivot"}
+          onClick={() => pickguard()?.selectedItem?.set("pivot")}
+        >
+          Pivot Point
+        </ToggleableButton>
       </EditorGuiGroup>
       <Button class="mx-3 mt-5" onClick={pickguard()?.save}>
         Save

@@ -1,16 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.cutawayBurstKeys = exports.cutawayKeys = void 0;
+exports.cutawayMaskKeys = exports.cutawayBurstKeys = exports.cutawayKeys = void 0;
 exports.cutawayKeys = Object.freeze([
-    "noneCutawayMask",
-    "softCutawayMask",
-    "venetianCutawayMask",
-    "florentineCutawayMask",
+    "noneCutaway",
+    "softCutaway",
+    "venetianCutaway",
+    "florentineCutaway",
 ]);
-exports.cutawayBurstKeys = Object.freeze([
-    "noneCutawayBurst",
-    "softCutawayBurst",
-    "venetianCutawayBurst",
-    "florentineCutawayBurst",
-]);
+exports.cutawayBurstKeys = exports.cutawayKeys.map((key) => `${key}Burst`);
+exports.cutawayMaskKeys = exports.cutawayKeys.map((key) => `${key}Mask`);
 //# sourceMappingURL=acoustic-model.js.map

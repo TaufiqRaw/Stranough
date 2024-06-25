@@ -29,12 +29,12 @@ import { createContext } from "solid-js";
 import { createPixiTexture } from "~/commons/functions/create-texture";
 import { Position } from "~/commons/interfaces/position";
 import { Constants } from "~/constants";
-import { GuitarModelBodyKeyType } from "~/pages/admin/electric-model-editor/utils/types";
 import * as R from "remeda";
 import fragment from "~/commons/shader/whiteify.frag?raw";
 import vertex from "~/commons/shader/whiteify.vert?raw";
 import { ElecticModelPresenterProps } from "../types";
 import { DropShadowFilter } from "pixi-filters";
+import {ElectricModel as ElectricModelConfig} from 'stranough-common'
 
 const invertColorFilter = new ColorMatrixFilter();
 invertColorFilter.negative(true);
@@ -49,7 +49,7 @@ interface GuitarBodyPresenterContext {
   neckPosition: () => Position | undefined;
   setNeckTexture: Setter<Texture | null>;
   isFront: () => boolean;
-  type?: () => GuitarModelBodyKeyType | undefined;
+  type?: () => typeof ElectricModelConfig.constructionKeys[number] | undefined;
   isElectric: () => boolean;
   selectedMask : Accessor<Texture | undefined>;
   backWoodTexture?: Accessor<Texture | undefined>;
@@ -76,7 +76,7 @@ export function useGuitarBodyPresenterContext() {
 
 const PrivateCtx = createContext<PrivateCtxType>();
 
-export function GuitarModelPresenter(_props: ElecticModelPresenterProps) {
+export function ElectricModelPresenter(_props: ElecticModelPresenterProps) {
   const props = mergeProps(
     { isFront: true, body: { type: "boltOnBody" } },
     _props
@@ -101,7 +101,6 @@ export function GuitarModelPresenter(_props: ElecticModelPresenterProps) {
     backMask: createPixiTexture(() => props.body.backMask),
     frontShadowTexture: createPixiTexture(() => props.body.frontShadowTexture),
     backShadowTexture: createPixiTexture(() => props.body.backShadowTexture),
-    pickguardTexture: createPixiTexture(() => props.pickguard?.()),
     frontSpecularTexture: createPixiTexture(
       () => props.body.frontSpecularTexture
     ),
@@ -178,17 +177,6 @@ export function GuitarModelPresenter(_props: ElecticModelPresenterProps) {
             <Container scale={props.body.scale} zIndex={1.01}>{props.colorOverlay!()}</Container>
           </Show>
 
-          <Show when={props.pickguard && textures.pickguardTexture() && selectedMask()}>
-            <Container zIndex={1.015} position={{ x: 0, y: 0 }} scale={props.body.scale}>
-              <Sprite 
-                texture={textures.pickguardTexture() ?? Texture.EMPTY}
-                height={selectedMask()?.height}
-                width={selectedMask()?.width}
-                anchor={0.5}
-              />
-            </Container>
-          </Show>
-
           <Sprite
             zIndex={2}
             texture={
@@ -202,7 +190,7 @@ export function GuitarModelPresenter(_props: ElecticModelPresenterProps) {
 
           <Show when={props.fingerboard && props.spawnpoints.fingerboard}>
             <Show
-              when={props.body.type !== "neckThroughBody"}
+              when={props.body.type !== "neckThroughConstruction"}
               fallback={props.fingerboard!()}
             >
               <Container
@@ -212,36 +200,6 @@ export function GuitarModelPresenter(_props: ElecticModelPresenterProps) {
                 {props.fingerboard!()}
               </Container>
             </Show>
-          </Show>
-
-          <Show
-            when={props.bridge && props.spawnpoints.bridge && props.isFront}
-          >
-            <Container 
-              uses={c=>c.filters = [ new DropShadowFilter({
-                blur: 2,
-                offset: { x: 4, y: 2 },
-                alpha: 0.4,
-                resolution: 4,
-              })]}
-              zIndex={1.03} position={props.spawnpoints.bridge}>
-              {props.bridge!()}
-            </Container>
-          </Show>
-
-          <Show
-            when={props.switch && props.spawnpoints.switch && props.isFront}
-          >
-            <Container
-              zIndex={1.02}
-              position={{
-                x: props.spawnpoints.switch!.x!,
-                y: props.spawnpoints.switch!.y!,
-              }}
-              rotation={props.spawnpoints.switch!.rotation}
-            >
-              {props.switch!()}
-            </Container>
           </Show>
 
           <Show when={props.jack?.side && !!props.spawnpoints.jack?.side}>
@@ -257,61 +215,112 @@ export function GuitarModelPresenter(_props: ElecticModelPresenterProps) {
             </Container>
           </Show>
 
-          <Show
-            when={
-              props.jack?.top && !!props.spawnpoints.jack?.top && props.isFront
-            }
-          >
-            <Container
-              zIndex={1.02}
-              position={{
-                x: props.spawnpoints.jack!.top!.x!,
-                y: props.spawnpoints.jack!.top!.y!,
-              }}
-              rotation={props.spawnpoints.jack!.top!.rotation}
+          {/* Front Facing Components */}
+          <Show when={props.isFront}>
+            <Show
+              when={
+                props.jack?.top && !!props.spawnpoints.jack?.top
+              }
             >
-              {props.jack!.top!()}
-            </Container>
-          </Show>
+              <Container
+                zIndex={1.02}
+                position={{
+                  x: props.spawnpoints.jack!.top!.x!,
+                  y: props.spawnpoints.jack!.top!.y!,
+                }}
+                rotation={props.spawnpoints.jack!.top!.rotation}
+              >
+                {props.jack!.top!()}
+              </Container>
+            </Show>
 
-          <Show
-            when={
-              props.pickup && props.spawnpoints.pickup?.neck && props.isFront
-            }
-          >
-            <Container zIndex={1.02} position={props.spawnpoints.pickup!.neck!}>
-              {props.pickup?.neck!()}
-            </Container>
-          </Show>
+            <Show when={props.pickguard && props.spawnpoints.pickguard}>
+              <Container zIndex={1.015} position={props.spawnpoints.pickguard} scale={props.body.scale}>
+                {props.pickguard!()}
+              </Container>
+            </Show>
 
-          <Show
-            when={
-              props.pickup && props.spawnpoints.pickup?.middle && props.isFront
-            }
-          >
-            <Container zIndex={1.02} position={props.spawnpoints.pickup!.middle!}>
-              {props.pickup?.middle!()}
-            </Container>
-          </Show>
+            <Show
+              when={props.bridge && props.spawnpoints.bridge}
+            >
+              <Container 
+                uses={c=>c.filters = [ new DropShadowFilter({
+                  blur: 2,
+                  offset: { x: 4, y: 2 },
+                  alpha: 0.4,
+                  resolution: 4,
+                })]}
+                zIndex={1.03} position={props.spawnpoints.bridge}>
+                {props.bridge!()}
+              </Container>
+            </Show>
 
-          <Show
-            when={
-              props.pickup && props.spawnpoints.pickup?.bridge && props.isFront
-            }
-          >
-            <Container zIndex={1.02} position={props.spawnpoints.pickup!.bridge!}>
-              {props.pickup?.bridge!()}
-            </Container>
-          </Show>
+            <Show
+              when={props.switch && props.spawnpoints.switch}
+            >
+              <Container
+                zIndex={1.02}
+                position={{
+                  x: props.spawnpoints.switch!.x!,
+                  y: props.spawnpoints.switch!.y!,
+                }}
+                rotation={props.spawnpoints.switch!.rotation}
+              >
+                {props.switch!()}
+              </Container>
+            </Show>
+            
+            <Show
+              when={
+                props.pickup && props.pickup.items[0] && (props.pickup.type?.length ?? 0) > 1 && props.spawnpoints.pickup?.neck
+              }
+            >
+              <Container zIndex={1.02} position={props.spawnpoints.pickup!.neck!}>
+                {props.pickup?.items[0]?.()}
+              </Container>
+            </Show>
 
-          <Show when={props.knobs && props.isFront}>
-            <For each={props.spawnpoints.knobs}>
-              {(knob, i) => (
-                <Container zIndex={1.02} position={knob}>
-                  {props.knobs?.[i()]?.() ?? <></>}
-                </Container>
-              )}
-            </For>
+            <Show
+              when={
+                (props.pickup && props.pickup.items[0] && (props.pickup.type?.length ?? 0) == 1)
+                || (props.pickup && props.pickup.items[1] && (props.pickup.type?.length ?? 0) == 2)
+              }
+            >
+              <Container zIndex={1.02} position={props.spawnpoints.pickup!.middle!}>
+                <Show when={props.pickup && props.pickup.items[0] && (props.pickup.type?.length ?? 0) == 1}>
+                  {props.pickup?.items[0]!()}
+                </Show>
+                <Show when={props.pickup && props.pickup.items[1] && (props.pickup.type?.length ?? 0) == 3}>
+                  {props.pickup?.items[1]!()}
+                </Show>
+              </Container>
+            </Show>
+
+            <Show
+              when={
+                (props.pickup && props.pickup.items[1] && (props.pickup.type?.length ?? 0) == 2)
+                || (props.pickup && props.pickup.items[2] && (props.pickup.type?.length ?? 0) == 3)
+              }
+            >
+              <Container zIndex={1.02} position={props.spawnpoints.pickup!.bridge!}>
+                <Show when={props.pickup && props.pickup.items[1] && (props.pickup.type?.length ?? 0) == 2}>
+                  {props.pickup?.items[1]!()}
+                </Show>
+                <Show when={props.pickup && props.pickup.items[2] && (props.pickup.type?.length ?? 0) == 3}>
+                  {props.pickup?.items[2]!()}
+                </Show>
+              </Container>
+            </Show>
+
+            <Show when={props.knobs}>
+              <For each={props.spawnpoints.knobs}>
+                {(knob, i) => (
+                  <Container zIndex={1.02} position={knob}>
+                    {props.knobs?.[i()]?.() ?? <></>}
+                  </Container>
+                )}
+              </For>
+            </Show>
           </Show>
           {props.children}
         </Container>
@@ -372,7 +381,7 @@ function NeckThroughBody(props : {}){
   const model = useGuitarBodyPresenterContext()!;
 
   return <>
-    <Show when={model.type!() === "neckThroughBody"}>
+    <Show when={model.type!() === "neckThroughConstruction"}>
       <NeckThroughBodyWithNeck/>
       <NeckThroughBodyNoNeck/>
       <NeckThroughTopWood/>

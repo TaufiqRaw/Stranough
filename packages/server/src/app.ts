@@ -6,8 +6,6 @@ import cors from 'cors';
 import { EntityManager, EntityRepository, MikroORM, RequestContext } from '@mikro-orm/postgresql';
 import morgan from 'morgan';
 import * as middlewares from './middlewares';
-import { GuitarBody } from './entities/guitar-body.entity';
-import { ElectricGuitarModel } from './entities/electric-guitar-model.entity';
 import { Media } from './entities/media.entity';
 import { Bridge } from './entities/bridge.entity';
 import winston from 'winston';
@@ -19,24 +17,17 @@ import { Nut } from './entities/nut.entity';
 import { Peg } from './entities/peg.entity';
 import { Pickguard } from './entities/pickguard.entity';
 import { Switch } from './entities/switch.entity';
-import { GuitarBodyContour } from './entities/guitar-body-contour.entity';
 import mikroOrmConfig from "./database/mikro-orm.config";
-import { electricGuitarModelController, mediaController } from './controllers';
-import { Pickup, Wood } from './entities';
+import {mediaController } from './controllers';
+import { ElectricGuitarModel, Pickup, Wood } from './entities';
 import { commonEntityRoutes } from './controllers/common-entity.controller';
 import * as IO from 'socket.io'
-import { initSocket } from './controllers/socket';
-import { Intents } from './entities/intents.entity';
-import { Client, Pool } from 'pg';
-import OpenAI from 'openai';
-import { AcousticGuitarModel } from './entities/acoustic-guitar-model.entity';
+import { AcousticGuitarModel } from './entities/_acoustic-guitar-model.entity';
 require('dotenv').config({
   path : Constants.envPath
 });
 
 type Repository  = {
-  guitarBodies : EntityRepository<GuitarBody>,
-  guitarBodyContours : EntityRepository<GuitarBodyContour>,
   electricModels : EntityRepository<ElectricGuitarModel>,
   acousticModels : EntityRepository<AcousticGuitarModel>,
   medias : EntityRepository<Media>, 
@@ -49,7 +40,6 @@ type Repository  = {
   pickguards : EntityRepository<Pickguard>,
   switchs : EntityRepository<Switch>,
   pickups : EntityRepository<Pickup>, 
-  intents : EntityRepository<Intents>,
   woods : EntityRepository<Wood>,
 };
 
@@ -63,7 +53,6 @@ export const DI = {} as {
   server: http.Server,
   logger : winston.Logger,
   io : IO.Server,
-  openAi : OpenAI,
 }
 
 export const app = express();
@@ -101,13 +90,10 @@ export async function main(){
       origin : process.env.NODE_ENV === 'production' ? process.env.FRONTEND_URL : '*',
     }
   });
-  initSocket();
 }
 
 
 function initRoutes(){
-
-  app.use('/electric-guitars', electricGuitarModelController);
   app.use('/medias', mediaController);
   commonEntityRoutes().forEach(([path, router])=>{
     app.use(`/${path}`, router);
@@ -117,9 +103,7 @@ function initRoutes(){
 async function initDependency(){
   DI.orm = await MikroORM.init(mikroOrmConfig);
   DI.em = DI.orm.em;
-
-  DI.openAi = new OpenAI();
-
+  
   initLogger();
 
   DI.repository = initRepository(DI.em);
@@ -143,10 +127,8 @@ function initLogger(){
 
 export function initRepository(em : EntityManager) : Repository{
   return {
-    guitarBodies : em.getRepository(GuitarBody),
     electricModels : em.getRepository(ElectricGuitarModel),
     acousticModels : em.getRepository(AcousticGuitarModel),
-    guitarBodyContours : em.getRepository(GuitarBodyContour),
     medias : em.getRepository(Media),
     bridges : em.getRepository(Bridge),
     headstocks : em.getRepository(Headstock),
@@ -157,7 +139,6 @@ export function initRepository(em : EntityManager) : Repository{
     pickguards : em.getRepository(Pickguard),
     switchs : em.getRepository(Switch),
     pickups : em.getRepository(Pickup),
-    intents : em.getRepository(Intents),
     woods : em.getRepository(Wood),
   }
 }

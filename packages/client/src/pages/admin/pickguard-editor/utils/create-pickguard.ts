@@ -35,7 +35,8 @@ export function createPickguard(
     price: createSignalObject(b ? b.price : 0),
     scale: createSignalObject(b ? b.scale : 1),
     selectedItem: createSignalObject<'pivot'>(),
-    model : createSignalObject(b ? b.model.id : undefined),
+    // @ts-ignore
+    model : createSignalObject(b ? b.model : undefined),
     getSelectedItem: () => {
       switch (obj.selectedItem.get()) {
         case "pivot":

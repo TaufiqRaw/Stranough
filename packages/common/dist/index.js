@@ -23,10 +23,10 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AcousticModel = exports.GuitarBuilder = exports.UtilTypes = exports.GuitarBody = exports.GuitarModel = void 0;
-exports.GuitarModel = __importStar(require("./guitar-model"));
-exports.GuitarBody = __importStar(require("./guitar-body"));
+exports.Pickup = exports.AcousticModel = exports.GuitarBuilder = exports.UtilTypes = exports.ElectricModel = void 0;
+exports.ElectricModel = __importStar(require("./electric-model"));
 exports.UtilTypes = __importStar(require("./util-types"));
 exports.GuitarBuilder = __importStar(require("./guitar-builder"));
 exports.AcousticModel = __importStar(require("./acoustic-model"));
+exports.Pickup = __importStar(require("./pickup"));
 //# sourceMappingURL=index.js.map

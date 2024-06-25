@@ -31,7 +31,6 @@ export function BridgeSubmenu() {
                   const item = await bridgeRepository.get(bridge.id);
                   if(!item) return;
                   guitarBuilderCtx.bridge.set(item);
-                  guitarBuilderCtx.socket.selectComponent('bridge', item.name.get());
                 }}
                 // @ts-ignore
                 src={serverImgUrl(bridge.thumbnail?.filename)}

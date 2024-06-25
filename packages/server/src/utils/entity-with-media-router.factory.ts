@@ -39,6 +39,10 @@ export function entityWithMediaRouterFactory<
     queryMapper : options?.queryMapper
   }));
 
+  router.get("/deep", entityIndexMiddleware(repository, 'name', {
+    populate : mediaKeys as any,
+  }))
+
   router.get(
     "/:id",
     entityGetMiddleware(repository, {
@@ -110,7 +114,7 @@ export function entityWithMediaRouterFactory<
   router.delete(
     "/:id",
     entityDeleteMiddleware(repository, {
-      async itemCallback(item) {
+      async beforeDelete(item) {
         await item.loadMedias();
       },
     })

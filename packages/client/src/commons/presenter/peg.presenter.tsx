@@ -16,7 +16,7 @@ import { Container, Sprite } from "solid-pixi";
 import { createPixiTexture } from "~/commons/functions/create-texture";
 import { Position } from "~/commons/interfaces/position";
 import { useHeadstockContext } from "./headstock.presenter";
-import { useGuitarBodyPresenterContext } from "./guitar-model/guitar-model.presenter";
+import { useGuitarBodyPresenterContext } from "./guitar-model/electric-model.presenter";
 
 export function PegPresenter(_props: {
   texture ?: {

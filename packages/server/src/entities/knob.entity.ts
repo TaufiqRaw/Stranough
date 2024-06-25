@@ -6,7 +6,7 @@ import { BaseEntityWithSprite } from "./base-with-sprite.entity";
 export type KnobProps = EntityWithSprite<Knob>;
 
 @Entity()
-@Index({ name: 'knob_hnsw_l2_idx', expression: 'CREATE INDEX "knob_hnsw_l2_idx" ON "knob" USING hnsw (embedding vector_l2_ops)' })
+// @Index({ name: 'knob_hnsw_l2_idx', expression: 'CREATE INDEX "knob_hnsw_l2_idx" ON "knob" USING hnsw (embedding vector_l2_ops)' })
 export class Knob extends BaseEntityWithSprite {
 
   constructor(props : KnobProps){

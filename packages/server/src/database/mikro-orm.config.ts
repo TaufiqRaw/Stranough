@@ -4,8 +4,6 @@ import { Migrator } from "@mikro-orm/migrations";
 import dotenv from 'dotenv';
 import * as Constants from "../constants";
 import { GuitarModelCleanup } from "../entities/subscribers/guitar-model-cleanup";
-import { GuitarModelBodyPivotCleanup } from "../entities/subscribers/guitar-model-body-pivot.cleanup";
-import { GuitarBodyCleanup } from "../entities/subscribers/guitar-body-cleanup";
 dotenv.config({
   path : Constants.envPath
 });
@@ -22,7 +20,7 @@ const config : Options = {
     entitiesTs: ['src/entities/*'],
     extensions : [Migrator],
     // subscribers : [new GuitarBodyUpdateCleanup(), new GuitarModelUpdateCleanup(), new GuitarModelDeleteCleanup()],
-    subscribers : [new GuitarModelCleanup(), new GuitarModelBodyPivotCleanup(), new GuitarBodyCleanup()],
+    // subscribers : [new GuitarModelCleanup()],
     metadataProvider: TsMorphMetadataProvider,
     migrations: {
       path: 'dist/database/migrations',

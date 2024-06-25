@@ -9,7 +9,7 @@ import { BaseEntityWithSprite } from "./base-with-sprite.entity";
 export type NutProps = EntityWithSprite<Nut>;
 
 @Entity()
-@Index({ name: 'nut_hnsw_l2_idx', expression: 'CREATE INDEX "nut_hnsw_l2_idx" ON "nut" USING hnsw (embedding vector_l2_ops)' })
+// @Index({ name: 'nut_hnsw_l2_idx', expression: 'CREATE INDEX "nut_hnsw_l2_idx" ON "nut" USING hnsw (embedding vector_l2_ops)' })
 export class Nut extends BaseEntityWithSprite {
 
   @Property({type : 'smallint'})

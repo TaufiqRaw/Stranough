@@ -1,5 +1,5 @@
 import { Accessor, Resource, Setter } from "solid-js"
-import { GuitarBodyTextureKeyType, ElectricModel, GuitarModelBodyKeyType } from "~/pages/admin/electric-model-editor/utils/types"
+import {ElectricModel } from "~/pages/admin/electric-model-editor/utils/types"
 import { SignalObject } from "./signal-object"
 import { Position } from "./position"
 import { Texture } from "pixi.js"
@@ -31,9 +31,5 @@ type ModelPreview = {
   id : () => number | undefined,
   setId : (i : number) => void,
   selectedModel : Resource<ElectricModel | undefined>,
-  selectedTexture : () => GuitarBodyTextureKeyType | undefined,
-  selectedBody : () => GuitarModelBodyKeyType | undefined,
-  setSelectedTexture : (t : GuitarBodyTextureKeyType | undefined) => void,
-  setSelectedBody : (b : GuitarModelBodyKeyType | undefined) => void,
   isShowModelPreview : SignalObject<boolean>,
 }

@@ -1,5 +1,5 @@
 import { Show } from "solid-js";
-import { MaskedBodyPresenter, NeckThroughToFullMaskedPresenter, useGuitarBodyPresenterContext } from "./guitar-model.presenter";
+import { MaskedBodyPresenter, NeckThroughToFullMaskedPresenter, useGuitarBodyPresenterContext } from "./electric-model.presenter";
 import { Graphics, RenderedGraphics } from "solid-pixi";
 import { Color } from "pixi.js";
 
@@ -8,7 +8,7 @@ export function GuitarModelSolidColorPresenter(props : {
 }){
   const model = useGuitarBodyPresenterContext()
   return <>
-    <Show when={model?.type?.() !== 'neckThroughBody'}>
+    <Show when={model?.type?.() !== 'neckThroughConstruction'}>
       <MaskedBodyPresenter>
         { (mask)=> <RenderedGraphics
           draw={[
@@ -20,7 +20,7 @@ export function GuitarModelSolidColorPresenter(props : {
         }
       </MaskedBodyPresenter>
     </Show>
-    <Show when={model?.type?.() === 'neckThroughBody'}>
+    <Show when={model?.type?.() === 'neckThroughConstruction'}>
       <NeckThroughToFullMaskedPresenter>
         { (mask)=> <RenderedGraphics
             draw={[

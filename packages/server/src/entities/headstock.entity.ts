@@ -5,14 +5,14 @@ import { EntityWithSprite, EntityWithoutBase } from "../interfaces/entity-withou
 import { classAssign } from "../utils/class-assign.util";
 import { Media } from "./media.entity";
 import { idProperty } from "../utils/id-property.util";
-import { ElectricGuitarModel } from "./electric-guitar-model.entity";
+import { ElectricGuitarModel } from "./_electric-guitar-model.entity";
 import { maxDescriptionLength, mediaFKOption } from "../constants";
 import { BaseEntityWithSprite } from "./base-with-sprite.entity";
 
 export interface HeadstockProps extends EntityWithSprite<Headstock> {}
 
 @Entity()
-@Index({ name: 'headstock_hnsw_l2_idx', expression: 'CREATE INDEX "headstock_hnsw_l2_idx" ON "headstock" USING hnsw (embedding vector_l2_ops)' })
+// @Index({ name: 'headstock_hnsw_l2_idx', expression: 'CREATE INDEX "headstock_hnsw_l2_idx" ON "headstock" USING hnsw (embedding vector_l2_ops)' })
 export class Headstock extends BaseEntityWithSprite {
 
   @Property({type : 'smallint'})

@@ -14,7 +14,7 @@ export interface PegProps extends Omit<EntityWithoutBase<Peg>, 'thumbnail' | 'pe
 }
 
 @Entity()
-@Index({ name: 'peg_hnsw_l2_idx', expression: 'CREATE INDEX "peg_hnsw_l2_idx" ON "peg" USING hnsw (embedding vector_l2_ops)' })
+// @Index({ name: 'peg_hnsw_l2_idx', expression: 'CREATE INDEX "peg_hnsw_l2_idx" ON "peg" USING hnsw (embedding vector_l2_ops)' })
 export class Peg extends BaseEntityWithDesc {
 
   @ManyToOne(()=>Media, mediaFKOption)

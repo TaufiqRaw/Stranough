@@ -26,7 +26,6 @@ export function BodyColorSubmenu() {
               isActive={builderCtx.bodyColorType.get() === color.key}
               onClick={() => {
                 builderCtx.bodyColorType.set(color.key);
-                builderCtx.socket.selectComponent("bodyColorType", color.key);
               }}
             >
               {color.name}
@@ -42,7 +41,6 @@ export function BodyColorSubmenu() {
               <GuitarBuilderImageButton
                 onClick={() => {
                   builderCtx.bodyColor.set(key);
-                  builderCtx.socket.selectComponent("bodyColor", key);
                 }}
                 isActive={builderCtx.bodyColor.get() === key}
                 title={key}

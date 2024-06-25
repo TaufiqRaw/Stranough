@@ -31,7 +31,6 @@ export function TunerSubmenu() {
                   const item = await pegRepository.get(tuner.id);
                   if(!item) return;
                   guitarBuilderCtx.peg.set(item);
-                  guitarBuilderCtx.socket.selectComponent('peg', item.name.get());
                 }}
                 // @ts-ignore
                 src={serverImgUrl(tuner.thumbnail?.filename)}

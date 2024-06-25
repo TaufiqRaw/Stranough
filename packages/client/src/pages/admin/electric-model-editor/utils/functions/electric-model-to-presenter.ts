@@ -14,18 +14,17 @@ function getPosAndRot(point?: {
   };
 }
 
-export function guitarModelToPresenter(model : ()=>ElectricModel | undefined){
+export function electricModelToPresenter(model : ()=>ElectricModel | undefined){
 
-  const topContour = model()?.getSelectedBodySignal()?.getSelectedTopContourSignal;
-  const backContour = model()?.getSelectedBodySignal()?.getSelectedBackContourSignal;
+  const topContour = model()?.getSelectedTopContourSignal;
+  const backContour = model()?.getSelectedBackContourSignal;
   const body = {
-    mask: model()?.getSelectedBodySignal()?.mask.get()?.filename,
-    backMask: model()?.getSelectedBodySignal()?.backMask.get()?.filename,
-    type: model()?.selectedBody.get() ?? undefined,
-    frontShadowTexture: topContour?.()?.shadowTexture.get()?.filename,
-    frontSpecularTexture: topContour?.()?.specularTexture.get()?.filename,
-    backShadowTexture: backContour?.()?.shadowTexture.get()?.filename,
-    backSpecularTexture: backContour?.()?.specularTexture.get()?.filename,
+    mask: model()?.getSelectedConstructionSignal()?.mask.get()?.filename,
+    type: model()?.selectedConstruction.get() ?? undefined,
+    shadowTexture: topContour?.()?.shadow.get()?.filename,
+    specularTexture: topContour?.()?.spec.get()?.filename,
+    backShadowTexture: backContour?.()?.shadow.get()?.filename,
+    backSpecularTexture: backContour?.()?.spec.get()?.filename,
     scale: model()?.maskScale.get(),
   };
 
@@ -42,6 +41,7 @@ export function guitarModelToPresenter(model : ()=>ElectricModel | undefined){
       middle: model()?.spawnPoints.pickup.middle.position.get(),
       bridge: model()?.spawnPoints.pickup.bridge.position.get(),
     },
+    pickguard : model()?.spawnPoints.pickguard.position.get(),
     knobs: model()?.spawnPoints.knobs.get().map((p) => p.get()),
   };
 

@@ -12,15 +12,15 @@ import {
   Min,
   ValidateNested,
 } from "class-validator";
-import { GuitarBodyDto } from "./guitar-body.dto";
 import { PositionDto, PositionWithRotationDto } from "./position.dto";
 import { PickupSpawnPointDto } from "./pickup-spawn-point.dto";
 import { ExposeAll, OptionalOnUpdate } from "./util.decorator";
 import { KeyOf } from "../interfaces/class-key.interface";
 import { ElectricGuitarModel } from "../entities";
+import { EntityWithoutBase } from "../interfaces/entity-without-base.interface";
 
 @ExposeAll()
-export class ElectricGuitarModelDto implements KeyOf<ElectricGuitarModel> {
+export class ElectricGuitarModelDto implements KeyOf<EntityWithoutBase<ElectricGuitarModel>> {
   @OptionalOnUpdate()
   @IsString()
   name?: string;
@@ -91,21 +91,58 @@ export class ElectricGuitarModelDto implements KeyOf<ElectricGuitarModel> {
   @Type(() => PositionWithRotationDto)
   sideJackSpawnPoint?: PositionWithRotationDto;
 
-  @IsOptional()
-  @ValidateNested()
+  @IsNotEmpty()
   @IsObject()
-  @Type(() => GuitarBodyDto)
-  boltOnBody?: GuitarBodyDto | null;
+  @ValidateNested()
+  @Type(() => PositionDto)
+  pickguardSpawnPoint?: PositionDto;
+
+  // ---------------------------------- CONSTRUCTION ----------------------------------
 
   @IsOptional()
-  @ValidateNested()
-  @IsObject()
-  @Type(() => GuitarBodyDto)
-  neckThroughBody?: GuitarBodyDto | null;
+  @IsNumber()
+  boltOnConstructionMask?: number;
 
   @IsOptional()
-  @ValidateNested()
-  @IsObject()
-  @Type(() => GuitarBodyDto)
-  setInBody?: GuitarBodyDto | null;
+  @IsNumber()
+  setInConstructionMask?: number;
+
+  @IsOptional()
+  @IsNumber()
+  neckThroughConstructionMask?: number;
+
+  // ---------------------------------- CONTOUR ----------------------------------
+
+  @IsOptional()
+  @IsNumber()
+  flatContourShadow?: number;
+
+  @IsOptional()
+  @IsNumber()
+  flatContourSpec?: number;
+
+  @IsOptional()
+  @IsNumber()
+  forearmContourShadow?: number;
+
+  @IsOptional()
+  @IsNumber()
+  forearmContourSpec?: number;
+
+  @IsOptional()
+  @IsNumber()
+  carvedContourShadow?: number;
+
+  @IsOptional()
+  @IsNumber()
+  carvedContourSpec?: number;
+
+  @IsOptional()
+  @IsNumber()
+  tummyContourShadow?: number;
+
+  @IsOptional()
+  @IsNumber()
+  tummyContourSpec?: number;
+
 }

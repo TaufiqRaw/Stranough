@@ -1,16 +1,10 @@
 import { ServerDtos, ServerEntities } from "stranough-server";
 import { axios } from "~/commons/axios-instance";
-import {
-  AvailableBackContour,
-  AvailableTopContour,
-  GuitarBody,
-  GuitarBodyContour,
-  GuitarBodyTextureKeyType,
-  ElectricModel,
-  GuitarModelBodyKeyType,
-} from "./utils/types";
-import { createModel } from "./utils/functions/create-model";
+import { createModel } from "./utils/functions/create-electric-model";
 import { Owner, runWithOwner } from "solid-js";
+import { ElectricModel } from "./utils/types";
+import {ElectricModel as ElectricModelConfig} from "stranough-common"
+import * as R from "remeda";
 import { nullOrValue } from "~/commons/functions/null-or-value";
 
 export const electricModelRepository = {
@@ -35,19 +29,19 @@ export const electricModelRepository = {
     options: {
       onSave?: (m: ElectricModel) => () => Promise<void>;
       owner: Owner;
-      selectedBody?: GuitarModelBodyKeyType;
-      selectedTopContour?: AvailableTopContour;
-      selectedBackContour?: AvailableBackContour;
+      selectedConstruction?: typeof ElectricModelConfig.constructionKeys[number];
+      selectedTopContour?: Exclude<typeof ElectricModelConfig.contourKeys[number], 'tummyContour'>;
+      selectedBackContour?: Exclude<typeof ElectricModelConfig.contourKeys[number], 'forearmContour'>;
     }
   ) {
     const { data } = await axios.get<
       ServerEntities.ElectricGuitarModel & {
-        selectedBody: GuitarModelBodyKeyType | undefined;
-        selectedTopContour: GuitarBodyTextureKeyType | undefined;
-        selectedBackContour: GuitarBodyTextureKeyType | undefined;
+        selectedConstruction?: typeof ElectricModelConfig.constructionKeys[number] | undefined;
+        selectedTopContour?: Exclude<typeof ElectricModelConfig.contourKeys[number], 'tummyContour'>;
+        selectedBackContour?: Exclude<typeof ElectricModelConfig.contourKeys[number], 'forearmContour'>;
       }
     >(`/electric-guitars/${id}`);
-    data.selectedBody = options.selectedBody;
+    data.selectedConstruction = options.selectedConstruction;
     data.selectedTopContour = options.selectedTopContour;
     data.selectedBackContour = options.selectedBackContour;
     return runWithOwner(options?.owner, () => {
@@ -102,7 +96,7 @@ function signalToDto(m: ElectricModel): ServerDtos.ElectricGuitarModelDto {
   const topJack = m.spawnPoints.jack.top.position.get();
   const sideJack = m.spawnPoints.jack.side.position.get();
 
-  const spawnpoints = {
+  const spawnpoints : ServerDtos.ElectricGuitarModelDto = {
     bridgeSpawnPoint: m.spawnPoints.bridge.position.get()!,
     fingerboardSpawnPoint: m.spawnPoints.fingerboard.position.get()!,
     pickupSpawnPoint: {
@@ -110,6 +104,7 @@ function signalToDto(m: ElectricModel): ServerDtos.ElectricGuitarModelDto {
       bridge: m.spawnPoints.pickup.bridge.position.get(),
       middle: m.spawnPoints.pickup.middle.position.get(),
     },
+    pickguardSpawnPoint: m.spawnPoints.pickguard.position.get(),
     knobSpawnPoint: knobs.length > 0 ? knobs : undefined,
     switchSpawnPoint: switchSp
       ? { ...switchSp, rotation: m.spawnPoints.switch.rotation.get() }
@@ -121,53 +116,37 @@ function signalToDto(m: ElectricModel): ServerDtos.ElectricGuitarModelDto {
       ? { ...sideJack, rotation: m.spawnPoints.jack.side.rotation.get() }
       : undefined,
   };
+
+  const masks = R.pipe(
+    m,
+    R.pick(ElectricModelConfig.constructionKeys),
+    R.mapValues((x)=>nullOrValue(x.mask.get(), x.mask.get()?.id)),
+    R.mapKeys((k)=>k+"Mask"),
+  )
+
+  const shadow = R.pipe(
+    m,
+    R.pick(ElectricModelConfig.contourKeys),
+    R.mapValues((x)=>nullOrValue(x.shadow.get(), x.shadow.get()?.id)),
+    R.mapKeys((k)=>k+"Shadow"),
+  )
+
+  const spec = R.pipe(
+    m,
+    R.pick(ElectricModelConfig.contourKeys),
+    R.mapValues((x)=>nullOrValue(x.spec.get(), x.spec.get()?.id)),
+    R.mapKeys((k)=>k+"Spec"),
+  )
+
   return {
     name: m.name.get(),
     description: m.description.get(),
     price: m.price.get(),
     maskScale : m.maskScale.get(),
-    boltOnBody: guitarBodyToServerDto(m.boltOnBody.get()),
-    neckThroughBody: guitarBodyToServerDto(m.neckThroughBody.get()),
-    setInBody: guitarBodyToServerDto(m.setInBody.get()),
     thumbnail: m.thumbnail.get()?.id,
+    ...masks,
+    ...shadow,
+    ...spec,
     ...spawnpoints,
-  };
-}
-
-function guitarBodyToServerDto(
-  body: GuitarBody | null | undefined
-): ServerDtos.GuitarBodyDto | undefined | null {
-  if (!body) return body;
-  //TODO: add validator for bridge, fingerboard
-  return {
-    price: body.price.get() ?? 0,
-    mask: nullOrValue(body.mask.get(), body.mask.get()?.id),
-    backMask: nullOrValue(body.backMask.get(), body.backMask.get()?.id),
-    burstTop: nullOrValue(body.burstTop.get(), body.burstTop.get()?.id),
-    burstBack: nullOrValue(body.burstBack.get(), body.burstBack.get()?.id),
-    backCarvedContour : bodyTextureToServerDto(body.backCarvedContour.get()),
-    backFlatContour : bodyTextureToServerDto(body.backFlatContour.get()),
-    backTummyContour : bodyTextureToServerDto(body.backTummyContour.get()),
-    topCarvedContour : bodyTextureToServerDto(body.topCarvedContour.get()),
-    topFlatContour : bodyTextureToServerDto(body.topFlatContour.get()),
-    topForearmContour : bodyTextureToServerDto(body.topForearmContour.get()),
-  };
-}
-
-//TODO: add validation for mask
-function bodyTextureToServerDto(
-  texture: GuitarBodyContour | null | undefined
-): ServerDtos.GuitarBodyContourDto | undefined | null {
-  if (!texture) return texture;
-  return {
-    price: texture.price.get() ?? 0,
-    shadowTexture: nullOrValue(
-      texture.shadowTexture.get(),
-      texture.shadowTexture.get()?.id
-    ),
-    specularTexture: nullOrValue(
-      texture.specularTexture.get(),
-      texture.specularTexture.get()?.id
-    )
   };
 }

@@ -18,5 +18,7 @@ function signalToDto(item: Pickguard): ServerDtos.PickguardDto {
     price: item.price.get(),
     texture: item.texture.get()!.id,
     model : item.model.get(),
+    scale: item.scale.get(),
+    pivotPosition : item.pivotPosition.get(),
   };
 }

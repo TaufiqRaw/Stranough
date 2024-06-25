@@ -20,7 +20,6 @@ export function NeckWoodSubmenu() {
                 isActive={guitarBuilderCtx.neckWood.get() === wood.key}
                 onClick={() =>{
                   guitarBuilderCtx.neckWood.set(wood.key);
-                  guitarBuilderCtx.socket.selectComponent('neckWood', wood.name);
                 }}
                 src={Constants.woodUrl[wood.key]}
                 title={wood.name}

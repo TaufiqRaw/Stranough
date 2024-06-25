@@ -2,7 +2,6 @@ import { BeforeCreate, BeforeUpdate, EventArgs, HiddenProps, OnInit, OnLoad, Pro
 import { BaseEntity } from "./base.entity";
 import { maxDescriptionLength } from "../constants";
 import { VectorType } from "../interfaces/vector-type";
-import { IntentClassifierService } from "../services/intent.classifier.service";
 
 export abstract class BaseEntityWithDesc extends BaseEntity {
 
@@ -13,15 +12,15 @@ export abstract class BaseEntityWithDesc extends BaseEntity {
   @Property({type : 'varchar', length : maxDescriptionLength})
   description : string;
 
-  lastDescription : string | undefined;
+  // lastDescription : string | undefined;
 
-  @Property({hidden : true, type : VectorType, length : 1536})
-  embedding ?: number[];
+  // @Property({hidden : true, type : VectorType, length : 1536})
+  // embedding ?: number[];
 
-  @OnLoad()
-  onLoad() {
-    this.lastDescription = this.description;
-  }
+  // @OnLoad()
+  // onLoad() {
+  //   this.lastDescription = this.description;
+  // }
 
   // @BeforeUpdate()
   // async beforeUpdate(args: EventArgs<BaseEntityWithDesc>) {

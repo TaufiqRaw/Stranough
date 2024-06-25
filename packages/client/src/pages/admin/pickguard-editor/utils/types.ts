@@ -5,7 +5,7 @@ import {
   NullableImageTypeSignal,
   ImageTypeSignal,
 } from "~/commons/interfaces/image-type-signal";
-import { Position } from "~/commons/interfaces/position";
+import { Position, PositionWithRotation } from "~/commons/interfaces/position";
 import {
   SignalObject,
 } from "~/commons/interfaces/signal-object";
@@ -14,5 +14,9 @@ export interface PickguardContextType extends EntityContext<Pickguard> {}
 
 export interface Pickguard extends CommonEntity {
   model : SignalObject<number | undefined>;
+  scale: SignalObject<number>;
   texture: ImageTypeSignal;
+  pivotPosition: SignalObject<Position | undefined>;
+  selectedItem: SignalObject<"pivot" | undefined>;
+  getSelectedItem: () => SignalObject<PositionWithRotation | undefined> | undefined;
 }

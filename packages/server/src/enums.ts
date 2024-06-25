@@ -12,11 +12,3 @@ export enum GuitarPart {
   Switch = "switch",
   Pickup = "pickup",
 }
-
-export enum GuitarPickupType {
-  Single = 'single',
-  Humbucker = 'humbucker',
-  P90 = 'p90',
-  // Filtertron = 'filtertron',
-  // WideRange = 'wide-range'
-}

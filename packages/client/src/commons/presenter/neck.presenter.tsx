@@ -33,7 +33,7 @@ import { useEditorPageContext } from "../components/editor-page";
 import { createPixiTexture } from "../functions/create-texture";
 import * as R from "remeda";
 import { useViewportContext } from "../components/viewport";
-import { useGuitarBodyPresenterContext } from "./guitar-model/guitar-model.presenter";
+import { useGuitarBodyPresenterContext } from "./guitar-model/electric-model.presenter";
 import { Constants } from "~/constants";
 
 const NUT_FROM_FIRST_FRET = 50;
@@ -116,7 +116,7 @@ export function NeckPresenter(_props: {
     }}>
       <Container
         zIndex={props.isFront() ? 1.02 : 0.1}
-        {...(guitarBodyCtx?.type?.() === "neckThroughBody"
+        {...(guitarBodyCtx?.type?.() === "neckThroughConstruction"
           ? {
               position: guitarBodyCtx?.neckPosition() ??
                 props.position ?? { x: 0, y: 0 },
@@ -137,7 +137,7 @@ export function NeckPresenter(_props: {
         />
         {/* non neckTrough headstock */}
         <Show
-          when={props.headstock && guitarBodyCtx?.type?.() !== "neckThroughBody"}
+          when={props.headstock && guitarBodyCtx?.type?.() !== "neckThroughConstruction"}
         >
           <neckCtx.Provider
             value={{
@@ -151,7 +151,7 @@ export function NeckPresenter(_props: {
       </Container>
        {/* neckTrough headstock */}
       <Show
-        when={props.headstock && guitarBodyCtx?.type?.() === "neckThroughBody"}
+        when={props.headstock && guitarBodyCtx?.type?.() === "neckThroughConstruction"}
       >
         <neckCtx.Provider
           value={{
@@ -285,7 +285,7 @@ function NeckWoodAndShadow(props: { neckWood: () => Texture | undefined }) {
   const [neckMask, setNeckMask] = createSignal<pxSprite>();
   return (
     <Container zIndex={1} mask={neckMask()}>
-      <Show when={guitarBodyCtx?.type?.() !== "neckThroughBody"}>
+      <Show when={guitarBodyCtx?.type?.() !== "neckThroughConstruction"}>
         <Sprite
           texture={props.neckWood() ?? Texture.EMPTY}
           anchor={{ x: 0.5, y: 1 }}

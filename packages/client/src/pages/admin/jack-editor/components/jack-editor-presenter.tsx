@@ -7,8 +7,8 @@ import { useGuitarJack } from "../jack-editor.page";
 import { CommonPresenter } from "~/commons/presenter/common.presenter";
 import { Texture } from "pixi.js";
 import { useViewportContext } from "~/commons/components/viewport";
-import { GuitarModelPresenter } from "~/commons/presenter/guitar-model/guitar-model.presenter";
-import { guitarModelToPresenter } from "../../electric-model-editor/utils/functions/guitar-model-to-presenter";
+import { electricModelToPresenter } from "../../electric-model-editor/utils/functions/electric-model-to-presenter";
+import { ElectricModelPresenter } from "~/commons/presenter/guitar-model/electric-model.presenter";
 
 export function JackEditorPresenter() {
   const jack = createMemo(() => useGuitarJack().get());
@@ -52,8 +52,8 @@ export function JackEditorPresenter() {
       }
       fallback={Jack()}
     >
-      <GuitarModelPresenter
-        {...guitarModelToPresenter(editorCtx!.modelPreview.selectedModel)}
+      <ElectricModelPresenter
+        {...electricModelToPresenter(editorCtx!.modelPreview.selectedModel)}
         jack={{
           side : jack()?.isSide.get() ? Jack : undefined,
           top : jack()?.isSide.get() ? undefined : Jack,

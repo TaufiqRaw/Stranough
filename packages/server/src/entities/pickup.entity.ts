@@ -7,15 +7,16 @@ import { Media } from "./media.entity";
 import { idProperty } from "../utils/id-property.util";
 import * as Enums from "../enums";
 import { BaseEntityWithSprite } from "./base-with-sprite.entity";
+import {Pickup as PickupConfig} from 'stranough-common'
 
 export type PickupProps = EntityWithSprite<Pickup>;
 
 @Entity()
-@Index({ name: 'pickup_hnsw_l2_idx', expression: 'CREATE INDEX "pickup_hnsw_l2_idx" ON "pickup" USING hnsw (embedding vector_l2_ops)' })
+// @Index({ name: 'pickup_hnsw_l2_idx', expression: 'CREATE INDEX "pickup_hnsw_l2_idx" ON "pickup" USING hnsw (embedding vector_l2_ops)' })
 export class Pickup extends BaseEntityWithSprite {
 
-  @Enum(()=>Enums.GuitarPickupType)
-  type : Enums.GuitarPickupType;
+  @Enum(()=>PickupConfig.PickupType)
+  type : PickupConfig.PickupType;
 
   @Property()
   stringCount : number;

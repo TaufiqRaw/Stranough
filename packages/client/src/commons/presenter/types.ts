@@ -1,7 +1,7 @@
 import { JSX } from "solid-js";
-import { GuitarModelBodyKeyType } from "~/pages/admin/electric-model-editor/utils/types";
 import { Position } from "../interfaces/position";
 import { ImageType } from "../interfaces/image-type";
+import {ElectricModel as ElectricModelConfig, Pickup} from 'stranough-common'
 
 export interface ElecticModelPresenterProps {
   children?: JSX.Element;
@@ -10,7 +10,7 @@ export interface ElecticModelPresenterProps {
   body: {
     mask?: string;
     backMask?: string;
-    type?: GuitarModelBodyKeyType;
+    type?: typeof ElectricModelConfig.constructionKeys[number];
     frontShadowTexture?: string;
     backShadowTexture?: string;
     frontSpecularTexture?: string;
@@ -33,21 +33,21 @@ export interface ElecticModelPresenterProps {
       middle?: Position;
       bridge?: Position;
     };
+    pickguard?: Position;
     knobs?: (Position | undefined)[];
   };
   colorOverlay?: ()=>JSX.Element;
   fingerboard?: () => JSX.Element;
   bridge?: () => JSX.Element;
   switch?: () => JSX.Element;
-  pickguard?: () => string | undefined;
+  pickguard?: () => JSX.Element;
   jack?: {
     side?: () => JSX.Element;
     top?: () => JSX.Element;
   };
   pickup?: {
-    neck?: () => JSX.Element;
-    middle?: () => JSX.Element;
-    bridge?: () => JSX.Element;
+    type : typeof Pickup.pickupConfigurations[number];
+    items : [(()=>JSX.Element | undefined)] | [(()=>JSX.Element | undefined), (()=>JSX.Element | undefined)] | [(()=>JSX.Element | undefined), (()=>JSX.Element | undefined), (()=>JSX.Element | undefined)];
   };
   knobs?: (() => JSX.Element)[];
 }

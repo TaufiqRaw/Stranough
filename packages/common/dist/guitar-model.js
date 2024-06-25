@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.bodyKeys = exports.spawnPointKeys = void 0;
+exports.contourSpecKeys = exports.contourShadowKeys = exports.contourKeys = exports.bodyKeys = exports.spawnPointKeys = void 0;
 exports.spawnPointKeys = Object.freeze([
     "knobSpawnPoint",
     "bridgeSpawnPoint",
@@ -12,8 +12,16 @@ exports.spawnPointKeys = Object.freeze([
     "fingerboardBackEndSpawnPoint",
 ]);
 exports.bodyKeys = Object.freeze([
-    "boltOnBody",
-    "neckThroughBody",
-    "setInBody",
+    "boltOnBodyMask",
+    "neckThroughBodyMask",
+    "setInBodyMask",
 ]);
+exports.contourKeys = Object.freeze([
+    "flatContour",
+    "carvedContour",
+    "forearmContour",
+    "tummyContour",
+]);
+exports.contourShadowKeys = exports.contourKeys.map((key) => `${key}Shadow`);
+exports.contourSpecKeys = exports.contourKeys.map((key) => `${key}Spec`);
 //# sourceMappingURL=guitar-model.js.map

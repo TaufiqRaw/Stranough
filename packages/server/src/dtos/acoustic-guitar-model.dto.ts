@@ -12,12 +12,11 @@ import {
   Min,
   ValidateNested,
 } from "class-validator";
-import { GuitarBodyDto } from "./guitar-body.dto";
 import { PositionDto, PositionWithRotationDto } from "./position.dto";
 import { PickupSpawnPointDto } from "./pickup-spawn-point.dto";
 import { ExposeAll, OptionalOnUpdate } from "./util.decorator";
 import { KeyOf } from "../interfaces/class-key.interface";
-import { AcousticGuitarModel } from "../entities/acoustic-guitar-model.entity";
+import { AcousticGuitarModel } from "../entities/_acoustic-guitar-model.entity";
 import { EntityWithoutBase } from "../interfaces/entity-without-base.interface";
 
 @ExposeAll()
@@ -43,6 +42,7 @@ export class AcousticGuitarModelDto implements KeyOf<EntityWithoutBase<AcousticG
   @IsNumber()
   maskScale ?: number;
 
+  // ----------------- SPAWN POINTS -----------------
   @IsNotEmpty()
   @IsObject()
   @ValidateNested()
@@ -66,6 +66,14 @@ export class AcousticGuitarModelDto implements KeyOf<EntityWithoutBase<AcousticG
   @ValidateNested()
   @Type(() => PositionWithRotationDto)
   jackSpawnPoint?: PositionWithRotationDto;
+
+  @IsNotEmpty()
+  @IsObject()
+  @ValidateNested()
+  @Type(() => PositionDto)
+  pickguardSpawnPoint?: PositionDto;
+
+  // ----------------- CUTAWAY -----------------
 
   @IsOptional()
   @IsNumber()

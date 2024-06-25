@@ -29,23 +29,16 @@ import { createContext } from "solid-js";
 import { createPixiTexture } from "~/commons/functions/create-texture";
 import { Position } from "~/commons/interfaces/position";
 import { Constants } from "~/constants";
-import { GuitarModelBodyKeyType } from "~/pages/admin/electric-model-editor/utils/types";
 import * as R from "remeda";
 import fragment from "~/commons/shader/whiteify.frag?raw";
 import vertex from "~/commons/shader/whiteify.vert?raw";
 import { AcousticModelPresenterProps, ElecticModelPresenterProps } from "../types";
 import { DropShadowFilter } from "pixi-filters";
 import { AcousticModelProps } from "stranough-server/dist/entities";
-import { GuitarBodyPresenterContext, MaskedBodyPresenter, useGuitarBodyPresenterContext } from "./guitar-model.presenter";
+import { GuitarBodyPresenterContext, MaskedBodyPresenter, useGuitarBodyPresenterContext } from "./electric-model.presenter";
 
 const invertColorFilter = new ColorMatrixFilter();
 invertColorFilter.negative(true);
-
-const whiteFilter = new Filter({
-  glProgram: new GlProgram({
-    fragment, vertex
-  }),
-});
 
 interface PrivateCtxType { 
   scale: () => number | undefined;

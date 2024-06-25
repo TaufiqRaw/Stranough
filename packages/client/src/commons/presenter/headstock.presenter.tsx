@@ -22,11 +22,11 @@ import {
 } from "solid-js";
 import { Container, Sprite, useParent } from "solid-pixi";
 import { useEditorPageContext } from "~/commons/components/editor-page";
-import { useNeckContext } from "~/commons/presenter/fingerboard.presenter";
+import { useNeckContext } from "~/commons/presenter/neck.presenter";
 import { useViewportContext } from "~/commons/components/viewport";
 import { createPixiTexture } from "~/commons/functions/create-texture";
 import { Position, PositionWithRotation } from "~/commons/interfaces/position";
-import { useGuitarBodyPresenterContext } from "./guitar-model/guitar-model.presenter";
+import { useGuitarBodyPresenterContext } from "./guitar-model/electric-model.presenter";
 
 const headstockCtx = createContext<{
   childSpawnPos?: PositionWithRotation;
