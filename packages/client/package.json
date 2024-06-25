@@ -32,6 +32,11 @@
     "swiper": "^11.1.4",
     "tailwindcss": "^3.3.3"
   },
+  "resolutions": {
+    "solid-pixi": "portal:../solid-pixi",
+    "stranough-server": "portal:../server",
+    "stranough-common": "portal:../common"
+  },
   "engines": {
     "node": ">=18"
   },
