@@ -7,6 +7,7 @@ export function createPixiTexture(_url : ()=>string | undefined, serverImg : boo
   const [res, {refetch}] = createResource(async ()=>{
     const u = url();
     if(!u) return undefined;
+    await Assets.backgroundLoad(u);
     return await Assets.load(u) as Texture;
   })
   createEffect(on(url,()=>{

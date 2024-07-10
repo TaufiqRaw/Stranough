@@ -1,5 +1,5 @@
 import { useGuitarBuilderContext } from "../guitar-builder";
-import { Accessor, Show, createContext, createEffect, createMemo } from "solid-js";
+import { Accessor, JSX, Show, createContext, createEffect, createMemo } from "solid-js";
 import { HeadstockPresenter } from "~/commons/presenter/headstock.presenter";
 import { headstockToPresenter } from "~/pages/admin/headstock-editor/utils/headstock-to-presenter";
 import { Container } from "solid-pixi";
@@ -11,50 +11,89 @@ import { PegPresenter } from "~/commons/presenter/peg.presenter";
 import { pegToPresenter } from "~/pages/admin/peg-editor.ts/utils/peg-to-presenter";
 import { CommonPresenter } from "~/commons/presenter/common.presenter";
 import { toCommonPresenter } from "~/commons/functions/to-common-presenter";
-import { GuitarBuilder } from "stranough-common";
+import { GuitarBuilder, Pickup } from "stranough-common";
 import { ElectricModelPresenter } from "~/commons/presenter/guitar-model/electric-model.presenter";
 import { electricModelToPresenter } from "~/pages/admin/electric-model-editor/utils/functions/electric-model-to-presenter";
 import { NeckPresenter } from "~/commons/presenter/neck.presenter";
+import { DropShadowFilter } from "pixi-filters";
+
+const dropShadowFilter = new DropShadowFilter({
+  blur: 4,
+  offset : {
+    x : 0,
+    y : 0
+  },
+  alpha: 0.2,
+})
 
 export function GuitarBuilderPresenter(props : {
 
 }){
   const viewportCtx = useViewportContext();
-  const selectedGuitarComponent = useGuitarBuilderContext();
+  const guitarBuilderCtx = useGuitarBuilderContext()!;
 
   const isFront = createMemo(()=>viewportCtx?.isFront.get());
 
+  const pickups = createMemo(()=>{
+    const res = [] as ((()=>JSX.Element) | undefined)[];
+    if(!guitarBuilderCtx?.pickupConfiguration.get()) return res;
+    const pickupConfig = Pickup.labelToPickupConfiguration[guitarBuilderCtx!.pickupConfiguration.get()!]
+    for(let i = 0; i < pickupConfig.length; i++){
+      if(i === 0){
+        if(pickupConfig.length === 1){
+          res.push(guitarBuilderCtx.bridgePickup.get() ? ()=><CommonPresenter filter={dropShadowFilter}  {...toCommonPresenter(guitarBuilderCtx.bridgePickup.get()!)} /> : undefined)
+        }else{
+          res.push(guitarBuilderCtx.neckPickup.get() ? ()=><CommonPresenter filter={dropShadowFilter} {...toCommonPresenter(guitarBuilderCtx.neckPickup.get()!)} /> : undefined)
+        }
+      }else if(i === 1){
+        if(pickupConfig.length === 2){
+          res.push(guitarBuilderCtx.bridgePickup.get() ? ()=><CommonPresenter filter={dropShadowFilter} {...toCommonPresenter(guitarBuilderCtx.bridgePickup.get()!)} /> : undefined)
+        }else {
+          res.push(guitarBuilderCtx.middlePickup.get() ? ()=><CommonPresenter filter={dropShadowFilter} {...toCommonPresenter(guitarBuilderCtx.middlePickup.get()!)} /> : undefined)
+        }
+      }else {
+        res.push(guitarBuilderCtx.bridgePickup.get() ? ()=><CommonPresenter filter={dropShadowFilter} {...toCommonPresenter(guitarBuilderCtx.bridgePickup.get()!)} /> : undefined)
+      }
+    }
+    return res;
+  })
+
   return  <Container position={{x:0, y : 100}}>
-    <Container scale={{x: selectedGuitarComponent?.isLeftHanded.get() ? -1 : 1, y : 1}}>
+    <Container scale={{x: guitarBuilderCtx?.isLeftHanded.get() ? -1 : 1, y : 1}}>
       <ElectricModelPresenter
         isFront={isFront()}
         body={{
-          ...electricModelToPresenter(()=>selectedGuitarComponent?.guitarModel.get()).body,
-          coreWood : Constants.getWoodUrl(selectedGuitarComponent?.bodyCoreWood.get()),
-          topWood : Constants.getWoodUrl(selectedGuitarComponent?.bodyTopWood.get()),
+          ...electricModelToPresenter(()=>guitarBuilderCtx?.guitarModel.get()).body,
+          coreWood : Constants.getWoodUrl(guitarBuilderCtx?.bodyCoreWood.get()),
+          topWood : Constants.getWoodUrl(guitarBuilderCtx?.bodyTopWood.get()),
         }}
         colorOverlay={ 
-          selectedGuitarComponent?.bodyColorType.get() === 'solid' 
-            ? selectedGuitarComponent?.bodyColor.get() 
-              ? ()=><GuitarModelSolidColorPresenter color={GuitarBuilder.solidColors[selectedGuitarComponent!.bodyColor.get() as keyof typeof GuitarBuilder.solidColors]} /> 
+          guitarBuilderCtx?.bodyColorType.get() === 'solid' 
+            ? guitarBuilderCtx?.bodyColor.get() 
+              ? ()=><GuitarModelSolidColorPresenter color={GuitarBuilder.solidColors[guitarBuilderCtx!.bodyColor.get() as keyof typeof GuitarBuilder.solidColors]} /> 
               : undefined
             : undefined
         }
-        bridge={selectedGuitarComponent?.bridge.get() ? ()=><CommonPresenter {...toCommonPresenter(selectedGuitarComponent!.bridge.get()!)}/> : undefined}
-        neckWood={Constants.getWoodUrl(selectedGuitarComponent?.neckWood.get())}
-        spawnpoints={electricModelToPresenter(()=>selectedGuitarComponent?.guitarModel.get()).spawnpoints}
-        knobs={selectedGuitarComponent?.knob.get() ? Array.from({length : 5}, (_,i)=>()=><CommonPresenter {...toCommonPresenter(selectedGuitarComponent?.knob.get()!)} />) : undefined}
+        bridge={guitarBuilderCtx?.bridge.get() ? ()=><CommonPresenter {...toCommonPresenter(guitarBuilderCtx!.bridge.get()!)}/> : undefined}
+        neckWood={Constants.getWoodUrl(guitarBuilderCtx?.neckWood.get())}
+        spawnpoints={electricModelToPresenter(()=>guitarBuilderCtx?.guitarModel.get()).spawnpoints}
+        knobs={guitarBuilderCtx?.knob.get() ? Array.from({length : 5}, (_,i)=>()=><CommonPresenter {...toCommonPresenter(guitarBuilderCtx?.knob.get()!)} />) : undefined}
         jack={{
-          side : selectedGuitarComponent?.jack.get()?.isSide.get() === true ? ()=><CommonPresenter {...toCommonPresenter(selectedGuitarComponent.jack.get()!)}/> : undefined,
-          top : selectedGuitarComponent?.jack.get()?.isSide.get() === false ? ()=><CommonPresenter {...toCommonPresenter(selectedGuitarComponent.jack.get()!)}/> : undefined,
+          side : guitarBuilderCtx?.jack.get()?.isSide.get() === true ? ()=><CommonPresenter {...toCommonPresenter(guitarBuilderCtx.jack.get()!)}/> : undefined,
+          top : guitarBuilderCtx?.jack.get()?.isSide.get() === false ? ()=><CommonPresenter {...toCommonPresenter(guitarBuilderCtx.jack.get()!)}/> : undefined,
+        }}
+        // @ts-ignore
+        pickup={guitarBuilderCtx?.pickupConfiguration.get() && {
+          type : Pickup.labelToPickupConfiguration[guitarBuilderCtx!.pickupConfiguration.get()!],
+          items : pickups()
         }}
         fingerboard={ ()=>
           <NeckPresenter
-            wood={Constants.getWoodUrl(selectedGuitarComponent?.neckWood.get())}
+            wood={Constants.getWoodUrl(guitarBuilderCtx?.neckWood.get())}
             headstock={ ()=>
             <HeadstockPresenter
-              pegs={selectedGuitarComponent?.peg.get() ? Array.from({length : 10}, (_,i)=>()=><PegPresenter {...pegToPresenter(selectedGuitarComponent?.peg.get())} />) : undefined}
-              {...headstockToPresenter(selectedGuitarComponent?.headstock.get())}
+              pegs={guitarBuilderCtx?.peg.get() ? Array.from({length : 10}, (_,i)=>()=><PegPresenter {...pegToPresenter(guitarBuilderCtx?.peg.get())} />) : undefined}
+              {...headstockToPresenter(guitarBuilderCtx?.headstock.get())}
             />
           }
           /> 

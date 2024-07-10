@@ -2,6 +2,7 @@ import { For, Show, createContext, useContext } from "solid-js";
 import GuiSubMenuMobile from "./gui-sub-menu-mobile";
 import { createMenu } from "../../utils/create-menu";
 import { IGuitarBuilderMenuContainer } from "../../utils/types";
+import { useGuitarBuilderContext } from "../../guitar-builder";
 
 const guitarBuilderGuiMenuCtx = createContext<IGuitarBuilderMenuContainer>()
 
@@ -11,6 +12,7 @@ export function useGuitarBuilderMenuContext(){
 
 export default function GuitarBuilderGui() {
   const menuContainer = createMenu();
+  const guitarBuilderCtx = useGuitarBuilderContext()!;
   
   return <guitarBuilderGuiMenuCtx.Provider value={menuContainer}>
     <div class="absolute top-0 w-full h-full left-0">
@@ -54,7 +56,9 @@ export default function GuitarBuilderGui() {
                 {(menu, i) => (
                   <Show when={menuContainer.selectedMenu.get() === i()}>
                     <For each={menu.children}>
-                      {(submenu, j) => (
+                      {(submenu, j) => <Show
+                        when={submenu.checkAvailability ? submenu.checkAvailability(guitarBuilderCtx) : true}
+                      >
                         <div
                           class={
                             "submenu-item px-2 py-1 first:mt-2 last:mb-2 cursor-pointer " +
@@ -66,7 +70,7 @@ export default function GuitarBuilderGui() {
                         >
                           {submenu.title}
                         </div>
-                      )}
+                      </Show>}
                     </For>
                   </Show>
                 )}

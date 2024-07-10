@@ -5,7 +5,6 @@ import { IGuitarBuilder } from "./utils/types";
 import { createGuitarComponent } from "./utils/create-guitar-component";
 import createStoredSignal from "~/commons/functions/create-stored-signal";
 import GuitarBuilderGui from "./components/gui/guitar-builder-gui";
-import { ToggleableButton } from "~/commons/components/toggleable-button";
 
 const GuitarBuilderCtx = createContext< IGuitarBuilder | undefined>();
 

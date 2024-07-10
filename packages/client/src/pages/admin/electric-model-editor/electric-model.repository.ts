@@ -21,6 +21,7 @@ export const electricModelRepository = {
         options?.isElectric !== undefined ? `&isElectric=${options?.isElectric}` : ""
       }${options?.limit ? `&limit=${options?.limit}` : ""}`
     );
+    console.log(data);
     return data[0];
   },
 

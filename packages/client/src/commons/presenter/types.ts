@@ -47,7 +47,7 @@ export interface ElecticModelPresenterProps {
   };
   pickup?: {
     type : typeof Pickup.pickupConfigurations[number];
-    items : [(()=>JSX.Element | undefined)] | [(()=>JSX.Element | undefined), (()=>JSX.Element | undefined)] | [(()=>JSX.Element | undefined), (()=>JSX.Element | undefined), (()=>JSX.Element | undefined)];
+    items : [(()=>JSX.Element) | undefined] | [(()=>JSX.Element) | undefined, (()=>JSX.Element) | undefined] | [(()=>JSX.Element) | undefined, (()=>JSX.Element) | undefined, (()=>JSX.Element) | undefined];
   };
   knobs?: (() => JSX.Element)[];
 }

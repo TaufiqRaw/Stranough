@@ -6,6 +6,7 @@ export function GuitarBuilderSubmenu(props: {
   children: JSX.Element;
   mustHaveModel?: boolean;
   mustHaveHeadstock?: boolean;
+  mustHavePickupConfiguration?: boolean;
 }) {
   const guitarBuilderCtx = useGuitarBuilderContext()!;
   const guitarBuilderMenuCtx = useGuitarBuilderMenuContext()!;
@@ -19,10 +20,7 @@ export function GuitarBuilderSubmenu(props: {
               class="text-blue-500 cursor-pointer"
               onClick={() =>{
                 guitarBuilderMenuCtx
-                  .setSelectedMenu('General')
-                guitarBuilderMenuCtx
-                  .getSelectedMenuObj()
-                  ?.setSelectedChildren("Model")
+                  .setSelectedSubmenu('Model')
               }}
             >
               model gitar
@@ -44,13 +42,32 @@ export function GuitarBuilderSubmenu(props: {
               class="text-blue-500 cursor-pointer"
               onClick={() =>{
                 guitarBuilderMenuCtx
-                  .setSelectedMenu('Neck')
-                guitarBuilderMenuCtx
-                  .getSelectedMenuObj()
-                  ?.setSelectedChildren("Jenis Headstock")
+                  .setSelectedSubmenu('Jenis Headstock')
               }}
             >
               jenis headstock
+            </span>{" "}
+            terlebih dahulu
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if(props.mustHavePickupConfiguration && !guitarBuilderCtx.pickupConfiguration.get()){
+    return (
+      <div class="flex flex-col text-white-950 px-2 gap-3 h-full">
+        <div class="h-full flex items-center justify-center">
+          <p class="text-gray-400 text-center">
+            Pilih{" "}
+            <span
+              class="text-blue-500 cursor-pointer"
+              onClick={() =>{
+                guitarBuilderMenuCtx
+                  .setSelectedSubmenu('Pickup Configuration')
+              }}
+            >
+              konfigurasi pickup
             </span>{" "}
             terlebih dahulu
           </p>

@@ -1,5 +1,5 @@
 import { createSignal } from "solid-js";
-import { guitarBuilderMenu } from "./constants";
+import { guitarBuilderMenu } from "../constants";
 import { IGuitarBuilderMenuContainer, IGuitarBuilderMenu } from "./types";
 import { createSignalObject } from "~/commons/functions/signal-object.util";
 

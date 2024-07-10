@@ -3,8 +3,15 @@ import { Pickup } from "./utils/types";
 import { createPickup } from "./utils/create-pickup";
 import { createCommonRepository } from "~/commons/functions/create-common-repository";
 import { nullOrValue } from "~/commons/functions/null-or-value";
+import { Pickup as PickupConfig } from "stranough-common/";
 
-export const pickupRepository = createCommonRepository(
+export const pickupRepository = createCommonRepository<
+  Pickup,
+  ServerDtos.PickupDto,
+  {
+    type : PickupConfig.PickupType | undefined,
+  }
+>(
   "pickups",
   createPickup,
   signalToDto

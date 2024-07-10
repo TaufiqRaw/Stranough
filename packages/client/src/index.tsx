@@ -20,6 +20,8 @@ import 'swiper/css';
 import PickguardEditor from "./pages/admin/pickguard-editor/pickguard-editor.page";
 import { AcousticModelEditorGui } from "./pages/admin/acoustic-model-editor/components/acoustic-model-editor-gui";
 import AcousticGuitarModelEditor from "./pages/admin/acoustic-model-editor/acoustic-guitar-model-editor.page";
+import { Assets, ExtensionType, LoaderParser, Texture, extensions } from "pixi.js";
+import axios from "axios";
 
 const queryClient = new QueryClient();
 

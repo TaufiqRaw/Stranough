@@ -282,14 +282,10 @@ export function ElectricModelPresenter(_props: ElecticModelPresenterProps) {
 
             <Show
               when={
-                (props.pickup && props.pickup.items[0] && (props.pickup.type?.length ?? 0) == 1)
-                || (props.pickup && props.pickup.items[1] && (props.pickup.type?.length ?? 0) == 2)
+                (props.pickup && props.pickup.items[1] && (props.pickup.type?.length ?? 0) == 3)
               }
             >
               <Container zIndex={1.02} position={props.spawnpoints.pickup!.middle!}>
-                <Show when={props.pickup && props.pickup.items[0] && (props.pickup.type?.length ?? 0) == 1}>
-                  {props.pickup?.items[0]!()}
-                </Show>
                 <Show when={props.pickup && props.pickup.items[1] && (props.pickup.type?.length ?? 0) == 3}>
                   {props.pickup?.items[1]!()}
                 </Show>
@@ -298,11 +294,15 @@ export function ElectricModelPresenter(_props: ElecticModelPresenterProps) {
 
             <Show
               when={
-                (props.pickup && props.pickup.items[1] && (props.pickup.type?.length ?? 0) == 2)
+                (props.pickup && props.pickup.items[0] && (props.pickup.type?.length ?? 0) == 1) 
+                || (props.pickup && props.pickup.items[1] && (props.pickup.type?.length ?? 0) == 2)
                 || (props.pickup && props.pickup.items[2] && (props.pickup.type?.length ?? 0) == 3)
               }
             >
               <Container zIndex={1.02} position={props.spawnpoints.pickup!.bridge!}>
+                <Show when={props.pickup && props.pickup.items[0] && (props.pickup.type?.length ?? 0) == 1}>
+                  {props.pickup?.items[0]!()}
+                </Show>
                 <Show when={props.pickup && props.pickup.items[1] && (props.pickup.type?.length ?? 0) == 2}>
                   {props.pickup?.items[1]!()}
                 </Show>
