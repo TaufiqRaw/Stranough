@@ -69,6 +69,16 @@ app.use((_, res, next)=>{
   res.set('Cross-Origin-Resource-Policy', 'cross-origin');
   next();
 })
+
+// for development only, to make nginx proxy work when using ngrok
+if(process.env.NODE_ENV === 'development'){
+  app.use(function(req, res, next) {
+    if (req.url.match('/api')){
+      req.url = req.url.replace('/api', '');
+    }
+    next();
+ });
+}
 app.use(express.static('public'))
 
 export async function main(){

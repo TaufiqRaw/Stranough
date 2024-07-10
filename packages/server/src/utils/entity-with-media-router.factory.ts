@@ -3,7 +3,7 @@ import { validatePaginationMiddleware } from "../middlewares/validate-pagination
 import asyncMiddleware from "middleware-async";
 import { getPagination } from "./get-pagination.util";
 import { findAndPaginateEntity } from "./find-and-paginate-entity.util";
-import { EntityRepository, Populate, Ref } from "@mikro-orm/postgresql";
+import { EntityRepository, FilterQuery, Populate, Ref } from "@mikro-orm/postgresql";
 import { DI } from "../app";
 import { Class, Optional } from "utility-types";
 import { validateDto } from "./validate-dto.util";
@@ -31,7 +31,7 @@ export function entityWithMediaRouterFactory<
 >(repository: () => EntityRepository<T>, dto: Class<U>, mediaKeys : (keyof T)[], options? :{
   onCreate ?: (validatedDto : U) => Promise<Optional<T>>;
   onUpdate ?: (validatedDto : U, item : T) => Promise<void>;
-  queryMapper ?: (query : any) => any;
+  queryMapper ?: (query : any)=>FilterQuery<T>;
 }) {
   const router = Router();
   router.get("/", entityIndexMiddleware(repository, "name", {
