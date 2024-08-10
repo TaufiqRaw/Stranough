@@ -102,6 +102,11 @@
       "import": "./dist/RenderedGraphics.mjs",
       "types": "./dist/RenderedGraphics.d.ts",
       "require": "./dist/RenderedGraphics.umd.js"
+    },
+    "./MeshRope": {
+      "import": "./dist/MeshRope.mjs",
+      "types": "./dist/MeshRope.d.ts",
+      "require": "./dist/MeshRope.umd.js"
     }
   },
   "scripts": {
