@@ -1,3 +1,5 @@
+import * as R from 'remeda';
+
 export const spawnPointKeys = Object.freeze([
   "knobSpawnPoint",
   "bridgeSpawnPoint",
@@ -7,7 +9,15 @@ export const spawnPointKeys = Object.freeze([
   "sideJackSpawnPoint",
   "fingerboardSpawnPoint",
   "fingerboardBackEndSpawnPoint",
-  "pickguardSpawnPoint"
+  "pickguardSpawnPoint",
+  "soundHoleSpawnPointLeft",
+  "soundHoleSpawnPointRight",
+  "electronicsSpawnPoint",
+  "minorElectronicCoverSpawnPoint",
+  "batteryCoverSpawnPoint",
+  "logoSpawnPoint",,
+  "topSpawnPoint",
+  "bottomSpawnPoint",
 ] as const);
 
 export const constructionKeys = Object.freeze([
@@ -15,14 +25,54 @@ export const constructionKeys = Object.freeze([
   "setInConstruction",
   "neckThroughConstruction",
 ] as const);
-export const constructionMaskKeys = constructionKeys.map((key) => `${key}Mask` as const);
 
-export const contourKeys = Object.freeze([
+export const constructionPrice = Object.freeze({
+  boltOnConstruction: 0,
+  setInConstruction: 0,
+  neckThroughConstruction: 850000,
+} as const);
+
+export const constructionLabels = Object.freeze({
+  boltOnConstruction: "Bolt On",
+  setInConstruction: "Set In",
+  neckThroughConstruction: "Neck Through",
+} as const);
+
+export const topContourKeys = Object.freeze([
   "flatContour",
   "carvedContour",
   "forearmContour",
+] as const);
+
+export const backContourKeys = Object.freeze([
+  "flatContour",
+  "carvedContour",
   "tummyContour",
 ] as const);
 
-export const contourShadowKeys = contourKeys.map((key) => `${key}Shadow` as const);
-export const contourSpecKeys = contourKeys.map((key) => `${key}Spec` as const);
+export const contourKeys = R.pipe(
+  topContourKeys,
+  R.concat(backContourKeys),
+  R.unique()
+);
+
+export const backContourPrice = Object.freeze({
+  flatContour: 0,
+  carvedContour: 200000,
+  tummyContour: 75000,
+} as const);
+
+export const topContourPrice = Object.freeze({
+  flatContour: 0,
+  carvedContour: 200000,
+  forearmContour: 75000,
+} as const);
+
+export const contourOverlayKeys = contourKeys.map((key) => `${key}Overlay` as const);
+
+export const contourLabels = Object.freeze({
+  flatContour: "Flat",
+  carvedContour: "Carved",
+  tummyContour: "Tummy",
+  forearmContour: "Forearm",
+} as const); 
