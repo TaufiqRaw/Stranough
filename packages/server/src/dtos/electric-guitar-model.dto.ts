@@ -13,7 +13,6 @@ import {
   ValidateNested,
 } from "class-validator";
 import { PositionDto, PositionWithRotationDto } from "./position.dto";
-import { PickupSpawnPointDto } from "./pickup-spawn-point.dto";
 import { ExposeAll, OptionalOnUpdate } from "./util.decorator";
 import { KeyOf } from "../interfaces/class-key.interface";
 import { ElectricGuitarModel } from "../entities";
@@ -25,7 +24,7 @@ export class ElectricGuitarModelDto implements KeyOf<EntityWithoutBase<ElectricG
   @IsString()
   name?: string;
 
-  @OptionalOnUpdate()
+  @IsOptional()
   @IsString()
   description?: string;
 
@@ -38,111 +37,137 @@ export class ElectricGuitarModelDto implements KeyOf<EntityWithoutBase<ElectricG
   @Min(0)
   price ?: number;
 
+  @OptionalOnUpdate()
+  @IsNumber()
+  mask?: number;
+
+  @IsOptional()
+  @IsBoolean()
+  isBass?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  flipElectronicCover?: boolean;
+
   @IsOptional()
   @IsNumber()
   maskScale ?: number;
 
-  @IsNotEmpty()
+  @OptionalOnUpdate()
   @IsObject()
   @ValidateNested()
   @Type(() => PositionDto)
-  fingerboardSpawnPoint: PositionDto;
+  topSpawnPoint?: PositionDto;
+
+  @OptionalOnUpdate()
+  @IsObject()
+  @ValidateNested()
+  @Type(() => PositionDto)
+  bottomSpawnPoint?: PositionDto;
+
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => PositionWithRotationDto)
+  strapPinSpawnPoints ?: PositionWithRotationDto[];
 
   @IsOptional()
   @IsObject()
   @ValidateNested()
-  @Type(() => PositionDto)
-  fingerboardBackEndSpawnPoint?: PositionDto;
-
-  @IsNotEmpty()
-  @IsObject()
-  @ValidateNested()
-  @Type(() => PositionDto)
-  bridgeSpawnPoint: PositionDto;
+  @Type(() => PositionWithRotationDto)
+  soundHoleSpawnPointLeft?: PositionWithRotationDto | null;
 
   @IsOptional()
   @IsObject()
   @ValidateNested()
-  @Type(() => PickupSpawnPointDto)
-  pickupSpawnPoint?: PickupSpawnPointDto;
+  @Type(() => PositionWithRotationDto)
+  soundHoleSpawnPointRight?: PositionWithRotationDto | null;
+
+  @IsOptional()
+  @IsNumber()
+  soundHoleScale?: number;
+
+  @IsOptional()
+  @IsBoolean()
+  mirrorSoundHole?: boolean;
+
+  @OptionalOnUpdate()
+  @IsObject()
+  @ValidateNested()
+  @Type(() => PositionWithRotationDto)
+  electronicCoverSpawnPoint?: PositionWithRotationDto | null;
+
+  @IsOptional()
+  @IsObject()
+  @ValidateNested()
+  @Type(() => PositionWithRotationDto)
+  minorElectronicCoverSpawnPoint?: PositionWithRotationDto | null;
+
+  @OptionalOnUpdate()
+  @IsObject()
+  @ValidateNested()
+  @Type(() => PositionWithRotationDto)
+  batteryCoverSpawnPoint?: PositionWithRotationDto | null;
+
+  @OptionalOnUpdate()
+  @IsObject()
+  @ValidateNested()
+  @Type(() => PositionWithRotationDto)
+  logoSpawnPoint?: PositionWithRotationDto | null;
+
+  @OptionalOnUpdate()
+  @IsObject()
+  @ValidateNested()
+  @Type(() => PositionDto)
+  bridgeSpawnPoint?: PositionDto;
 
   @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })
   @ArrayMinSize(2)
   @Type(() => PositionDto)
-  knobSpawnPoint?: PositionDto[];
+  knobSpawnPoint?: PositionDto[] | null;
 
   @IsOptional()
   @IsObject()
   @ValidateNested()
   @Type(() => PositionWithRotationDto)
-  switchSpawnPoint?: PositionWithRotationDto;
+  switchSpawnPoint?: PositionWithRotationDto | null;
 
   @IsOptional()
   @IsObject()
   @ValidateNested()
   @Type(() => PositionWithRotationDto)
-  topJackSpawnPoint?: PositionWithRotationDto;
+  topJackSpawnPoint?: PositionWithRotationDto | null;
 
   @IsOptional()
   @IsObject()
   @ValidateNested()
   @Type(() => PositionWithRotationDto)
-  sideJackSpawnPoint?: PositionWithRotationDto;
+  sideJackSpawnPoint?: PositionWithRotationDto | null;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsObject()
   @ValidateNested()
-  @Type(() => PositionDto)
-  pickguardSpawnPoint?: PositionDto;
-
-  // ---------------------------------- CONSTRUCTION ----------------------------------
-
-  @IsOptional()
-  @IsNumber()
-  boltOnConstructionMask?: number;
-
-  @IsOptional()
-  @IsNumber()
-  setInConstructionMask?: number;
-
-  @IsOptional()
-  @IsNumber()
-  neckThroughConstructionMask?: number;
+  @Type(() => PositionWithRotationDto)
+  bottomHeadlessSpawnPoint?: PositionDto;
 
   // ---------------------------------- CONTOUR ----------------------------------
 
   @IsOptional()
   @IsNumber()
-  flatContourShadow?: number;
+  flatContourOverlay?: number | null;
 
   @IsOptional()
   @IsNumber()
-  flatContourSpec?: number;
+  forearmContourOverlay?: number | null;
 
   @IsOptional()
   @IsNumber()
-  forearmContourShadow?: number;
+  carvedContourOverlay?: number | null;
 
   @IsOptional()
   @IsNumber()
-  forearmContourSpec?: number;
-
-  @IsOptional()
-  @IsNumber()
-  carvedContourShadow?: number;
-
-  @IsOptional()
-  @IsNumber()
-  carvedContourSpec?: number;
-
-  @IsOptional()
-  @IsNumber()
-  tummyContourShadow?: number;
-
-  @IsOptional()
-  @IsNumber()
-  tummyContourSpec?: number;
+  tummyContourOverlay?: number | null;
 
 }

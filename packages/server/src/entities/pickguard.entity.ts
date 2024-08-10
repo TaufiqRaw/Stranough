@@ -1,4 +1,4 @@
-import { Entity, Index, ManyToOne, Property, Ref, ref } from "@mikro-orm/core";
+import { Entity, Enum, Index, ManyToOne, OneToOne, Property, Ref, Unique, ref } from "@mikro-orm/core";
 import {Position} from "../interfaces/position.interface";
 import { EntityWithoutBase } from "../interfaces/entity-without-base.interface";
 import { classAssign } from "../utils/class-assign.util";
@@ -7,6 +7,7 @@ import { Media } from "./media.entity";
 import { maxDescriptionLength, mediaFKOption } from "../constants";
 import { BaseEntityWithDesc } from "./base-with-desc.entity";
 import { BaseEntity } from "./base.entity";
+import { PickguardConfig } from "stranough-common";
 
 export interface PickguardProps extends Omit<EntityWithoutBase<Pickguard>, 'texture'>{
   texture : Media;
@@ -20,7 +21,7 @@ export class Pickguard extends BaseEntity {
   name : string;
 
   @Property({type : 'varchar', length : maxDescriptionLength})
-  description : string;
+  description ?: string;
 
   @Property()
   price : number;
@@ -31,11 +32,14 @@ export class Pickguard extends BaseEntity {
   @Property({type : 'json'})
   pivotPosition : Position;
 
-  @ManyToOne(()=>ElectricGuitarModel)
+  @ManyToOne(()=>ElectricGuitarModel, {deleteRule : 'cascade', updateRule : 'cascade'})
   model : ElectricGuitarModel;
 
   @Property({type : 'float'})
   scale : number = 1;
+
+  @Enum(()=>PickguardConfig.PickguardType)
+  type : PickguardConfig.PickguardType;
 
   constructor(props : PickguardProps){
     super();

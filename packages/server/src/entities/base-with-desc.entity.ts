@@ -9,8 +9,8 @@ export abstract class BaseEntityWithDesc extends BaseEntity {
   @Unique()
   name : string;
 
-  @Property({type : 'varchar', length : maxDescriptionLength})
-  description : string;
+  @Property({type : 'varchar', length : maxDescriptionLength, nullable : true})
+  description ?: string;
 
   // lastDescription : string | undefined;
 

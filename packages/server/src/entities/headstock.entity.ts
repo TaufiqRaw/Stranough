@@ -1,6 +1,6 @@
 import { Entity, Index, ManyToOne, OneToMany, Property, Ref, ref } from "@mikro-orm/core";
 import { BaseEntity } from "./base.entity";
-import {Position, PositionWithRotation} from "../interfaces/position.interface";
+import {PosRotWithFlipped, Position, PositionWithRotation} from "../interfaces/position.interface";
 import { EntityWithSprite, EntityWithoutBase } from "../interfaces/entity-without-base.interface";
 import { classAssign } from "../utils/class-assign.util";
 import { Media } from "./media.entity";
@@ -19,13 +19,28 @@ export class Headstock extends BaseEntityWithSprite {
   stringCount : number;
 
   @Property({type : 'json'})
-  pegsSpawnPoint : PositionWithRotation[];
+  pegsSpawnPoint : PosRotWithFlipped[];
 
   @ManyToOne(()=>Media,mediaFKOption)
   frontShadowTexture ?: Ref<Media>;
 
   @ManyToOne(()=>Media,mediaFKOption)
   backShadowTexture ?: Ref<Media>;
+
+  @Property()
+  isSlotted : boolean;
+
+  @Property({ type: "json" })
+  logoSpawnPoint?: PositionWithRotation;
+
+  @Property()
+  slottedRodOffset ?: number;
+
+  @Property()
+  slottedGuardLength ?: number;
+
+  @Property({ type: "json" })
+  slottedGuardSpawnPoint ?: PositionWithRotation[];
 
   constructor(props : HeadstockProps){
     super();

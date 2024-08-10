@@ -32,6 +32,8 @@ export function entityWithMediaRouterFactory<
   onCreate ?: (validatedDto : U) => Promise<Optional<T>>;
   onUpdate ?: (validatedDto : U, item : T) => Promise<void>;
   queryMapper ?: (query : any)=>FilterQuery<T>;
+  additionalPopulate ?: any[];
+  onGetOne ?: (item : T)=>Promise<T>;
 }) {
   const router = Router();
   router.get("/", entityIndexMiddleware(repository, "name", {
@@ -46,7 +48,8 @@ export function entityWithMediaRouterFactory<
   router.get(
     "/:id",
     entityGetMiddleware(repository, {
-      populate: [...(mediaKeys as string[])] as any ,
+      populate: [...(mediaKeys as string[]), ...(options?.additionalPopulate ?? [])] as any,
+      itemCallback : options?.onGetOne
     })
   );
 

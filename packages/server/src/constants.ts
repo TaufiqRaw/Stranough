@@ -15,6 +15,8 @@ export const serverPort = process.env.SERVER_PORT || 5000;
 export const serverUrl = process.env.SERVER_URL || "http://localhost";
 export const serverImagesUrl = process.env.SERVER_IMAGES_URL || "images";
 
+export const serverImageBaseUrl = `${serverUrl}/${serverImagesUrl}/`;
+
 export const imagePath = join(__dirname, "..", "public", serverImagesUrl);
 
 

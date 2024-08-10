@@ -6,3 +6,7 @@ export interface Position {
 export interface PositionWithRotation extends Position {
   rotation: number;
 }
+
+export interface PosRotWithFlipped extends PositionWithRotation {
+  flipped: boolean;
+}

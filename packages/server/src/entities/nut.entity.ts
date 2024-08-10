@@ -18,6 +18,12 @@ export class Nut extends BaseEntityWithSprite {
   @Property({type : 'json'})
   stringSpawnPoint : Position[];
 
+  @Property()
+  isBass : boolean;
+
+  @Property()
+  headlessOnly : boolean;
+  
   constructor(props : NutProps){
     super();
     const {thumbnail, texture, ..._props} = props;

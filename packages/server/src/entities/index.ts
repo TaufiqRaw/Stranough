@@ -13,5 +13,6 @@ export * from './pickup.entity';
 export * from './switch.entity';
 export * from './wood.entity';
 export * from './_acoustic-guitar-model.entity';
+export * from './inlay.entity';
 
 //TODO: add event listeners when entity with image is updated, delete the old image

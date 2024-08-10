@@ -155,7 +155,7 @@
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
+          "nullable": true,
           "length": 1000,
           "mappedType": "string"
         },
@@ -306,7 +306,7 @@
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
+          "nullable": true,
           "length": 1000,
           "mappedType": "string"
         },
@@ -466,7 +466,712 @@
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
+          "nullable": true,
+          "length": 1000,
+          "mappedType": "string"
+        },
+        "scale": {
+          "name": "scale",
+          "type": "real",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "float"
+        },
+        "thumbnail_id": {
+          "name": "thumbnail_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "fret1_id": {
+          "name": "fret1_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "fret2_id": {
+          "name": "fret2_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "fret3_id": {
+          "name": "fret3_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "fret4_id": {
+          "name": "fret4_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "fret5_id": {
+          "name": "fret5_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "fret6_id": {
+          "name": "fret6_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "fret7_id": {
+          "name": "fret7_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "fret8_id": {
+          "name": "fret8_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "fret9_id": {
+          "name": "fret9_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "fret10_id": {
+          "name": "fret10_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "fret11_id": {
+          "name": "fret11_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "fret12_id": {
+          "name": "fret12_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "fret13_id": {
+          "name": "fret13_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "fret14_id": {
+          "name": "fret14_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "fret15_id": {
+          "name": "fret15_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "fret16_id": {
+          "name": "fret16_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "fret17_id": {
+          "name": "fret17_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "fret18_id": {
+          "name": "fret18_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "fret19_id": {
+          "name": "fret19_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "fret20_id": {
+          "name": "fret20_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "fret21_id": {
+          "name": "fret21_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "fret22_id": {
+          "name": "fret22_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "fret23_id": {
+          "name": "fret23_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "fret24_id": {
+          "name": "fret24_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "fret25_id": {
+          "name": "fret25_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "fret26_id": {
+          "name": "fret26_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "fret27_id": {
+          "name": "fret27_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        }
+      },
+      "name": "inlay",
+      "schema": "public",
+      "indexes": [
+        {
+          "columnNames": [
+            "name"
+          ],
+          "composite": false,
+          "keyName": "inlay_name_unique",
+          "constraint": true,
+          "primary": false,
+          "unique": true
+        },
+        {
+          "keyName": "inlay_pkey",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "inlay_thumbnail_id_foreign": {
+          "constraintName": "inlay_thumbnail_id_foreign",
+          "columnNames": [
+            "thumbnail_id"
+          ],
+          "localTableName": "public.inlay",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.media",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "inlay_fret1_id_foreign": {
+          "constraintName": "inlay_fret1_id_foreign",
+          "columnNames": [
+            "fret1_id"
+          ],
+          "localTableName": "public.inlay",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.media",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "inlay_fret2_id_foreign": {
+          "constraintName": "inlay_fret2_id_foreign",
+          "columnNames": [
+            "fret2_id"
+          ],
+          "localTableName": "public.inlay",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.media",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "inlay_fret3_id_foreign": {
+          "constraintName": "inlay_fret3_id_foreign",
+          "columnNames": [
+            "fret3_id"
+          ],
+          "localTableName": "public.inlay",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.media",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "inlay_fret4_id_foreign": {
+          "constraintName": "inlay_fret4_id_foreign",
+          "columnNames": [
+            "fret4_id"
+          ],
+          "localTableName": "public.inlay",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.media",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "inlay_fret5_id_foreign": {
+          "constraintName": "inlay_fret5_id_foreign",
+          "columnNames": [
+            "fret5_id"
+          ],
+          "localTableName": "public.inlay",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.media",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "inlay_fret6_id_foreign": {
+          "constraintName": "inlay_fret6_id_foreign",
+          "columnNames": [
+            "fret6_id"
+          ],
+          "localTableName": "public.inlay",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.media",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "inlay_fret7_id_foreign": {
+          "constraintName": "inlay_fret7_id_foreign",
+          "columnNames": [
+            "fret7_id"
+          ],
+          "localTableName": "public.inlay",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.media",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "inlay_fret8_id_foreign": {
+          "constraintName": "inlay_fret8_id_foreign",
+          "columnNames": [
+            "fret8_id"
+          ],
+          "localTableName": "public.inlay",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.media",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "inlay_fret9_id_foreign": {
+          "constraintName": "inlay_fret9_id_foreign",
+          "columnNames": [
+            "fret9_id"
+          ],
+          "localTableName": "public.inlay",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.media",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "inlay_fret10_id_foreign": {
+          "constraintName": "inlay_fret10_id_foreign",
+          "columnNames": [
+            "fret10_id"
+          ],
+          "localTableName": "public.inlay",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.media",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "inlay_fret11_id_foreign": {
+          "constraintName": "inlay_fret11_id_foreign",
+          "columnNames": [
+            "fret11_id"
+          ],
+          "localTableName": "public.inlay",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.media",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "inlay_fret12_id_foreign": {
+          "constraintName": "inlay_fret12_id_foreign",
+          "columnNames": [
+            "fret12_id"
+          ],
+          "localTableName": "public.inlay",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.media",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "inlay_fret13_id_foreign": {
+          "constraintName": "inlay_fret13_id_foreign",
+          "columnNames": [
+            "fret13_id"
+          ],
+          "localTableName": "public.inlay",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.media",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "inlay_fret14_id_foreign": {
+          "constraintName": "inlay_fret14_id_foreign",
+          "columnNames": [
+            "fret14_id"
+          ],
+          "localTableName": "public.inlay",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.media",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "inlay_fret15_id_foreign": {
+          "constraintName": "inlay_fret15_id_foreign",
+          "columnNames": [
+            "fret15_id"
+          ],
+          "localTableName": "public.inlay",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.media",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "inlay_fret16_id_foreign": {
+          "constraintName": "inlay_fret16_id_foreign",
+          "columnNames": [
+            "fret16_id"
+          ],
+          "localTableName": "public.inlay",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.media",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "inlay_fret17_id_foreign": {
+          "constraintName": "inlay_fret17_id_foreign",
+          "columnNames": [
+            "fret17_id"
+          ],
+          "localTableName": "public.inlay",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.media",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "inlay_fret18_id_foreign": {
+          "constraintName": "inlay_fret18_id_foreign",
+          "columnNames": [
+            "fret18_id"
+          ],
+          "localTableName": "public.inlay",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.media",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "inlay_fret19_id_foreign": {
+          "constraintName": "inlay_fret19_id_foreign",
+          "columnNames": [
+            "fret19_id"
+          ],
+          "localTableName": "public.inlay",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.media",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "inlay_fret20_id_foreign": {
+          "constraintName": "inlay_fret20_id_foreign",
+          "columnNames": [
+            "fret20_id"
+          ],
+          "localTableName": "public.inlay",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.media",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "inlay_fret21_id_foreign": {
+          "constraintName": "inlay_fret21_id_foreign",
+          "columnNames": [
+            "fret21_id"
+          ],
+          "localTableName": "public.inlay",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.media",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "inlay_fret22_id_foreign": {
+          "constraintName": "inlay_fret22_id_foreign",
+          "columnNames": [
+            "fret22_id"
+          ],
+          "localTableName": "public.inlay",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.media",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "inlay_fret23_id_foreign": {
+          "constraintName": "inlay_fret23_id_foreign",
+          "columnNames": [
+            "fret23_id"
+          ],
+          "localTableName": "public.inlay",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.media",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "inlay_fret24_id_foreign": {
+          "constraintName": "inlay_fret24_id_foreign",
+          "columnNames": [
+            "fret24_id"
+          ],
+          "localTableName": "public.inlay",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.media",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "inlay_fret25_id_foreign": {
+          "constraintName": "inlay_fret25_id_foreign",
+          "columnNames": [
+            "fret25_id"
+          ],
+          "localTableName": "public.inlay",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.media",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "inlay_fret26_id_foreign": {
+          "constraintName": "inlay_fret26_id_foreign",
+          "columnNames": [
+            "fret26_id"
+          ],
+          "localTableName": "public.inlay",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.media",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "inlay_fret27_id_foreign": {
+          "constraintName": "inlay_fret27_id_foreign",
+          "columnNames": [
+            "fret27_id"
+          ],
+          "localTableName": "public.inlay",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.media",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        }
+      },
+      "nativeEnums": {}
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "unsigned": true,
+          "autoincrement": true,
+          "primary": true,
           "nullable": false,
+          "mappedType": "integer"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "string"
+        },
+        "description": {
+          "name": "description",
+          "type": "varchar(1000)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
           "length": 1000,
           "mappedType": "string"
         },
@@ -550,6 +1255,51 @@
           "primary": false,
           "nullable": true,
           "mappedType": "integer"
+        },
+        "is_slotted": {
+          "name": "is_slotted",
+          "type": "boolean",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "boolean"
+        },
+        "logo_spawn_point": {
+          "name": "logo_spawn_point",
+          "type": "jsonb",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "json"
+        },
+        "slotted_rod_offset": {
+          "name": "slotted_rod_offset",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "slotted_guard_length": {
+          "name": "slotted_guard_length",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "slotted_guard_spawn_point": {
+          "name": "slotted_guard_spawn_point",
+          "type": "jsonb",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "json"
         }
       },
       "name": "headstock",
@@ -679,7 +1429,7 @@
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
+          "nullable": true,
           "length": 1000,
           "mappedType": "string"
         },
@@ -692,6 +1442,24 @@
           "nullable": true,
           "mappedType": "integer"
         },
+        "mask_id": {
+          "name": "mask_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "mask_scale": {
+          "name": "mask_scale",
+          "type": "real",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "float"
+        },
         "price": {
           "name": "price",
           "type": "int",
@@ -701,8 +1469,44 @@
           "nullable": false,
           "mappedType": "integer"
         },
-        "fingerboard_spawn_point": {
-          "name": "fingerboard_spawn_point",
+        "is_bass": {
+          "name": "is_bass",
+          "type": "boolean",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "boolean"
+        },
+        "mirror_sound_hole": {
+          "name": "mirror_sound_hole",
+          "type": "boolean",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "boolean"
+        },
+        "flip_electronic_cover": {
+          "name": "flip_electronic_cover",
+          "type": "boolean",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "boolean"
+        },
+        "bridge_to_bottom": {
+          "name": "bridge_to_bottom",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "sound_hole_spawn_point_left": {
+          "name": "sound_hole_spawn_point_left",
           "type": "jsonb",
           "unsigned": false,
           "autoincrement": false,
@@ -710,8 +1514,71 @@
           "nullable": true,
           "mappedType": "json"
         },
-        "fingerboard_back_end_spawn_point": {
-          "name": "fingerboard_back_end_spawn_point",
+        "sound_hole_spawn_point_right": {
+          "name": "sound_hole_spawn_point_right",
+          "type": "jsonb",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "json"
+        },
+        "sound_hole_scale": {
+          "name": "sound_hole_scale",
+          "type": "real",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "float"
+        },
+        "electronic_cover_spawn_point": {
+          "name": "electronic_cover_spawn_point",
+          "type": "jsonb",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "json"
+        },
+        "minor_electronic_cover_spawn_point": {
+          "name": "minor_electronic_cover_spawn_point",
+          "type": "jsonb",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "json"
+        },
+        "battery_cover_spawn_point": {
+          "name": "battery_cover_spawn_point",
+          "type": "jsonb",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "json"
+        },
+        "logo_spawn_point": {
+          "name": "logo_spawn_point",
+          "type": "jsonb",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "json"
+        },
+        "strap_pin_spawn_points": {
+          "name": "strap_pin_spawn_points",
+          "type": "jsonb",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "json"
+        },
+        "knob_spawn_point": {
+          "name": "knob_spawn_point",
           "type": "jsonb",
           "unsigned": false,
           "autoincrement": false,
@@ -725,43 +1592,7 @@
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": true,
-          "mappedType": "json"
-        },
-        "pickguard_spawn_point": {
-          "name": "pickguard_spawn_point",
-          "type": "jsonb",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "json"
-        },
-        "pickup_spawn_point": {
-          "name": "pickup_spawn_point",
-          "type": "jsonb",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "json"
-        },
-        "mask_scale": {
-          "name": "mask_scale",
-          "type": "real",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "float"
-        },
-        "knob_spawn_point": {
-          "name": "knob_spawn_point",
-          "type": "jsonb",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
+          "nullable": false,
           "mappedType": "json"
         },
         "switch_spawn_point": {
@@ -791,8 +1622,26 @@
           "nullable": true,
           "mappedType": "json"
         },
-        "bolt_on_construction_mask_id": {
-          "name": "bolt_on_construction_mask_id",
+        "top_spawn_point": {
+          "name": "top_spawn_point",
+          "type": "jsonb",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "json"
+        },
+        "bottom_spawn_point": {
+          "name": "bottom_spawn_point",
+          "type": "jsonb",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "json"
+        },
+        "flat_contour_overlay_id": {
+          "name": "flat_contour_overlay_id",
           "type": "int",
           "unsigned": false,
           "autoincrement": false,
@@ -800,8 +1649,8 @@
           "nullable": true,
           "mappedType": "integer"
         },
-        "set_in_construction_mask_id": {
-          "name": "set_in_construction_mask_id",
+        "forearm_contour_overlay_id": {
+          "name": "forearm_contour_overlay_id",
           "type": "int",
           "unsigned": false,
           "autoincrement": false,
@@ -809,8 +1658,8 @@
           "nullable": true,
           "mappedType": "integer"
         },
-        "neck_through_construction_mask_id": {
-          "name": "neck_through_construction_mask_id",
+        "tummy_contour_overlay_id": {
+          "name": "tummy_contour_overlay_id",
           "type": "int",
           "unsigned": false,
           "autoincrement": false,
@@ -818,71 +1667,8 @@
           "nullable": true,
           "mappedType": "integer"
         },
-        "flat_contour_shadow_id": {
-          "name": "flat_contour_shadow_id",
-          "type": "int",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "integer"
-        },
-        "flat_contour_spec_id": {
-          "name": "flat_contour_spec_id",
-          "type": "int",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "integer"
-        },
-        "forearm_contour_shadow_id": {
-          "name": "forearm_contour_shadow_id",
-          "type": "int",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "integer"
-        },
-        "forearm_contour_spec_id": {
-          "name": "forearm_contour_spec_id",
-          "type": "int",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "integer"
-        },
-        "tummy_contour_shadow_id": {
-          "name": "tummy_contour_shadow_id",
-          "type": "int",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "integer"
-        },
-        "tummy_contour_spec_id": {
-          "name": "tummy_contour_spec_id",
-          "type": "int",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "integer"
-        },
-        "carved_contour_shadow_id": {
-          "name": "carved_contour_shadow_id",
-          "type": "int",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "integer"
-        },
-        "carved_contour_spec_id": {
-          "name": "carved_contour_spec_id",
+        "carved_contour_overlay_id": {
+          "name": "carved_contour_overlay_id",
           "type": "int",
           "unsigned": false,
           "autoincrement": false,
@@ -930,10 +1716,10 @@
           "deleteRule": "set null",
           "updateRule": "cascade"
         },
-        "electric_guitar_model_bolt_on_construction_mask_id_foreign": {
-          "constraintName": "electric_guitar_model_bolt_on_construction_mask_id_foreign",
+        "electric_guitar_model_mask_id_foreign": {
+          "constraintName": "electric_guitar_model_mask_id_foreign",
           "columnNames": [
-            "bolt_on_construction_mask_id"
+            "mask_id"
           ],
           "localTableName": "public.electric_guitar_model",
           "referencedColumnNames": [
@@ -943,10 +1729,10 @@
           "deleteRule": "set null",
           "updateRule": "cascade"
         },
-        "electric_guitar_model_set_in_construction_mask_id_foreign": {
-          "constraintName": "electric_guitar_model_set_in_construction_mask_id_foreign",
+        "electric_guitar_model_flat_contour_overlay_id_foreign": {
+          "constraintName": "electric_guitar_model_flat_contour_overlay_id_foreign",
           "columnNames": [
-            "set_in_construction_mask_id"
+            "flat_contour_overlay_id"
           ],
           "localTableName": "public.electric_guitar_model",
           "referencedColumnNames": [
@@ -956,10 +1742,10 @@
           "deleteRule": "set null",
           "updateRule": "cascade"
         },
-        "electric_guitar_model_neck_through_construction_mask_id_foreign": {
-          "constraintName": "electric_guitar_model_neck_through_construction_mask_id_foreign",
+        "electric_guitar_model_forearm_contour_overlay_id_foreign": {
+          "constraintName": "electric_guitar_model_forearm_contour_overlay_id_foreign",
           "columnNames": [
-            "neck_through_construction_mask_id"
+            "forearm_contour_overlay_id"
           ],
           "localTableName": "public.electric_guitar_model",
           "referencedColumnNames": [
@@ -969,10 +1755,10 @@
           "deleteRule": "set null",
           "updateRule": "cascade"
         },
-        "electric_guitar_model_flat_contour_shadow_id_foreign": {
-          "constraintName": "electric_guitar_model_flat_contour_shadow_id_foreign",
+        "electric_guitar_model_tummy_contour_overlay_id_foreign": {
+          "constraintName": "electric_guitar_model_tummy_contour_overlay_id_foreign",
           "columnNames": [
-            "flat_contour_shadow_id"
+            "tummy_contour_overlay_id"
           ],
           "localTableName": "public.electric_guitar_model",
           "referencedColumnNames": [
@@ -982,88 +1768,10 @@
           "deleteRule": "set null",
           "updateRule": "cascade"
         },
-        "electric_guitar_model_flat_contour_spec_id_foreign": {
-          "constraintName": "electric_guitar_model_flat_contour_spec_id_foreign",
+        "electric_guitar_model_carved_contour_overlay_id_foreign": {
+          "constraintName": "electric_guitar_model_carved_contour_overlay_id_foreign",
           "columnNames": [
-            "flat_contour_spec_id"
-          ],
-          "localTableName": "public.electric_guitar_model",
-          "referencedColumnNames": [
-            "id"
-          ],
-          "referencedTableName": "public.media",
-          "deleteRule": "set null",
-          "updateRule": "cascade"
-        },
-        "electric_guitar_model_forearm_contour_shadow_id_foreign": {
-          "constraintName": "electric_guitar_model_forearm_contour_shadow_id_foreign",
-          "columnNames": [
-            "forearm_contour_shadow_id"
-          ],
-          "localTableName": "public.electric_guitar_model",
-          "referencedColumnNames": [
-            "id"
-          ],
-          "referencedTableName": "public.media",
-          "deleteRule": "set null",
-          "updateRule": "cascade"
-        },
-        "electric_guitar_model_forearm_contour_spec_id_foreign": {
-          "constraintName": "electric_guitar_model_forearm_contour_spec_id_foreign",
-          "columnNames": [
-            "forearm_contour_spec_id"
-          ],
-          "localTableName": "public.electric_guitar_model",
-          "referencedColumnNames": [
-            "id"
-          ],
-          "referencedTableName": "public.media",
-          "deleteRule": "set null",
-          "updateRule": "cascade"
-        },
-        "electric_guitar_model_tummy_contour_shadow_id_foreign": {
-          "constraintName": "electric_guitar_model_tummy_contour_shadow_id_foreign",
-          "columnNames": [
-            "tummy_contour_shadow_id"
-          ],
-          "localTableName": "public.electric_guitar_model",
-          "referencedColumnNames": [
-            "id"
-          ],
-          "referencedTableName": "public.media",
-          "deleteRule": "set null",
-          "updateRule": "cascade"
-        },
-        "electric_guitar_model_tummy_contour_spec_id_foreign": {
-          "constraintName": "electric_guitar_model_tummy_contour_spec_id_foreign",
-          "columnNames": [
-            "tummy_contour_spec_id"
-          ],
-          "localTableName": "public.electric_guitar_model",
-          "referencedColumnNames": [
-            "id"
-          ],
-          "referencedTableName": "public.media",
-          "deleteRule": "set null",
-          "updateRule": "cascade"
-        },
-        "electric_guitar_model_carved_contour_shadow_id_foreign": {
-          "constraintName": "electric_guitar_model_carved_contour_shadow_id_foreign",
-          "columnNames": [
-            "carved_contour_shadow_id"
-          ],
-          "localTableName": "public.electric_guitar_model",
-          "referencedColumnNames": [
-            "id"
-          ],
-          "referencedTableName": "public.media",
-          "deleteRule": "set null",
-          "updateRule": "cascade"
-        },
-        "electric_guitar_model_carved_contour_spec_id_foreign": {
-          "constraintName": "electric_guitar_model_carved_contour_spec_id_foreign",
-          "columnNames": [
-            "carved_contour_spec_id"
+            "carved_contour_overlay_id"
           ],
           "localTableName": "public.electric_guitar_model",
           "referencedColumnNames": [
@@ -1122,7 +1830,7 @@
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
+          "nullable": true,
           "length": 1000,
           "mappedType": "string"
         },
@@ -1188,6 +1896,112 @@
           "primary": false,
           "nullable": false,
           "mappedType": "json"
+        },
+        "bottom_point": {
+          "name": "bottom_point",
+          "type": "jsonb",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "json"
+        },
+        "is_bass": {
+          "name": "is_bass",
+          "type": "boolean",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "boolean"
+        },
+        "multiscale": {
+          "name": "multiscale",
+          "type": "boolean",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "boolean"
+        },
+        "headless": {
+          "name": "headless",
+          "type": "boolean",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "boolean"
+        },
+        "tremolo": {
+          "name": "tremolo",
+          "type": "boolean",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "boolean"
+        },
+        "type": {
+          "name": "type",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "enumItems": [
+            "fixed",
+            "tuneomatic",
+            "tailpiece",
+            "near-tailpiece",
+            "mono"
+          ],
+          "mappedType": "enum"
+        },
+        "supported_pickup": {
+          "name": "supported_pickup",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "enumItems": [
+            "single",
+            "humbucker",
+            "p90",
+            "jazz",
+            "piezo",
+            "soapbar",
+            "musicman"
+          ],
+          "mappedType": "enum"
+        },
+        "pickup_spawn_point": {
+          "name": "pickup_spawn_point",
+          "type": "jsonb",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "json"
+        },
+        "height": {
+          "name": "height",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "extendable": {
+          "name": "extendable",
+          "type": "boolean",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "boolean"
         }
       },
       "name": "bridge",
@@ -1291,7 +2105,7 @@
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
+          "nullable": true,
           "length": 1000,
           "mappedType": "string"
         },
@@ -1303,42 +2117,6 @@
           "primary": false,
           "nullable": true,
           "mappedType": "integer"
-        },
-        "fingerboard_spawn_point": {
-          "name": "fingerboard_spawn_point",
-          "type": "jsonb",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "json"
-        },
-        "fingerboard_back_end_spawn_point": {
-          "name": "fingerboard_back_end_spawn_point",
-          "type": "jsonb",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "json"
-        },
-        "bridge_spawn_point": {
-          "name": "bridge_spawn_point",
-          "type": "jsonb",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "json"
-        },
-        "pickguard_spawn_point": {
-          "name": "pickguard_spawn_point",
-          "type": "jsonb",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "json"
         },
         "price": {
           "name": "price",
@@ -1358,17 +2136,17 @@
           "nullable": true,
           "mappedType": "float"
         },
-        "jack_spawn_point": {
-          "name": "jack_spawn_point",
-          "type": "jsonb",
+        "normal_mask_id": {
+          "name": "normal_mask_id",
+          "type": "int",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": true,
-          "mappedType": "json"
+          "mappedType": "integer"
         },
-        "none_cutaway_mask_id": {
-          "name": "none_cutaway_mask_id",
+        "beveled_mask_id": {
+          "name": "beveled_mask_id",
           "type": "int",
           "unsigned": false,
           "autoincrement": false,
@@ -1403,41 +2181,50 @@
           "nullable": true,
           "mappedType": "integer"
         },
-        "none_cutaway_burst_id": {
-          "name": "none_cutaway_burst_id",
-          "type": "int",
+        "bridge_spawn_point": {
+          "name": "bridge_spawn_point",
+          "type": "jsonb",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": true,
-          "mappedType": "integer"
+          "mappedType": "json"
         },
-        "soft_cutaway_burst_id": {
-          "name": "soft_cutaway_burst_id",
-          "type": "int",
+        "top_spawn_point": {
+          "name": "top_spawn_point",
+          "type": "jsonb",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": true,
-          "mappedType": "integer"
+          "mappedType": "json"
         },
-        "venetian_cutaway_burst_id": {
-          "name": "venetian_cutaway_burst_id",
-          "type": "int",
+        "bottom_spawn_point": {
+          "name": "bottom_spawn_point",
+          "type": "jsonb",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": true,
-          "mappedType": "integer"
+          "mappedType": "json"
         },
-        "florentine_cutaway_burst_id": {
-          "name": "florentine_cutaway_burst_id",
-          "type": "int",
+        "preamp_spawn_point": {
+          "name": "preamp_spawn_point",
+          "type": "jsonb",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": true,
-          "mappedType": "integer"
+          "mappedType": "json"
+        },
+        "strap_pin_spawn_points": {
+          "name": "strap_pin_spawn_points",
+          "type": "jsonb",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "json"
         }
       },
       "name": "acoustic_guitar_model",
@@ -1479,10 +2266,23 @@
           "deleteRule": "set null",
           "updateRule": "cascade"
         },
-        "acoustic_guitar_model_none_cutaway_mask_id_foreign": {
-          "constraintName": "acoustic_guitar_model_none_cutaway_mask_id_foreign",
+        "acoustic_guitar_model_normal_mask_id_foreign": {
+          "constraintName": "acoustic_guitar_model_normal_mask_id_foreign",
           "columnNames": [
-            "none_cutaway_mask_id"
+            "normal_mask_id"
+          ],
+          "localTableName": "public.acoustic_guitar_model",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.media",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        },
+        "acoustic_guitar_model_beveled_mask_id_foreign": {
+          "constraintName": "acoustic_guitar_model_beveled_mask_id_foreign",
+          "columnNames": [
+            "beveled_mask_id"
           ],
           "localTableName": "public.acoustic_guitar_model",
           "referencedColumnNames": [
@@ -1522,58 +2322,6 @@
           "constraintName": "acoustic_guitar_model_florentine_cutaway_mask_id_foreign",
           "columnNames": [
             "florentine_cutaway_mask_id"
-          ],
-          "localTableName": "public.acoustic_guitar_model",
-          "referencedColumnNames": [
-            "id"
-          ],
-          "referencedTableName": "public.media",
-          "deleteRule": "set null",
-          "updateRule": "cascade"
-        },
-        "acoustic_guitar_model_none_cutaway_burst_id_foreign": {
-          "constraintName": "acoustic_guitar_model_none_cutaway_burst_id_foreign",
-          "columnNames": [
-            "none_cutaway_burst_id"
-          ],
-          "localTableName": "public.acoustic_guitar_model",
-          "referencedColumnNames": [
-            "id"
-          ],
-          "referencedTableName": "public.media",
-          "deleteRule": "set null",
-          "updateRule": "cascade"
-        },
-        "acoustic_guitar_model_soft_cutaway_burst_id_foreign": {
-          "constraintName": "acoustic_guitar_model_soft_cutaway_burst_id_foreign",
-          "columnNames": [
-            "soft_cutaway_burst_id"
-          ],
-          "localTableName": "public.acoustic_guitar_model",
-          "referencedColumnNames": [
-            "id"
-          ],
-          "referencedTableName": "public.media",
-          "deleteRule": "set null",
-          "updateRule": "cascade"
-        },
-        "acoustic_guitar_model_venetian_cutaway_burst_id_foreign": {
-          "constraintName": "acoustic_guitar_model_venetian_cutaway_burst_id_foreign",
-          "columnNames": [
-            "venetian_cutaway_burst_id"
-          ],
-          "localTableName": "public.acoustic_guitar_model",
-          "referencedColumnNames": [
-            "id"
-          ],
-          "referencedTableName": "public.media",
-          "deleteRule": "set null",
-          "updateRule": "cascade"
-        },
-        "acoustic_guitar_model_florentine_cutaway_burst_id_foreign": {
-          "constraintName": "acoustic_guitar_model_florentine_cutaway_burst_id_foreign",
-          "columnNames": [
-            "florentine_cutaway_burst_id"
           ],
           "localTableName": "public.acoustic_guitar_model",
           "referencedColumnNames": [
@@ -1632,7 +2380,7 @@
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
+          "nullable": true,
           "length": 1000,
           "mappedType": "string"
         },
@@ -1698,6 +2446,24 @@
           "primary": false,
           "nullable": false,
           "mappedType": "json"
+        },
+        "is_bass": {
+          "name": "is_bass",
+          "type": "boolean",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "boolean"
+        },
+        "headless_only": {
+          "name": "headless_only",
+          "type": "boolean",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "boolean"
         }
       },
       "name": "nut",
@@ -1801,7 +2567,7 @@
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
+          "nullable": true,
           "length": 1000,
           "mappedType": "string"
         },
@@ -1841,6 +2607,24 @@
           "nullable": true,
           "mappedType": "integer"
         },
+        "peg_rod_texture_id": {
+          "name": "peg_rod_texture_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
+        "peg_rod_pivot_position": {
+          "name": "peg_rod_pivot_position",
+          "type": "jsonb",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "json"
+        },
         "peg_back_pivot_position": {
           "name": "peg_back_pivot_position",
           "type": "jsonb",
@@ -1856,7 +2640,7 @@
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
+          "nullable": true,
           "mappedType": "float"
         },
         "pivot_position": {
@@ -1867,6 +2651,42 @@
           "primary": false,
           "nullable": false,
           "mappedType": "json"
+        },
+        "is_bass": {
+          "name": "is_bass",
+          "type": "boolean",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "boolean"
+        },
+        "for_slotted_headstock": {
+          "name": "for_slotted_headstock",
+          "type": "boolean",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "boolean"
+        },
+        "slotted_guard_color": {
+          "name": "slotted_guard_color",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "string"
+        },
+        "slotted_string_count": {
+          "name": "slotted_string_count",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
         }
       },
       "name": "peg",
@@ -1933,6 +2753,19 @@
           "referencedTableName": "public.media",
           "deleteRule": "set null",
           "updateRule": "cascade"
+        },
+        "peg_peg_rod_texture_id_foreign": {
+          "constraintName": "peg_peg_rod_texture_id_foreign",
+          "columnNames": [
+            "peg_rod_texture_id"
+          ],
+          "localTableName": "public.peg",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.media",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
         }
       },
       "nativeEnums": {}
@@ -1983,7 +2816,7 @@
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
+          "nullable": true,
           "length": 1000,
           "mappedType": "string"
         },
@@ -2031,21 +2864,25 @@
           "primary": false,
           "nullable": false,
           "mappedType": "float"
+        },
+        "type": {
+          "name": "type",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "enumItems": [
+            "small",
+            "medium",
+            "large"
+          ],
+          "mappedType": "enum"
         }
       },
       "name": "pickguard",
       "schema": "public",
       "indexes": [
-        {
-          "columnNames": [
-            "name"
-          ],
-          "composite": false,
-          "keyName": "pickguard_name_unique",
-          "constraint": true,
-          "primary": false,
-          "unique": true
-        },
         {
           "keyName": "pickguard_pkey",
           "columnNames": [
@@ -2082,6 +2919,7 @@
             "id"
           ],
           "referencedTableName": "public.electric_guitar_model",
+          "deleteRule": "cascade",
           "updateRule": "cascade"
         }
       },
@@ -2133,7 +2971,7 @@
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
+          "nullable": true,
           "length": 1000,
           "mappedType": "string"
         },
@@ -2192,7 +3030,11 @@
           "enumItems": [
             "single",
             "humbucker",
-            "p90"
+            "p90",
+            "jazz",
+            "piezo",
+            "soapbar",
+            "musicman"
           ],
           "mappedType": "enum"
         },
@@ -2307,7 +3149,7 @@
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
+          "nullable": true,
           "length": 1000,
           "mappedType": "string"
         },
@@ -2458,7 +3300,7 @@
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
+          "nullable": true,
           "length": 1000,
           "mappedType": "string"
         },

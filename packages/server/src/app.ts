@@ -20,16 +20,28 @@ import { Switch } from './entities/switch.entity';
 import mikroOrmConfig from "./database/mikro-orm.config";
 import {mediaController } from './controllers';
 import { ElectricGuitarModel, Pickup, Wood } from './entities';
-import { commonEntityRoutes } from './controllers/common-entity.controller';
+import { initCommonEntityRoutes } from './controllers/common-entity.controller';
 import * as IO from 'socket.io'
 import { AcousticGuitarModel } from './entities/_acoustic-guitar-model.entity';
+import { initSocket } from './controllers/socket';
+import { Inlay } from './entities/inlay.entity';
+import {readFileSync} from 'fs';
+import * as https from 'https'
+import { Pool } from 'pg';
+
 require('dotenv').config({
   path : Constants.envPath
 });
 
+const options = process.env.NODE_ENV === 'production' ? {
+  key: readFileSync('/etc/letsencrypt/live/ridhowaskita.my.id/privkey.pem', 'utf8'),
+ cert: readFileSync('/etc/letsencrypt/live/ridhowaskita.my.id/fullchain.pem', 'utf8')
+} : {};
+
 type Repository  = {
   electricModels : EntityRepository<ElectricGuitarModel>,
   acousticModels : EntityRepository<AcousticGuitarModel>,
+  inlays : EntityRepository<Inlay>,
   medias : EntityRepository<Media>, 
   bridges : EntityRepository<Bridge>,
   headstocks : EntityRepository<Headstock>,
@@ -53,6 +65,7 @@ export const DI = {} as {
   server: http.Server,
   logger : winston.Logger,
   io : IO.Server,
+  pgPool : Pool
 }
 
 export const app = express();
@@ -92,20 +105,25 @@ export async function main(){
   // app.use(middlewares.notFound);
   app.use(middlewares.errorHandler);
 
-  DI.server = app.listen(port, () => {
+  DI.server = process.env.NODE_ENV === 'production' ? https.createServer(options, app).listen(port, () => {
+    DI.logger.info(`Server is running on port ${port}`);
+  }) : app.listen(port, () => {
     DI.logger.info(`Server is running on port ${port}`);
   });
+  
   DI.io = new IO.Server(DI.server, {
     cors : {
       origin : process.env.NODE_ENV === 'production' ? process.env.FRONTEND_URL : '*',
     }
   });
+
+  initSocket();
 }
 
 
 function initRoutes(){
   app.use('/medias', mediaController);
-  commonEntityRoutes().forEach(([path, router])=>{
+  initCommonEntityRoutes().forEach(([path, router])=>{
     app.use(`/${path}`, router);
   })
 }
@@ -113,6 +131,13 @@ function initRoutes(){
 async function initDependency(){
   DI.orm = await MikroORM.init(mikroOrmConfig);
   DI.em = DI.orm.em;
+  DI.pgPool = new Pool({
+    database : process.env.DB_NAME || 'backend',
+    port : parseInt(process.env.DB_PORT || '5432'),
+    user : process.env.DB_USER || 'postgres',
+    password : process.env.DB_PASS || 'postgres',
+    host : process.env.DB_HOST || 'localhost',
+  });
   
   initLogger();
 
@@ -149,6 +174,7 @@ export function initRepository(em : EntityManager) : Repository{
     pickguards : em.getRepository(Pickguard),
     switchs : em.getRepository(Switch),
     pickups : em.getRepository(Pickup),
+    inlays : em.getRepository(Inlay),
     woods : em.getRepository(Wood),
   }
 }

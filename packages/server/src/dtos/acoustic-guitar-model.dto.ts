@@ -25,7 +25,7 @@ export class AcousticGuitarModelDto implements KeyOf<EntityWithoutBase<AcousticG
   @IsString()
   name?: string;
 
-  @OptionalOnUpdate()
+  @IsOptional()
   @IsString()
   description?: string;
 
@@ -43,17 +43,18 @@ export class AcousticGuitarModelDto implements KeyOf<EntityWithoutBase<AcousticG
   maskScale ?: number;
 
   // ----------------- SPAWN POINTS -----------------
-  @IsNotEmpty()
-  @IsObject()
-  @ValidateNested()
-  @Type(() => PositionDto)
-  fingerboardSpawnPoint: PositionDto;
 
   @IsOptional()
   @IsObject()
   @ValidateNested()
   @Type(() => PositionDto)
-  fingerboardBackEndSpawnPoint?: PositionDto;
+  topSpawnPoint?: PositionDto;
+
+  @IsOptional()
+  @IsObject()
+  @ValidateNested()
+  @Type(() => PositionDto)
+  bottomSpawnPoint?: PositionDto;
 
   @IsNotEmpty()
   @IsObject()
@@ -65,19 +66,24 @@ export class AcousticGuitarModelDto implements KeyOf<EntityWithoutBase<AcousticG
   @IsObject()
   @ValidateNested()
   @Type(() => PositionWithRotationDto)
-  jackSpawnPoint?: PositionWithRotationDto;
-
-  @IsNotEmpty()
-  @IsObject()
-  @ValidateNested()
-  @Type(() => PositionDto)
-  pickguardSpawnPoint?: PositionDto;
-
-  // ----------------- CUTAWAY -----------------
+  preampSpawnPoint?: PositionWithRotationDto;
 
   @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => PositionWithRotationDto)
+  strapPinSpawnPoints ?: PositionWithRotationDto[];
+
+  // ----------------- MASK -----------------
+  @OptionalOnUpdate()
   @IsNumber()
-  florentineCutawayBurst?: number | null;
+  normalMask?: number;
+
+  @OptionalOnUpdate()
+  @IsNumber()
+  beveledMask?: number;
+
+  // ----------------- CUTAWAY -----------------
 
   @IsOptional()
   @IsNumber()
@@ -85,23 +91,7 @@ export class AcousticGuitarModelDto implements KeyOf<EntityWithoutBase<AcousticG
 
   @IsOptional()
   @IsNumber()
-  noneCutawayBurst?: number | null;
-
-  @IsOptional()
-  @IsNumber()
-  noneCutawayMask?: number | null;
-
-  @IsOptional()
-  @IsNumber()
-  softCutawayBurst?: number | null;
-
-  @IsOptional()
-  @IsNumber()
   softCutawayMask?: number | null;
-
-  @IsOptional()
-  @IsNumber()
-  venetianCutawayBurst?: number | null;
 
   @IsOptional()
   @IsNumber()

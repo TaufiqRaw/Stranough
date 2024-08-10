@@ -14,7 +14,7 @@ export class BaseEntityWithDescDto {
   @IsString()
   name?: string;
 
-  @OptionalOnUpdate()
+  @IsOptional()
   @IsString()
   description?: string;
 

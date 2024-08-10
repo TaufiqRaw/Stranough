@@ -3,7 +3,7 @@ import { IsArray, IsBoolean, IsNotEmpty, IsNumber, IsOptional, ValidateNested } 
 import { BaseEntityWithSpriteDto } from "./common-entity.dto";
 import { EntityWithoutSprite } from "../interfaces/entity-without-base.interface";
 import { Headstock } from "../entities";
-import { PositionDto, PositionWithRotationDto } from "./position.dto";
+import { PosRotWithFlippedDto, PositionDto, PositionWithRotationDto } from "./position.dto";
 import { PositionWithRotation } from "../interfaces/position.interface";
 import { KeyOf } from "../interfaces/class-key.interface";
 import { ExposeAll, OptionalOnUpdate } from "./util.decorator";
@@ -15,10 +15,14 @@ export class HeadstockDto extends BaseEntityWithSpriteDto implements KeyOf<Entit
   stringCount?: number;
 
   @OptionalOnUpdate()
+  @IsBoolean()
+  isSlotted?: boolean;
+
+  @OptionalOnUpdate()
   @IsArray()
   @ValidateNested({ each: true })
-  @Type(() => PositionWithRotationDto)
-  pegsSpawnPoint?: PositionWithRotationDto[];
+  @Type(() => PosRotWithFlippedDto)
+  pegsSpawnPoint?: PosRotWithFlippedDto[];
 
   @IsOptional()
   @IsNumber()
@@ -27,4 +31,18 @@ export class HeadstockDto extends BaseEntityWithSpriteDto implements KeyOf<Entit
   @IsOptional()
   @IsNumber()
   frontShadowTexture?: number | null;
+
+  @IsOptional()
+  @IsNumber()
+  slottedRodOffset?: number;
+
+  @IsOptional()
+  @IsNumber()
+  slottedGuardLength?: number;
+
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => PositionWithRotationDto)
+  slottedGuardSpawnPoint?: PositionWithRotationDto[];
 }

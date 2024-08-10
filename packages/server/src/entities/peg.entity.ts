@@ -29,14 +29,32 @@ export class Peg extends BaseEntityWithDesc {
   @ManyToOne(()=>Media, mediaFKOption)
   pegBackTexture : Ref<Media>;
 
+  @ManyToOne(()=>Media, mediaFKOption)
+  pegRodTexture ?: Ref<Media>;
+
+  @Property({type : 'json'})
+  pegRodPivotPosition : Position;
+
   @Property({type : 'json'})
   pegBackPivotPosition : Position;
 
   @Property({type : 'float'})
-  scale : number;
+  scale ?: number;
 
   @Property({type : 'json'})
   pivotPosition : Position;
+
+  @Property()
+  isBass : boolean;
+
+  @Property()
+  forSlottedHeadstock : boolean;
+
+  @Property()
+  slottedGuardColor ?: string;
+
+  @Property()
+  slottedStringCount ?: number;
 
   constructor(props : PegProps){
     super();
@@ -51,5 +69,6 @@ export class Peg extends BaseEntityWithDesc {
     await this.thumbnail?.load();
     await this.pegCapTexture.load();
     await this.pegBackTexture.load();
+    await this.pegRodTexture?.load();
   }
 }

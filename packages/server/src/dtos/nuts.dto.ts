@@ -13,6 +13,14 @@ export class NutDto extends BaseEntityWithSpriteDto implements KeyOf<EntityWitho
   @IsNumber()
   stringCount?: number;
 
+  @OptionalOnUpdate()
+  @IsBoolean()
+  isBass?: boolean;
+
+  @OptionalOnUpdate()
+  @IsBoolean()
+  headlessOnly?: boolean;
+
   //TODO: add validation for stringSpawnPoint so it length must be equal to stringCount
   @OptionalOnUpdate()
   @IsArray()

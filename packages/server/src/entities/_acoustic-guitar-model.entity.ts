@@ -25,16 +25,13 @@ export type AcousticModelProps = Omit<
   | "pickguards"
   | "headstocks"
   | (typeof AcousticModelConfig.cutawayMaskKeys)[number]
-  | (typeof AcousticModelConfig.cutawayBurstKeys)[number]
   | "modelBodyPivot"
   | "thumbnail"
 > & {
-  thumbnail?: Media;
+  [k in typeof AcousticGuitarModel.mediaKeys[number]]?: Media;
 } & {
   [k in typeof AcousticModelConfig.cutawayMaskKeys[number]]?: Media;
-} & {
-  [k in typeof AcousticModelConfig.cutawayBurstKeys[number]]?: Media;
-};
+}
 
 @Entity()
 // @Index({
@@ -45,24 +42,13 @@ export type AcousticModelProps = Omit<
 export class AcousticGuitarModel extends BaseEntityWithDesc {
   static mediaKeys = Object.freeze([
     "thumbnail",
+    "beveledMask",
+    "normalMask",
     ...AcousticModelConfig.cutawayMaskKeys,
-    ...AcousticModelConfig.cutawayBurstKeys,
   ] as const);
 
   @ManyToOne(() => Media, mediaFKOption)
   thumbnail?: Ref<Media>;
-
-  @Property({ type: "json" })
-  fingerboardSpawnPoint?: Position;
-
-  @Property({ type: "json" })
-  fingerboardBackEndSpawnPoint?: Position;
-
-  @Property({ type: "json" })
-  bridgeSpawnPoint?: Position;
-
-  @Property({ type: "json" })
-  pickguardSpawnPoint?: Position;
 
   @Property()
   price: number;
@@ -70,11 +56,11 @@ export class AcousticGuitarModel extends BaseEntityWithDesc {
   @Property({ type: "float" })
   maskScale?: number = 1;
 
-  @Property({ type: "json" })
-  jackSpawnPoint?: PositionWithRotation;
+  @ManyToOne(() => Media, mediaFKOption)
+  normalMask?: Ref<Media>;
 
   @ManyToOne(() => Media, mediaFKOption)
-  noneCutawayMask?: Ref<Media>;
+  beveledMask?: Ref<Media>;
 
   @ManyToOne(() => Media, mediaFKOption)
   softCutawayMask?: Ref<Media>;
@@ -85,17 +71,20 @@ export class AcousticGuitarModel extends BaseEntityWithDesc {
   @ManyToOne(() => Media, mediaFKOption)
   florentineCutawayMask?: Ref<Media>;
 
-  @ManyToOne(() => Media, mediaFKOption)
-  noneCutawayBurst?: Ref<Media>;
+  @Property({ type: "json" })
+  bridgeSpawnPoint?: Position;
 
-  @ManyToOne(() => Media, mediaFKOption)
-  softCutawayBurst?: Ref<Media>;
+  @Property({ type: "json" })
+  topSpawnPoint?: Position;
 
-  @ManyToOne(() => Media, mediaFKOption)
-  venetianCutawayBurst?: Ref<Media>;
+  @Property({ type: "json" })
+  bottomSpawnPoint?: Position;
 
-  @ManyToOne(() => Media, mediaFKOption)
-  florentineCutawayBurst?: Ref<Media>;
+  @Property({ type : "json" })
+  preampSpawnPoint?: PositionWithRotation;
+
+  @Property({ type: "json" })
+  strapPinSpawnPoints ?: PositionWithRotation[];
 
   constructor(_props: AcousticModelProps) {
     super();

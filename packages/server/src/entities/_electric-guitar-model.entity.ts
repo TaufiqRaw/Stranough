@@ -1,14 +1,18 @@
 import {
+  BeforeUpdate,
   Cascade,
   Collection,
   Entity,
   Enum,
+  EventArgs,
   Index,
   ManyToOne,
   OneToMany,
+  OneToOne,
   Property,
   ref,
   Ref,
+  Unique,
 } from "@mikro-orm/core";
 import { EntityWithoutBase } from "../interfaces/entity-without-base.interface";
 import { classAssign } from "../utils/class-assign.util";
@@ -27,59 +31,81 @@ export type GuitarModelProps = Omit<
   EntityWithoutBase<ElectricGuitarModel>,
   "pickguards" 
   | "headstocks" 
-  | (typeof ElectricModelConfig.constructionMaskKeys)[number] 
-  | (typeof ElectricModelConfig.contourShadowKeys)[number]
-  | (typeof ElectricModelConfig.contourSpecKeys)[number]
+  | (typeof ElectricModelConfig.contourOverlayKeys)[number]
   | 'modelBodyPivot' 
   | 'thumbnail'
+  | 'mask'
+  | 'bridgeToBottom'
 > & {
   thumbnail?: Media;
+  mask?: Media;
+  electronicCoverOverlay?: Media;
 } & {
-  [k in typeof ElectricModelConfig.constructionMaskKeys[number]]?: Media;
-} & {
-  [k in typeof ElectricModelConfig.contourShadowKeys[number]]?: Media;
-} & {
-  [k in typeof ElectricModelConfig.contourSpecKeys[number]]?: Media;
-};
+  [k in typeof ElectricModelConfig.contourOverlayKeys[number]]?: Media;
+}
 
 @Entity()
 // @Index({ name: 'electric_guitar_model_hnsw_l2_idx', expression: 'CREATE INDEX "electric_guitar_model_hnsw_l2_idx" ON "electric_guitar_model" USING hnsw (embedding vector_l2_ops)' })
 export class ElectricGuitarModel extends BaseEntityWithDesc {
   static mediaKeys = Object.freeze([
     "thumbnail",
-    ...ElectricModelConfig.constructionMaskKeys, ...ElectricModelConfig.contourShadowKeys, ...ElectricModelConfig.contourSpecKeys
+    "mask",
+    ...ElectricModelConfig.contourOverlayKeys
   ] as const);
 
   @ManyToOne(() => Media, mediaFKOption)
   thumbnail?: Ref<Media>;
 
-  @Property()
-  price : number;
-
-  @Property({ type: "json" })
-  fingerboardSpawnPoint?: Position;
-
-  @Property({ type: "json" })
-  fingerboardBackEndSpawnPoint?: Position;
-
-  @Property({ type: "json" })
-  bridgeSpawnPoint?: Position;
-
-  @Property({ type: "json" })
-  pickguardSpawnPoint?: Position;
-
-  @Property({ type: "json" })
-  pickupSpawnPoint?: {
-    bridge?: Position;
-    middle?: Position;
-    neck?: Position;
-  };
+  @ManyToOne(() => Media, mediaFKOption)
+  mask?: Ref<Media>;
 
   @Property({ type: "float" })
   maskScale?: number = 1;
 
+  @Property()
+  price : number;
+
+  @Property()
+  isBass?: boolean = false;
+
+  @Property()
+  mirrorSoundHole?: boolean = false;
+
+  @Property()
+  flipElectronicCover?: boolean = false;
+
+  @Property()
+  bridgeToBottom?: number;
+
+  @Property({ type: "json" })
+  soundHoleSpawnPointLeft?: PositionWithRotation;
+
+  @Property({ type: "json" })
+  soundHoleSpawnPointRight?: PositionWithRotation;
+
+  @Property({ type: "float" })
+  soundHoleScale?: number = 1;
+
+  @Property({ type: "json" })
+  electronicCoverSpawnPoint?: PositionWithRotation;
+
+  @Property({ type: "json" })
+  minorElectronicCoverSpawnPoint?: PositionWithRotation;
+
+  @Property({ type: "json" })
+  batteryCoverSpawnPoint?: PositionWithRotation;
+
+  @Property({ type: "json" })
+  logoSpawnPoint?: PositionWithRotation;
+
+  @Property({ type: "json" })
+  strapPinSpawnPoints ?: PositionWithRotation[];
+
   @Property({ type: "json" })
   knobSpawnPoint?: Position[];
+
+  @Property({ type: "json" })
+  bridgeSpawnPoint: Position;
 
   @Property({ type: "json" })
   switchSpawnPoint?: PositionWithRotation;
@@ -90,41 +116,28 @@ export class ElectricGuitarModel extends BaseEntityWithDesc {
   @Property({ type: "json" })
   sideJackSpawnPoint?: PositionWithRotation;
 
-  @ManyToOne(() => Media, mediaFKOption)
-  boltOnConstructionMask?: Ref<Media>;
+  @Property({ type: "json" })
+  topSpawnPoint?: Position;
 
-  @ManyToOne(() => Media, mediaFKOption)
-  setInConstructionMask?: Ref<Media>;
+  @Property({ type: "json" })
+  bottomSpawnPoint: Position;
 
-  @ManyToOne(() => Media, mediaFKOption)
-  neckThroughConstructionMask?: Ref<Media>;
+  @OneToMany(() => Pickguard, (pickguard) => pickguard.model, { cascade: [Cascade.ALL] })
+  pickguards ?: Collection<Pickguard>;
 
-  @ManyToOne(()=>Media, mediaFKOption)
-  flatContourShadow ?: Ref<Media>;
-
-  @ManyToOne(()=>Media, mediaFKOption)
-  flatContourSpec ?: Ref<Media>;
+  // ----------------- CONTOUR OVERLAYS -----------------
 
   @ManyToOne(()=>Media, mediaFKOption)
-  forearmContourShadow ?: Ref<Media>;
+  flatContourOverlay ?: Ref<Media>;
 
   @ManyToOne(()=>Media, mediaFKOption)
-  forearmContourSpec ?: Ref<Media>;
+  forearmContourOverlay ?: Ref<Media>;
 
   @ManyToOne(()=>Media, mediaFKOption)
-  tummyContourShadow ?: Ref<Media>;
-  
-  @ManyToOne(()=>Media, mediaFKOption)
-  tummyContourSpec ?: Ref<Media>;
+  tummyContourOverlay ?: Ref<Media>;
 
   @ManyToOne(()=>Media, mediaFKOption)
-  carvedContourShadow ?: Ref<Media>;
-
-  @ManyToOne(()=>Media, mediaFKOption)
-  carvedContourSpec ?: Ref<Media>;
-
-  @OneToMany(() => Pickguard, (p) => p.model)
-  pickguards = new Collection<Pickguard>(this);
+  carvedContourOverlay ?: Ref<Media>;
 
   constructor(_props: GuitarModelProps) {
     super();
@@ -139,11 +152,24 @@ export class ElectricGuitarModel extends BaseEntityWithDesc {
         this[prop] = ref(props[prop]!);
       }
     }
+    this.bridgeToBottom =  _props.bottomSpawnPoint.y - _props.bridgeSpawnPoint?.y;
   }
 
   async loadMedias(){
     for(const key of ElectricGuitarModel.mediaKeys){
       await this[key]?.load();
+    }
+  }
+
+  @BeforeUpdate()
+  async beforeUpdate(args: EventArgs<ElectricGuitarModel>) {
+    const etty = args.entity;
+    if(etty.bridgeSpawnPoint.y && etty.bottomSpawnPoint.y){
+      this.bridgeToBottom = etty.bottomSpawnPoint.y - etty.bridgeSpawnPoint.y;
+    }else if(etty.bridgeSpawnPoint.y){
+      this.bridgeToBottom = this.bottomSpawnPoint.y - etty.bridgeSpawnPoint.y;
+    }else if(etty.bottomSpawnPoint.y){
+      this.bridgeToBottom = etty.bottomSpawnPoint.y - this.bridgeSpawnPoint.y;
     }
   }
 }
