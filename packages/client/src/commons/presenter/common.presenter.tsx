@@ -25,6 +25,7 @@ export function CommonPresenter(props: {
   children?: JSX.Element;
   zIndex?: number;
   filter?: Filter;
+  rotation?: number;
 }) {
   const selectedTex = createPixiTexture(() => props.texture);
 
@@ -53,6 +54,7 @@ export function CommonPresenter(props: {
             pivot={props.pivot ?? { x: 0, y: 0 }}
             texture={selectedTex() ?? Texture.EMPTY}
             scale={props.scale ?? 1}
+            rotation={props.rotation ?? 0}
           />
           {props.children}
         </Container>

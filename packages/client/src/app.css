@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+  font-family: roboto, sans-serif;
+}
+
 body {
   @apply touch-none;
 }

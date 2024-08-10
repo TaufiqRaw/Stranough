@@ -10,6 +10,7 @@ export const pickupRepository = createCommonRepository<
   ServerDtos.PickupDto,
   {
     type : PickupConfig.PickupType | undefined,
+    stringCount ?: number,
   }
 >(
   "pickups",

@@ -5,6 +5,7 @@ import { ImageType } from "~/commons/interfaces/image-type";
 import { Position } from "~/commons/interfaces/position";
 import { createSignal } from "solid-js";
 import { createPixiTextureSignal } from "~/commons/functions/create-pixi-texture-signal";
+import { PickguardConfig } from "stranough-common";
 
 export function createPickguard(
   b?: ServerEntities.Pickguard,
@@ -25,10 +26,11 @@ export function createPickguard(
     name: createSignalObject(),
     description: createSignalObject(),
     placeholder: {
-      name: createSignalObject(b ? b.name : "Pickguard Name"),
-      description: createSignalObject(b ? b.description : "Pickguard Description"),
+      name: createSignalObject(b?.name ?? "Pickguard Name"),
+      description: createSignalObject(b?.description ?? "Pickguard Description"),
     },
     texture: createPixiTextureSignal(texture, setTexture),
+    type: createSignalObject(b?.type ? `${b.type}` as `${PickguardConfig.PickguardType}` : undefined),
     pivotPosition: createSignalObject<Position | undefined>(
       b?.pivotPosition ?? { x: 0, y: 0 }
     ),

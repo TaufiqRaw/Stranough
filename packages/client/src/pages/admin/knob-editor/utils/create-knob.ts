@@ -26,7 +26,7 @@ export function createKnob(
     description: createSignalObject(),
     placeholder: {
       name: createSignalObject(b ? b.name : "Knob Name"),
-      description: createSignalObject(b ? b.description : "Knob Description"),
+      description: createSignalObject(b?.description ?? "Knob Description"),
     },
     thumbnail: createSignalObject<ImageType | null | undefined>(
       b?.thumbnail && {

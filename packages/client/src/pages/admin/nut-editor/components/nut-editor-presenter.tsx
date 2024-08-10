@@ -37,7 +37,6 @@ export function NutEditorPresenter() {
             };
           });
         } else nut()?.getSelectedItem()?.set(p);
-        nut()?.selectedItem.set(undefined);
       }}
     >
       <StringPointsIndicator />

@@ -18,14 +18,14 @@ function getPosAndRot(point?: {
 export function acousticModelToPresenter(model : ()=>AcousticGuitarModel | undefined) : AcousticModelPresenterProps{
 
   const body : AcousticModelPresenterProps['body'] = {
-    mask: model()?.getSelectedCutawaySignal().get()?.filename,
+    mask: model()?.mask(),
     scale: model()?.maskScale.get(),
   };
 
   const spawnpoints : AcousticModelPresenterProps['spawnpoints'] = {
-    fingerboard: model()?.spawnPoints.fingerboard.position.get(),
+    // fingerboard: model()?.spawnPoints.fingerboard.position.get(),
     bridge: model()?.spawnPoints.bridge.position.get(),
-    jack : getPosAndRot(model()?.spawnPoints.jack),
+    // jack : getPosAndRot(model()?.spawnPoints.jack),
   };
 
   return {

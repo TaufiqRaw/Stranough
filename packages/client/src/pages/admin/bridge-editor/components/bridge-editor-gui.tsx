@@ -1,4 +1,4 @@
-import { For, createMemo } from "solid-js";
+import { For, Show, createMemo } from "solid-js";
 import { EditorGui, EditorGuiGroup, keyboardMove } from "~/commons/components/editor-gui";
 import ImageInput from "~/commons/components/image-input";
 import { Input } from "~/commons/components/input";
@@ -10,6 +10,10 @@ import { ToggleableButton } from "~/commons/components/toggleable-button";
 import { NameDescriptionGroup } from "~/commons/components/name-description-group";
 import { useGuitarBridge } from "../bridge-editor.page";
 import { ElectricModelPreviewExplorer } from "~/commons/components/electric-model-preview-explorer";
+import { Checkbox } from "~/commons/components/checkbox";
+import { Option, Select } from "~/commons/components/select";
+import { Pickup as PickupConfig, Bridge as BridgeConfig} from "stranough-common";
+
 
 export function BridgeEditorGui() {
   const bridge = createMemo(() => useGuitarBridge().get());
@@ -47,7 +51,49 @@ export function BridgeEditorGui() {
         placeholder={bridge()?.placeholder}
         price={bridge()?.price}
         thumbnail={bridge()?.thumbnail}
-      />
+      >
+        <Checkbox
+          checked={bridge()?.isBass.get}
+          label="Is For Bass?"
+          onChange={bridge()?.isBass.set}
+        />
+        <Checkbox
+          checked={bridge()?.extendable.get}
+          label="Allow Overflow?"
+          onChange={bridge()?.extendable.set}
+        />
+        <Checkbox
+          checked={bridge()?.isTremolo.get}
+          label="Have Tremolo?"
+          onChange={bridge()?.isTremolo.set}
+        />
+        <span class="mt-1">
+          Type
+        </span>
+        <Select
+          value={bridge()?.type.get()}
+          onChange={(value) => bridge()?.type.set(value as `${BridgeConfig.BridgeType}`)}
+        >
+          <For each={Object.values(BridgeConfig.BridgeType)}>
+            {(type) => <Option value={type}>{type}</Option>}
+          </For>
+        </Select>
+        <span class="mt-1">
+          Supported Pickup
+        </span>
+        <Select
+          value={bridge()?.supportedPickup.get()}
+          onChange={(value) =>{ 
+            if(value === 'none') return bridge()?.supportedPickup.set(undefined);
+            bridge()?.supportedPickup.set(value as `${PickupConfig.PickupType}`)
+          }}
+        >
+          <Option value={'none'}>No Pickup</Option>
+          <For each={Object.values(PickupConfig.PickupType)}>
+            {(type) => <Option value={type}>{type}</Option>}
+          </For>
+        </Select>
+      </NameDescriptionGroup>
       <EditorGuiGroup>
         <ImageInput
           label="Texture"
@@ -67,7 +113,7 @@ export function BridgeEditorGui() {
           value={bridge()?.scale.get()}
           oninput={(e) => bridge()?.scale.set(parseFloat(e.target.value))}
           step={0.01}
-          min={0.25}
+          min={0.1}
           max={2}
         />
       </EditorGuiGroup>
@@ -81,44 +127,41 @@ export function BridgeEditorGui() {
         >
           Pivot Point
         </ToggleableButton>
-        <span class="text-sm -mt-1">String Points</span>
-        <Input
-          class="!bg-gray-800 !text-white-950 w-14"
-          type="number"
-          min={1}
-          value={bridge()?.stringCount.get()}
-          onChange={(e) =>
-            bridge()?.stringCount.set(parseInt(e.target.value) || 1)
-          }
-        />
-        <For each={bridge()?.stringSpawnPoint.state()}>
-          {(spp, x) => (
-            <div class="border border-gray-500 my-2 px-2 py-4 rounded-md flex justify-between gap-2">
-              <For each={spp.state()}>
-                {(sp, y) => (
+        <ToggleableButton
+          isActive={bridge()?.selectedItem?.get() === "bottomPoint"}
+          onClick={() => bridge()?.selectedItem?.set("bottomPoint")}
+        >
+          Bottom Point
+        </ToggleableButton>
+        <Show when={bridge()?.type.get() !== 'mono'}>
+          <span class="text-sm -mt-1">String Points</span>
+          <Input
+            class="!bg-gray-800 !text-white-950 w-14"
+            type="number"
+            min={1}
+            value={bridge()?.stringCount.get()}
+            onChange={(e) =>
+              bridge()?.stringCount.set(parseInt(e.target.value) || 1)
+            }
+            />
+          <div class="border border-gray-500 my-2 px-2 py-4 rounded-md flex flex-col justify-between gap-2">
+            <For each={bridge()?.stringSpawnPoint.state()}>
+              {(sp, i) => (
                   <ToggleableButtonWithState
-                    isActive={!!sp.get()}
-                    class="!border-0 w-3 !p-0"
-                    isFocus={R.isDeepEqual(
-                      bridge()?.stringSpawnPoint.selectedIndex.get(),
-                      [x(), y()]
-                    )}
+                    class="flex items-center"
+                    isActive={!!sp.get()?.position.get()}
+                    isFocus={bridge()?.stringSpawnPoint.selectedIndex.get() === i() && bridge()?.selectedItem.get() === "stringSpawnPoint"}
                     onClick={() => {
-                      if (!!sp.get()) {
-                        sp.set(Constants.defaultPos);
-                      }
-                      bridge()?.stringSpawnPoint.selectedIndex.set([x(), y()]);
-                      bridge()?.selectedItem?.set("stringSpawnPoint");
+                      bridge()?.stringSpawnPoint.selectedIndex.set(i());
+                      bridge()?.selectedItem.set("stringSpawnPoint");
                     }}
-                  />
+                  >
+                    <span>String {i()+1}</span>
+                  </ToggleableButtonWithState>
                 )}
-              </For>
-            </div>
-          )}
-        </For>
-        <Button onClick={() => bridge()?.stringSpawnPoint.add()}>
-          <i class="bi bi-plus"></i>
-        </Button>
+            </For>
+          </div>
+        </Show>
       </EditorGuiGroup>
       <Button class="mx-3 mt-5" onClick={bridge()?.save}>
         Save

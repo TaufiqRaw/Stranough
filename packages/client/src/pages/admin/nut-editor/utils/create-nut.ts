@@ -35,7 +35,7 @@ export function createNut(
     description: createSignalObject(),
     placeholder: {
       name: createSignalObject(b ? b.name : "Nut Name"),
-      description: createSignalObject(b ? b.description : "Nut Description"),
+      description: createSignalObject(b?.description ?? "Nut Description"),
     },
     thumbnail: createSignalObject<ImageType | null | undefined>(
       b?.thumbnail && {
@@ -73,6 +73,8 @@ export function createNut(
         )
       },
     },
+    isBass: createSignalObject(b ? b.isBass : false),
+    headlessOnly: createSignalObject(b ? b.headlessOnly : false),
     stringSpawnPoint,
   };
 

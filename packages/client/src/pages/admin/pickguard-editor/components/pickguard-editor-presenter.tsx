@@ -18,28 +18,12 @@ export function JackEditorPresenter() {
     <MaskedContainer 
       scale={pickguard()?.scale.get()}
       mask={pickguard()?.texture.get()?.filename}
-      pivot={pickguard()?.pivotPosition.get()}
+      position={pickguard()?.pivotPosition.get()}
       interactive
-      onClick={p=>{
-        if(pickguard()?.selectedItem.get() === "pivot"){
-          pickguard()?.pivotPosition.set((prev) => {
-            if (!prev)
-              return {
-                x: p.x,
-                y: p.y,
-              };
-            return {
-              x: prev.x + p.x,
-              y: prev.y + p.y,
-            };
-          });
-        }
-      }}
     >
       {({ maskTexture }) => {
         return <>
           <Graphics
-            pivot={pickguard()?.pivotPosition.get()}
             scale={pickguard()?.scale.get()}
             draw={[
               ["rect",0,0 ,maskTexture()?.width ?? 0, maskTexture()?.height ?? 0],
@@ -69,6 +53,21 @@ export function JackEditorPresenter() {
         {...electricModelToPresenter(editorCtx!.modelPreview.selectedModel)}
         isFront={isFront?.()}
         pickguard={Pickguard}
+        onGuitarClick={p=>{
+          if(pickguard()?.selectedItem.get() === "pivot"){
+            pickguard()?.pivotPosition.set((prev) => {
+              if (!prev)
+                return {
+                  x: p.x,
+                  y: p.y,
+                };
+              return {
+                x: prev.x + p.x,
+                y: prev.y + p.y,
+              };
+            });
+          }
+        }}
       />
     </Show>
   );

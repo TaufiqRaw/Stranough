@@ -11,6 +11,7 @@ import { NameDescriptionGroup } from "~/commons/components/name-description-grou
 import { useGuitarHeadstock } from "../headstock-editor.page";
 import { Range } from "~/commons/components/range";
 import { ElectricModelPreviewExplorer } from "~/commons/components/electric-model-preview-explorer";
+import { Checkbox } from "~/commons/components/checkbox";
 
 export function HeadstockEditorGui() {
   const headstock = createMemo(() => useGuitarHeadstock().get());
@@ -48,7 +49,35 @@ export function HeadstockEditorGui() {
         placeholder={headstock()?.placeholder}
         price={headstock()?.price}
         thumbnail={headstock()?.thumbnail}
-      />
+      >
+        <Checkbox
+          label="Slotted Headstock ?"
+          checked={headstock()?.isSlotted.get}
+          onChange={headstock()?.isSlotted.set}
+        />
+        <Show when={headstock()?.isSlotted.get()}>
+          <div class="flex flex-col gap-1">
+            <span>Slotted Rod Offset</span>
+            <Range
+              value={headstock()?.slottedRodOffset.get()}
+              onChange={(e) => headstock()?.slottedRodOffset.set(e)}
+              step={0.01}
+              min={0}
+              max={100}
+            />
+          </div>
+          <div class="flex flex-col gap-1">
+            <span>Slotted Guard Length</span>
+            <Range
+              value={headstock()?.slottedGuardLength.get()}
+              onChange={(e) => headstock()?.slottedGuardLength.set(e)}
+              step={0.01}
+              min={0}
+              max={100}
+            /> 
+          </div>
+        </Show>
+      </NameDescriptionGroup>
       <EditorGuiGroup parent>
         <span class="font-bold text-center mx-3">Textures</span>
       </EditorGuiGroup>
@@ -56,6 +85,7 @@ export function HeadstockEditorGui() {
         <ImageInput
           label="Mask"
           partType="headstock"
+          acceptedTypes="image/svg+xml"
           onLoad={(image) => {
             headstock()?.texture.set(image);
           }}
@@ -65,6 +95,7 @@ export function HeadstockEditorGui() {
           imageFilename={headstock()?.texture.get()?.filename}
         />
         <ImageInput
+          acceptedTypes="image/png"
           label="Front Shadow"
           partType="headstock"
           onLoad={(image) => {
@@ -75,6 +106,7 @@ export function HeadstockEditorGui() {
           }}
           imageFilename={headstock()?.frontShadowTexture.get()?.filename}/>
           <ImageInput
+            acceptedTypes="image/png"
             label="Back Shadow"
             partType="headstock"
             onLoad={(image) => {
@@ -113,6 +145,47 @@ export function HeadstockEditorGui() {
             headstock()?.stringCount.set(parseInt(e.target.value) || 1)
           }
         />
+        <Show when={headstock()?.isSlotted.get()}>
+          <span class="text-sm -mt-1">Slotted Guards</span>
+          <For each={headstock()?.slottedGuardSpawnPoint.state()}>
+            {(sp, i) => (
+              <ToggleableButtonWithState
+                class="flex items-center"
+                isActive={!!sp.get()?.position.get()}
+                isFocus={headstock()?.slottedGuardSpawnPoint.selectedIndex.get() === i() && headstock()?.selectedItem.get() === "slottedGuardSpawnPoint"}
+                onClick={() => {
+                  headstock()?.slottedGuardSpawnPoint.selectedIndex.set(i());
+                  headstock()?.selectedItem.set("slottedGuardSpawnPoint");
+                }}
+              >
+                <Show when={!!sp.get()?.position.get()} 
+                  fallback={<span>Guard {i()+1}</span>}
+                >
+                  <div class="flex flex-col">
+                    <Range
+                      class="w-36"
+                      value={sp.get()?.rotation.get()}
+                      onChange={(e) => sp.get()?.rotation.set(e)}
+                      step={0.01}
+                      min={-Math.PI}
+                      max={Math.PI}
+                    />
+                    <Button onClick={()=>headstock()?.slottedGuardSpawnPoint.remove(i())} class="bg-red-500 !py-1">
+                      Delete
+                    </Button>
+                  </div>
+                </Show>
+              </ToggleableButtonWithState>
+            )}
+          </For>
+          <Button class="mx-3 mt-5" onClick={()=>headstock()?.slottedGuardSpawnPoint.add({
+            x: 0,
+            y: 0,
+            rotation: 0,
+          })}>
+            Add Guard
+          </Button>
+        </Show>
         <div class="border border-gray-500 my-2 px-2 py-4 rounded-md flex flex-col justify-between gap-2">
           <For each={headstock()?.pegsSpawnPoint.state()}>
             {(sp, i) => (
@@ -128,14 +201,22 @@ export function HeadstockEditorGui() {
                   <Show when={!!sp.get()?.position.get()} 
                     fallback={<span>Peg {i()+1}</span>}
                   >
-                    <Range
-                      class="w-36"
-                      value={sp.get()?.rotation.get()}
-                      onChange={(e) => sp.get()?.rotation.set(e)}
-                      step={0.01}
-                      min={-Math.PI}
-                      max={Math.PI}
-                    />
+                    <div class="flex flex-col">
+                      <Range
+                        class="w-36"
+                        value={sp.get()?.rotation.get()}
+                        onChange={(e) => sp.get()?.rotation.set(e)}
+                        step={0.01}
+                        min={-Math.PI}
+                        max={Math.PI}
+                      />
+                      <Checkbox
+                        label="Right Side"
+                        checked={()=>sp.get()?.flipped.get() ?? false}
+                        onChange={sp.get()?.flipped.set}
+                      />
+                    </div>
+                    
                   </Show>
                 </ToggleableButtonWithState>
               )}

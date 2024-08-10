@@ -3,8 +3,11 @@ import { AcousticGuitarModel } from "./types";
 import { createSignalObject } from "~/commons/functions/signal-object.util";
 import { ImageType } from "~/commons/interfaces/image-type";
 import { Position } from "~/commons/interfaces/position";
-import { createSignal } from "solid-js";
+import { Resource, createMemo, createResource, createSignal } from "solid-js";
 import { createPixiTextureSignal } from "~/commons/functions/create-pixi-texture-signal";
+import { generateAcousticMask } from "~/commons/functions/generate-acoustic-mask";
+import { Texture } from "pixi.js";
+import { serverImgUrl } from "~/commons/functions/server-img-url.util";
 
 export function createAcousticGuitarModel(
   b?: ServerEntities.AcousticGuitarModel,
@@ -19,7 +22,7 @@ export function createAcousticGuitarModel(
     description: createSignalObject(),
     placeholder: {
       name: createSignalObject(b ? b.name : "Model Name"),
-      description: createSignalObject(b ? b.description : "Model Description"),
+      description: createSignalObject(b?.description ?? "Model Description"),
     },
     thumbnail: createSignalObject<ImageType | undefined>(
       b?.thumbnail && {
@@ -29,8 +32,11 @@ export function createAcousticGuitarModel(
       }
     ),
     price: createSignalObject(b ? b.price : 0),
+    mask : (()=>undefined) as Resource<Texture | undefined>,
+    normalFullMask : (()=>undefined) as Resource<Texture | undefined>,
     maskScale: createSignalObject(b?.maskScale ?? 1),
     selectedCutaway: createSignalObject(),
+    isBeveled : createSignalObject(false),
     getSelectedCutawaySignal: () => {
       switch (obj.selectedCutaway.get()) {
         case "soft":
@@ -40,19 +46,7 @@ export function createAcousticGuitarModel(
         case "florentine":
           return obj.florentineCutawayMask;
         default:
-          return obj.noneCutawayMask;
-      }
-    },
-    getSelectedCutawayBurstSignal: () => {
-      switch (obj.selectedCutaway.get()) {
-        case "soft":
-          return obj.softCutawayBurst;
-        case "venetian":
-          return obj.venetianCutawayBurst;
-        case "florentine":
-          return obj.florentineCutawayBurst;
-        default:
-          return obj.noneCutawayBurst;
+          return undefined;
       }
     },
     spawnPoints : {
@@ -60,55 +54,56 @@ export function createAcousticGuitarModel(
         isShow : createSignalObject(false),
         position : createSignalObject<Position | undefined>(b?.bridgeSpawnPoint),
       },
-      fingerboard : {
+      bottomEnd : {
         isShow : createSignalObject(false),
-        position : createSignalObject<Position | undefined>(b?.fingerboardSpawnPoint),
+        position : createSignalObject<Position | undefined>(b?.bottomSpawnPoint),
       },
-      fingerboardBackEnd : {
+      topEnd : {
         isShow : createSignalObject(false),
-        position : createSignalObject<Position | undefined>(b?.fingerboardBackEndSpawnPoint),
+        position : createSignalObject<Position | undefined>(b?.topSpawnPoint),
       },
-      jack : {
+      preamp : {
         isShow : createSignalObject(false),
-        position : createSignalObject<Position | undefined>(b?.jackSpawnPoint),
-        rotation : createSignalObject(b?.jackSpawnPoint?.rotation ?? 0),
+        position : createSignalObject<Position | undefined>(b?.preampSpawnPoint),
+        rotation : createSignalObject(b?.preampSpawnPoint?.rotation ?? 0),
       },
+
       selected : createSignalObject(),
       getSelectedSignal : ()=>{
         switch(obj.spawnPoints.selected.get()){
           case 'bridge':
             return obj.spawnPoints.bridge.position;
-          case 'fingerboard':
-            return obj.spawnPoints.fingerboard.position;
-          case 'fingerboardBackEnd':
-            return obj.spawnPoints.fingerboardBackEnd.position;
-          case 'jack':
-            return obj.spawnPoints.jack.position;
+          case 'bottomEnd':
+            return obj.spawnPoints.bottomEnd.position;
+          case 'topEnd':
+            return obj.spawnPoints.topEnd.position;
+          case 'preamp':
+            return obj.spawnPoints.preamp.position;
           default : 
             return undefined;
         }
       },
       asArray : ()=>{
         return [
-          {position : obj.spawnPoints.fingerboard.position},
-          {position : obj.spawnPoints.fingerboardBackEnd.position},
+          {position : obj.spawnPoints.bottomEnd.position},
+          {position : obj.spawnPoints.topEnd.position},
           {position : obj.spawnPoints.bridge.position},
-          {position : obj.spawnPoints.jack.position, rotation : obj.spawnPoints.jack.rotation},
+          {position : obj.spawnPoints.preamp.position},
         ]
       }
     },
-    noneCutawayMask : createSignalObject<ImageType | undefined | null>(
-      b?.noneCutawayMask && {
-        id: b.noneCutawayMask.id,
+    normalMask : createSignalObject<ImageType | undefined | null>(
+      b?.normalMask && {
+        id: b.normalMask.id,
         // @ts-ignore
-        filename: b.noneCutawayMask.filename,
+        filename: b.normalMask.filename,
       }
     ),
-    florentineCutawayBurst : createSignalObject<ImageType | undefined | null>(
-      b?.florentineCutawayBurst && {
-        id: b.florentineCutawayBurst.id,
+    beveledMask : createSignalObject<ImageType | undefined | null>(
+      b?.beveledMask && {
+        id: b.beveledMask.id,
         // @ts-ignore
-        filename: b.florentineCutawayBurst.filename,
+        filename: b.beveledMask.filename,
       }
     ),
     florentineCutawayMask : createSignalObject<ImageType | undefined | null>(
@@ -118,32 +113,11 @@ export function createAcousticGuitarModel(
         filename: b.florentineCutawayMask.filename,
       }
     ),
-    noneCutawayBurst : createSignalObject<ImageType | undefined | null>(
-      b?.noneCutawayBurst && {
-        id: b.noneCutawayBurst.id,
-        // @ts-ignore
-        filename: b.noneCutawayBurst.filename,
-      }
-    ),
-    softCutawayBurst : createSignalObject<ImageType | undefined | null>(
-      b?.softCutawayBurst && {
-        id: b.softCutawayBurst.id,
-        // @ts-ignore
-        filename: b.softCutawayBurst.filename,
-      }
-    ),
     softCutawayMask : createSignalObject<ImageType | undefined | null>(
       b?.softCutawayMask && {
         id: b.softCutawayMask.id,
         // @ts-ignore
         filename: b.softCutawayMask.filename,
-      }
-    ),
-    venetianCutawayBurst : createSignalObject<ImageType | undefined | null>(
-      b?.venetianCutawayBurst && {
-        id: b.venetianCutawayBurst.id,
-        // @ts-ignore
-        filename: b.venetianCutawayBurst.filename,
       }
     ),
     venetianCutawayMask : createSignalObject<ImageType | undefined | null>(
@@ -153,11 +127,47 @@ export function createAcousticGuitarModel(
         filename: b.venetianCutawayMask.filename,
       }
     ),
+    loadedMask : {} as any,
   };
 
   if (options?.onSave) {
     obj.save = options.onSave(obj);
   }
+
+  async function loadImg(imgUrl : string){
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.src = serverImgUrl(imgUrl)!;
+    await img.decode();
+    return img;
+  }
+
+  obj.loadedMask = {
+    beveledMask : createResource(obj.beveledMask.get, async (mask)=>await loadImg(mask.filename!))[0],
+    normalMask : createResource(obj.normalMask.get, async (mask)=>await loadImg(mask.filename!))[0],
+    softCutawayMask : createResource(obj.softCutawayMask.get, async (mask)=>await loadImg(mask.filename!))[0],
+    venetianCutawayMask : createResource(obj.venetianCutawayMask.get, async (mask)=>await loadImg(mask.filename!))[0],
+    florentineCutawayMask : createResource(obj.florentineCutawayMask.get, async (mask)=>await loadImg(mask.filename!))[0],
+  };
+
+  obj.mask = createMemo(()=>{
+    let leftMask = obj.isBeveled.get() ? obj.loadedMask.beveledMask() : obj.loadedMask.normalMask();
+    let rightMask = obj.getSelectedCutawaySignal()?.get() ? obj.loadedMask[`${obj.selectedCutaway.get()!}CutawayMask`]() : leftMask;
+    if(!leftMask || !rightMask) return undefined;
+
+    return generateAcousticMask(leftMask, rightMask, {
+      flipRight : !obj.selectedCutaway.get(),
+    });
+  })
+
+  obj.normalFullMask = createMemo(()=>{
+    let leftMask = obj.loadedMask.normalMask();
+    let rightMask = obj.loadedMask.normalMask();
+    if(!leftMask || !rightMask) return undefined;
+
+    return generateAcousticMask(leftMask, rightMask, {
+      flipRight : true,
+  })});
 
   return obj;
 }

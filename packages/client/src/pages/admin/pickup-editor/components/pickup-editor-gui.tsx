@@ -8,6 +8,7 @@ import { Checkbox } from "~/commons/components/checkbox";
 import { ToggleableButton } from "~/commons/components/toggleable-button";
 import { Option, Select } from "~/commons/components/select";
 import { ElectricModelPreviewExplorer } from "~/commons/components/electric-model-preview-explorer";
+import { Pickup as PickupConfig } from "stranough-common";
 
 export function PickupEditorGui() {
   const pickup = createMemo(() => useGuitarPickup().get());
@@ -55,9 +56,9 @@ export function PickupEditorGui() {
               value={pickup()?.type.get()}
               onChange={(value) => pickup()?.type.set(value as 'single' | 'humbucker' | 'p90')}
             >
-              <Option value="single">Single</Option>
-              <Option value="humbucker">Humbucker</Option>
-              <Option value="p90">P90</Option>
+              <For each={Object.values(PickupConfig.PickupType)}>
+                {(type) => <Option value={type}>{type}</Option>}
+              </For>
             </Select>
           </div>
         </div>

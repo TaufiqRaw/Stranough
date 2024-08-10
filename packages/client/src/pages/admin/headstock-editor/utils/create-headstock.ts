@@ -5,7 +5,7 @@ import {
   createSignalObjectArray,
 } from "~/commons/functions/signal-object.util";
 import { ImageType } from "~/commons/interfaces/image-type";
-import { Position, PositionWithRotation } from "~/commons/interfaces/position";
+import { PosRotWithFlipped, Position, PositionWithRotation } from "~/commons/interfaces/position";
 import { createSignal, onMount } from "solid-js";
 import { createPixiTextureSignal } from "~/commons/functions/create-pixi-texture-signal";
 import { SignalObject } from "~/commons/interfaces/signal-object";
@@ -29,9 +29,10 @@ export function createHeadstock(
     | {
         position: SignalObject<Position | undefined>;
         rotation: SignalObject<number | undefined>;
+        flipped: SignalObject<boolean | undefined>;
       }
     | undefined,
-    PositionWithRotation | undefined
+    PosRotWithFlipped | undefined
   >(
     b?.pegsSpawnPoint && b.pegsSpawnPoint.length > 0
       ? b.pegsSpawnPoint
@@ -39,8 +40,22 @@ export function createHeadstock(
     (p) => ({
       position: createSignalObject(p ? { x: p.x, y: p.y } : undefined),
       rotation: createSignalObject(p?.rotation),
+      flipped: createSignalObject(p?.flipped),
     })
   );
+
+  const slottedGuardSpawnPoint = createSignalObjectArray<{
+    position : SignalObject<Position | undefined>,
+    rotation : SignalObject<number | undefined>,
+  } | undefined, PositionWithRotation>(
+    b?.slottedGuardSpawnPoint && b.slottedGuardSpawnPoint.length > 0
+      ? b.slottedGuardSpawnPoint
+      : [],
+    (p) => ({
+      position: createSignalObject(p ? { x: p.x, y: p.y } : undefined),
+      rotation: createSignalObject(p?.rotation),
+    })
+  ); 
 
   const stringCount = createSignalObject(b ? b.stringCount : 6);
 
@@ -51,7 +66,7 @@ export function createHeadstock(
     placeholder: {
       name: createSignalObject(b ? b.name : "Headstock Name"),
       description: createSignalObject(
-        b ? b.description : "Headstock Description"
+        b?.description ?? "Headstock Description"
       ),
     },
     thumbnail: createSignalObject<ImageType | null | undefined>(
@@ -61,6 +76,7 @@ export function createHeadstock(
         filename: b.thumbnail.filename,
       }
     ),
+    isSlotted: createSignalObject(b ? b.isSlotted : false),
     texture: createPixiTextureSignal(texture, setTexture),
     pivotPosition: createSignalObject<Position | undefined>(
       b?.pivotPosition ?? { x: 0, y: 0 }
@@ -78,10 +94,19 @@ export function createHeadstock(
             return undefined;
           return {...pos.position, rotation: pos.rotation};
         }
+        case "slottedGuardSpawnPoint" : {
+          const pos = obj.slottedGuardSpawnPoint.getSelectedSignal()?.get();
+          if(!pos)
+            return undefined;
+          return {...pos.position, rotation: pos.rotation};
+        }
         default:
           return undefined;
       }
     },
+    slottedGuardSpawnPoint,
+    slottedGuardLength: createSignalObject(b?.slottedGuardLength),
+    slottedRodOffset: createSignalObject(b?.slottedRodOffset),
     stringCount: {
       get: stringCount.get,
       set: (x: number | ((y: number) => void)) => {

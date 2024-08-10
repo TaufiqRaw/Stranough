@@ -10,7 +10,7 @@ export const pickguardRepository = createCommonRepository(
   signalToDto
 );
 
-//TODO: add validation for model
+//TODO: add validation for model, texture, type
 function signalToDto(item: Pickguard): ServerDtos.PickguardDto {
   return {
     description: item.description.get(),
@@ -20,5 +20,6 @@ function signalToDto(item: Pickguard): ServerDtos.PickguardDto {
     model : item.model.get(),
     scale: item.scale.get(),
     pivotPosition : item.pivotPosition.get(),
+    type: item.type.get()!
   };
 }

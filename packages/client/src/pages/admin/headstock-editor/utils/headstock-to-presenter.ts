@@ -1,7 +1,8 @@
+import { HeadstockPresenterProps } from "~/commons/presenter/types";
 import { Headstock } from "./types";
 import * as R from 'remeda';
 
-export function headstockToPresenter(h ?: Headstock) {
+export function headstockToPresenter(h ?: Headstock) : HeadstockPresenterProps | undefined {
   if(!h) return undefined;
   return {
     texture: h.texture.get()?.filename,
@@ -13,7 +14,17 @@ export function headstockToPresenter(h ?: Headstock) {
       h.pegsSpawnPoint.state(),
       R.map((p)=>p.get()),
       R.values,
-      R.map((p)=>({...p!.position.get()!, rotation : p!.rotation.get()!}))
-    )
+      R.filter((p)=>p !== undefined),
+      R.map((p)=>({...p!.position.get()!, rotation : p?.rotation.get() ?? 0, flipped : p?.flipped.get() ?? false}))
+    ),
+    isSlotted: h.isSlotted.get,
+    slottedRodOffset: h.slottedRodOffset.get,
+    slottedGuardLength: h.slottedGuardLength.get,
+    slottedGuardSpawnPoint: R.pipe(
+      h.slottedGuardSpawnPoint.state(),
+      R.map((p)=>p.get()),
+      R.values,
+      R.map((p)=>({...p!.position.get()!, rotation : p?.rotation.get()
+    })))
   }
 }

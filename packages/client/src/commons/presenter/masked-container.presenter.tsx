@@ -8,6 +8,7 @@ export function MaskedContainer(
   props : {
     scale ?: number,
     pivot ?: Position,
+    position ?: Position,
     interactive ?: boolean,
     onClick ?: (p : Position)=>void,
     mask ?: string,
@@ -21,9 +22,7 @@ export function MaskedContainer(
   const [maskSprite, setMaskSprite] = createSignal<pxSprite | undefined>(undefined);
   return <Container
     mask={maskSprite()}
-    onclick={e=>{
-      
-    }}
+    position={props.position ?? {x:0, y:0}}
     interactive={props.interactive}
     uses={[
       (container) => {

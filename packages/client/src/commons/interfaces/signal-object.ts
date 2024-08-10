@@ -5,6 +5,16 @@ export interface SignalObject<T>{
   set : Setter<T>
 }
 
+export interface CustomSetterSignalObject<T>{
+  get : Accessor<T>,
+  set : (v : T)=>void
+}
+
+export interface CustomSetterFunctionableSignalObject<T>{
+  get : Accessor<T>,
+  set : (v : T | ((p : T)=>T) | undefined)=>void,
+}
+
 export type setterParameter<T> = ((z : T | undefined)=>undefined | (T | undefined)) | undefined
 
 export interface SignalObjectArray<T, U>{

@@ -26,7 +26,7 @@ export function createJack(
     description: createSignalObject(),
     placeholder: {
       name: createSignalObject(b ? b.name : "Jack Name"),
-      description: createSignalObject(b ? b.description : "Jack Description"),
+      description: createSignalObject(b?.description ?? "Jack Description"),
     },
     thumbnail: createSignalObject<ImageType | null | undefined>(
       b?.thumbnail && {

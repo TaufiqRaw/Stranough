@@ -18,7 +18,6 @@ export function AcousticModelEditorPresenter() {
   const editorCtx = useEditorPageContext();
   
   return (
-    
       <AcousticModelPresenter
         {...acousticModelToPresenter(model)}
         isFront={viewportCtx?.isFront.get()}
@@ -27,7 +26,7 @@ export function AcousticModelEditorPresenter() {
             ?.spawnPoints.getSelectedSignal()
             ?.set(e);
         }}
-        fingerboard={model()?.spawnPoints.fingerboard.isShow.get() ? ()=><NeckPresenter/> : undefined}
+        // fingerboard={model()?.spawnPoints.fingerboard.isShow.get() ? ()=><NeckPresenter/> : undefined}
       >
         <SpawnPointsIndicator />
       </AcousticModelPresenter>

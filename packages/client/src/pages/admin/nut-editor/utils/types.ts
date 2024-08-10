@@ -19,5 +19,8 @@ export type StringSPType = {
 
 export interface Nut extends EntityWithSprite<"stringSpawnPoint"> {
   stringCount: SignalObject<number>;
+  isBass: SignalObject<boolean>;
+  headlessOnly: SignalObject<boolean>;
+
   stringSpawnPoint: SignalObjectArray<Position | undefined, Position | undefined>;
 }

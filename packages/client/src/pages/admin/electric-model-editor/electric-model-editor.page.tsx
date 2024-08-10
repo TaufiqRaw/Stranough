@@ -5,7 +5,7 @@ import { createEntityResource } from "~/commons/functions/create-entity-resource
 import { createModel } from "./utils/functions/create-electric-model";
 import { electricModelRepository } from "./electric-model.repository";
 import { GuitarModelContextType } from "./utils/types";
-import { createContext, useContext } from "solid-js";
+import { createContext, getOwner, useContext } from "solid-js";
 import { ElectricModelEditorPresenter } from "./components/electric-model-editor-presenter";
 
 const ElectricModelContext = createContext<GuitarModelContextType>();
@@ -16,7 +16,10 @@ export default function ModelEditor() {
   const resource = createEntityResource(id, 
     'guitar-model',
     createModel,
-    electricModelRepository.get,
+    (data, options)=>electricModelRepository.get(data, {
+      onSave : options.onSave,
+      owner : getOwner()!,
+    }),
     {
       onUpdate : electricModelRepository.update,
       onStore : electricModelRepository.create,

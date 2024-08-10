@@ -1,4 +1,4 @@
-import { For, createMemo } from "solid-js";
+import { For, Show, createMemo } from "solid-js";
 import { EditorGui, EditorGuiGroup, keyboardMove } from "~/commons/components/editor-gui";
 import ImageInput from "~/commons/components/image-input";
 import { Button } from "~/commons/components/button";
@@ -9,6 +9,7 @@ import { ToggleableButton } from "~/commons/components/toggleable-button";
 import { GuitarHeadstockPreviewExplorer } from "~/commons/components/guitar-headstock-preview-explorer";
 import { Range } from "~/commons/components/range";
 import { ElectricModelPreviewExplorer } from "~/commons/components/electric-model-preview-explorer";
+import { Input } from "~/commons/components/input";
 
 export function PegEditorGui() {
   const peg = createMemo(() => useGuitarPeg().get());
@@ -47,13 +48,58 @@ export function PegEditorGui() {
         placeholder={peg()?.placeholder}
         price={peg()?.price}
         thumbnail={peg()?.thumbnail}
-      />
+      >
+        <Checkbox
+          checked={peg()?.isBass.get}
+          label="Is For Bass?"
+          onChange={peg()?.isBass.set}
+        />
+        <Checkbox
+          checked={peg()?.forSlottedHeadstock.get}
+          label="For Slotted Headstock?"
+          onChange={peg()?.forSlottedHeadstock.set}
+        />
+        <Show when={peg()?.forSlottedHeadstock.get}>
+          <Checkbox
+            checked={()=>peg()?.slottedGuardColor.get() !== undefined}
+            label="Has Plate?"
+            onChange={b=>{
+              if(b){
+                peg()?.slottedGuardColor.set('#000000');
+                peg()?.slottedStringCount.set(6);
+              }else{
+                peg()?.slottedGuardColor.set(undefined);
+                peg()?.slottedStringCount.set(undefined);
+              }
+            }}
+          />
+          <Show when={peg()?.slottedGuardColor.get()}>
+            <span class="text-sm -mt-1">Plate Color (HEX)</span>
+            <Input
+              class="!bg-gray-800 !text-white-950"
+              placeholder="Model Name"
+              value={peg()?.slottedGuardColor.get()}
+              oninput={(e) => {
+                peg()?.slottedGuardColor.set(e.target.value);
+              }}
+            />
+            <span class="text-sm -mt-1">Plate String Count</span>
+            <Input
+              class="!bg-gray-800 !text-white-950"
+              value={peg()?.slottedStringCount.get()}
+              oninput={(e) => peg()?.slottedStringCount.set(parseInt(e.target.value ?? '0'))}
+              type="number"
+              min={0}
+            />
+          </Show>
+        </Show>
+      </NameDescriptionGroup>
       <EditorGuiGroup parent>
         <span class="font-bold text-center mx-3">Textures</span>
       </EditorGuiGroup>
       <EditorGuiGroup>
         <ImageInput
-          label="Peg Cap Texture"
+          label={`Peg ${peg()?.forSlottedHeadstock.get() ? 'Front' : 'Cap'} Texture`}
           partType="peg"
           onError={(e) => console.error(e)}
           onLoad={(image) => {
@@ -76,12 +122,26 @@ export function PegEditorGui() {
           }}
           imageFilename={peg()?.pegBackTexture.get()?.filename}
         />
+        <Show when={peg()?.forSlottedHeadstock.get()}>
+          <ImageInput
+            label="Peg Rod Texture"
+            partType="peg"
+            onError={(e) => console.error(e)}
+            onLoad={(image) => {
+              peg()?.pegRodTexture.set(image);
+            }}
+            onRemove={() => {
+              peg()?.pegRodTexture.set(undefined);
+            }}
+            imageFilename={peg()?.pegRodTexture.get()?.filename}
+          />
+        </Show>
         <span>Scale</span>
         <Range
           value={peg()?.scale.get()}
           onChange={(e) => peg()?.scale.set(e)}
           step={0.01}
-          min={0.25}
+          min={0.05}
           max={2}
         />
       </EditorGuiGroup>
@@ -99,6 +159,14 @@ export function PegEditorGui() {
         >
           Peg Back Pivot Point
         </ToggleableButton>
+        <Show when={peg()?.forSlottedHeadstock.get()}>
+          <ToggleableButton
+            isActive={peg()?.selectedItem?.get() === "pegRodPivot"}
+            onClick={() => peg()?.selectedItem?.set("pegRodPivot")}
+          >
+            Peg Rod Pivot Point
+          </ToggleableButton>
+        </Show>
       </EditorGuiGroup>
       <Button class="mx-3 mt-5" onClick={peg()?.save}>
         Save

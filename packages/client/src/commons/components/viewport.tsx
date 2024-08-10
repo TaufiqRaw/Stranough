@@ -1,5 +1,5 @@
 import { Application, Assets, Container, Graphics, RenderedGraphics, useApplication } from "solid-pixi";
-import {Accessor, Component, JSX, Show, createContext, createEffect, createSignal, mergeProps, onCleanup, onMount, useContext} from 'solid-js'
+import {Accessor, Component, JSX, Show, createContext, createEffect, createMemo, createSignal, mergeProps, onCleanup, onMount, useContext} from 'solid-js'
 import { Color, ContainerChild, Graphics as pxGraphics, Container as pxContainer, Application as pxApplication, Texture, FederatedPointerEvent} from "pixi.js";
 import { createResizeObserver } from "@solid-primitives/resize-observer";
 import { ViewportContextType } from "../interfaces/common-context-type";
@@ -12,7 +12,6 @@ const ViewportCtx = createContext<ViewportContextType<'target' | 'defaultWood' |
 const MIN_SCALE = 0.2;
 const MAX_SCALE = 2;
 const DEFAULT_X = 0;
-const DEFAULT_Y = -320;
 const DEFAULT_SCALE = 0.5;
 
 export const useViewportContext = ()=>{
@@ -26,6 +25,7 @@ export function Viewport(props : {
   displayCenterIndicator ?: boolean,
   background ?: number,
   btnPositionClass ?: string,
+  menuOpened ?: Accessor<boolean>,
 }) {
   const [appContainer, setAppContainer] = createSignal<HTMLDivElement | null>(
     null
@@ -37,15 +37,43 @@ export function Viewport(props : {
 
   onMount(() => {
     createResizeObserver(appContainer, ({ width, height }, el) => {
-      setScreenWidth(width);
-      setScreenHeight(height);
-      app()?.renderer.resize(width, height);
-      if (!app()) return;
-      app()!.canvas.style.width = width + "px";
-      app()!.canvas.style.height = height + "px";
+      if(!!width && !!height){
+        setScreenWidth(width);
+        setScreenHeight(height);
+        app()?.renderer.resize(width, height);
+        if (!app()) {
+          function timeout(){
+            if(!app())
+              setTimeout(timeout, 100);
+            else{
+              app()!.renderer.resize(width, height);
+              app()!.canvas.style.width = width + "px";
+              app()!.canvas.style.height = height + "px";
+            }
+          }
+          timeout();
+        }else{
+          app()!.renderer.resize(width, height);
+          app()!.canvas.style.width = width + "px";
+          app()!.canvas.style.height = height + "px";
+        }
+      }
     });
   });
+
 return <div class="relative h-full bg-inherit" ref={setAppContainer}>
+  <div class="absolute left-5 top-5 md:hidden z-10 shadow-lg">
+    <div class={(isFront.get() ? "bg-blue-500 text-white" : "bg-white border-blue-500 border-2 text-blue-500 cursor-pointer") + " rounded-t-md p-2"}
+      onClick={()=>isFront.set(true)}
+    >
+      Depan
+    </div>
+    <div class={(isFront.get() ? "bg-white border-blue-500 border-2 text-blue-500 cursor-pointer" : "bg-blue-500 text-white") + " rounded-b-md p-2"}
+      onClick={()=>isFront.set(false)}
+    >
+      Belakang
+    </div>
+  </div>
   <Show when={appContainer()}>
       <div class="absolute">
         {/*<div class={"absolute flex " + (props.btnPositionClass ?? "left-12 top-2")}>
@@ -72,16 +100,18 @@ return <div class="relative h-full bg-inherit" ref={setAppContainer}>
         background={props.background ?? 0xffffff}
         antialias
         uses={setApp}
-        resolution={1.5}
+        resolution={2}
         backgroundColor={new Color()}
       >
         <VContainer
-          isFront={true}
+          isFront={screenWidth() < 768 ? isFront.get() : true}
           allowMove={props.allowMove}
           allowZoom={props.allowZoom}
           displayCenterIndicator={props.displayCenterIndicator}
           screenHeight={screenHeight}
           screenWidth={screenWidth}
+          dualView={screenWidth() > 768}
+          menuOpened={props.menuOpened}
         >
           <Assets
             load={[["/assets/alder.jpg", "/assets/target.png"]]}
@@ -89,26 +119,31 @@ return <div class="relative h-full bg-inherit" ref={setAppContainer}>
             {props.children}
           </Assets>
         </VContainer>
-        <Graphics
-          x={screenWidth() / 2}
-          zIndex={1}
-          draw={[['rect', 0, 0, 10, screenHeight()], ['fill', 0xd1d5db]]}
-        />
-        <VContainer
-          x={screenWidth() / 2}
-          isFront={false}
-          allowMove={props.allowMove}
-          allowZoom={props.allowZoom}
-          displayCenterIndicator={props.displayCenterIndicator}
-          screenHeight={screenHeight}
-          screenWidth={screenWidth}
+        <Show
+          when={screenWidth() > 768}
         >
-          <Assets
-            load={[["/assets/alder.jpg", "/assets/target.png"]]}
+          <Graphics
+            x={screenWidth() / 2}
+            zIndex={1}
+            draw={[['rect', 0, 0, 10, screenHeight()], ['fill', 0xd1d5db]]}
+          />
+          <VContainer
+            x={screenWidth() / 2}
+            isFront={false}
+            allowMove={props.allowMove}
+            allowZoom={props.allowZoom}
+            displayCenterIndicator={props.displayCenterIndicator}
+            screenHeight={screenHeight}
+            screenWidth={screenWidth}
+            dualView={true}
           >
-            {props.children}
-          </Assets>
-        </VContainer>
+            <Assets
+              load={[["/assets/alder.jpg", "/assets/target.png"]]}
+            >
+              {props.children}
+            </Assets>
+          </VContainer>
+        </Show>
       </Application>
       </div>
   </Show>
@@ -124,15 +159,19 @@ function VContainer(_props : {
   allowMove ?: boolean,
   displayCenterIndicator ?: boolean,
   x ?: number,
+  dualView ?: boolean,
+  menuOpened ?: Accessor<boolean>,
 }) {
   const props = mergeProps({allowZoom : true, allowMove : true, displayCenterIndicator : true}, _props);
   const app = useApplication();
   if(!app) throw new Error('Viewport must be a child of Application');
 
   const [x, setX] = createSignal(DEFAULT_X);
-  const [y, setY] = createSignal(DEFAULT_Y);
+  const [y, setY] = createSignal<number>();
   const [scale, setScale] = createSignal(DEFAULT_SCALE);
   const [mask, setMask] = createSignal<pxGraphics | null>(null);
+
+  const defaultY = createMemo(()=>props.screenHeight() / 2);
 
   return <Container
     x={props.x ?? 0}
@@ -145,7 +184,7 @@ function VContainer(_props : {
         let dx = e.clientX - lastX;
         let dy = e.clientY - lastY;
         setX(x=>x - dx / (scale()));
-        setY(y=>y - dy / (scale()));
+        setY(y=>((y ?? defaultY()) - dy / (scale())));
         lastX = e.clientX;
         lastY = e.clientY;
       }
@@ -171,20 +210,22 @@ function VContainer(_props : {
     <Graphics
       uses={setMask}
       draw={[
-        ['rect', 0, 0, props.screenWidth()/2, props.screenHeight()],
-        ['fill', 0x000000],
+        ['rect', 0, 0, props.screenWidth()/(props.dualView ? 2 : 1), props.screenHeight()],
+        ['fill', 0xe2e8f0],
       ]}
     />
     <Container
-      position={{x :props.screenWidth()/4, y : props.screenHeight()/2}}
+      position={{x :props.screenWidth()/(props.dualView ? 4 : 2), y : props.screenHeight()*(
+        (props.dualView && !props.menuOpened?.()) ? 0.5 : 0.9
+      )}}
     >
       <Container
-        pivot={{ x: x(), y: y() }}
+        pivot={{ x: x(), y: y() ?? defaultY() }}
         scale={props.allowZoom ? scale() : 1}
         interactive
       >
         <Show when={props.displayCenterIndicator}>
-          <CenterIndicator x={x} y={y} scale={props.allowZoom ? scale : ()=>1}/>
+          <CenterIndicator x={x} y={()=>(y() ?? defaultY())} scale={props.allowZoom ? scale : ()=>1}/>
         </Show>
         <ViewportCtx.Provider value={{
           isFront : {get:()=>props.isFront},
@@ -198,13 +239,16 @@ function VContainer(_props : {
           <Assets
             load={[["/assets/alder.jpg", "/assets/target.png", "/assets/fret.png"]]}
           >    
-            <Container zIndex={0}>
+            <Container zIndex={0} position={{
+              x : 0,
+              y : props.screenHeight()
+            }}>
               {props.children}
             </Container>
           </Assets>
         </ViewportCtx.Provider>
         <Show when={props.displayCenterIndicator}>
-          <CenterIndicator fillColor={0xffffff} x={x} y={y} scale={props.allowZoom ? scale : ()=> 1} alpha={0.2} zIndex={1}/>
+          <CenterIndicator fillColor={0xffffff} x={x} y={()=>(y()??defaultY())} scale={props.allowZoom ? scale : ()=> 1} alpha={0.2} zIndex={1}/>
         </Show>
       </Container>
     </Container>

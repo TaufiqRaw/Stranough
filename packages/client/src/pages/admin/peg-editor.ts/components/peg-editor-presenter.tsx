@@ -24,6 +24,14 @@ export function PegEditorPresenter() {
 
   const Peg = () => <PegPresenter
     {...pegToPresenter(peg()!)}
+    clickable={()=>{
+      switch(peg()?.selectedItem.get()){
+        case 'pegBackPivot' : return 'back';
+        case 'pegRodPivot' : return 'rod';
+        case 'pivot' : return 'cap';
+        default : return undefined;
+      }
+    }}
     isFront={isFront}
     onCapClick={(p: Position) => {
       if(peg()?.selectedItem.get() === 'pivot')
@@ -53,7 +61,29 @@ export function PegEditorPresenter() {
           };
         });
     }}
+    onRodClick={(p: Position) => {
+      if(peg()?.selectedItem.get() === 'pegRodPivot')
+        peg()?.pegRodPivotPosition.set((prev) => {
+          if (!prev)
+            return {
+              x: p.x,
+              y: p.y,
+            };
+          return {
+            x: prev.x + p.x,
+            y: prev.y + p.y,
+          };
+        });
+    }}
     backChildren={
+      <Sprite 
+        zIndex={11} 
+        texture={viewportCtx?.textures.target() ?? Texture.EMPTY}
+        scale={0.2}
+        anchor={0.5}
+      />
+    }
+    rodChildren={
       <Sprite 
         zIndex={11} 
         texture={viewportCtx?.textures.target() ?? Texture.EMPTY}

@@ -8,7 +8,6 @@ import { SelectableElectricModelComponents, SpawnPointType } from "../utils/type
 import {
   EditorGui,
   EditorGuiGroup,
-  EditorGuiSubMenu,
   keyboardMove,
 } from "~/commons/components/editor-gui";
 import { Constants } from "~/constants";
@@ -79,7 +78,13 @@ export default function ElectricModelEditorGui() {
         placeholder={model()?.placeholder}
         price={model()?.price}
         thumbnail={model()?.thumbnail}
-      />
+      >
+        <Checkbox
+          label="Is Bass"
+          checked={model()?.isBass.get}
+          onChange={(e) => model()?.isBass.set(e)}
+        />
+      </NameDescriptionGroup>
       <EditorGuiGroup parent>
         <span class="font-bold text-center mx-3">Body</span>
       </EditorGuiGroup>
@@ -104,6 +109,16 @@ export default function ElectricModelEditorGui() {
           min={0.25}
           max={2}
         />
+        <span>Soundhole Scale</span>
+        <Range
+          value={model()?.soundHoleScale.get()}
+          onChange={(e) =>
+            model()?.soundHoleScale.set(e)
+          }
+          step={0.01}
+          min={0.25}
+          max={2}
+        />
       </EditorGuiGroup>
       <Show when={!!model()?.selectedConstruction.get()}>
         <EditorGuiGroup parent>
@@ -112,13 +127,15 @@ export default function ElectricModelEditorGui() {
           </span>
         </EditorGuiGroup>
         <EditorGuiGroup>
+
           <ImageInput
             label={<span class="text-sm">Mask</span>}
             imageFilename={
-              model()?.getSelectedConstructionSignal()?.mask.get()?.filename
+              model()?.mask.get()?.filename
             }
-            onLoad={(id) => model()?.getSelectedConstructionSignal()?.mask.set(id)}
-            onRemove={() => model()?.getSelectedConstructionSignal()?.mask.set(null)}
+            acceptedTypes="image/svg+xml"
+            onLoad={(id) => model()?.mask.set(id)}
+            onRemove={() => model()?.mask.set(null)}
             partType={"body"}
           />
           {/* <ImageInput
@@ -164,21 +181,13 @@ export default function ElectricModelEditorGui() {
           </EditorGuiGroup>
           <EditorGuiGroup>
             <ImageInput
-              label={<span class="text-sm">Shadow Mask</span>}
+              label={<span class="text-sm">Overlay Mask</span>}
               imageFilename={
-                model()?.[selectedContour()!].shadow.get()?.filename
+                model()?.[`${selectedContour()!}Overlay`].get()?.filename
               }
-              onLoad={(img) => model()?.[selectedContour()!].shadow.set(img)}
-              onRemove={() => model()?.[selectedContour()!].shadow.set(null)}
-              partType={"body"}
-            />
-            <ImageInput
-              label={<span class="text-sm">Specular Mask</span>}
-              imageFilename={
-                model()?.[selectedContour()!].spec.get()?.filename
-              }
-              onLoad={(img) => model()?.[selectedContour()!].spec.set(img)}
-              onRemove={() => model()?.[selectedContour()!].spec.set(null)}
+              acceptedTypes="image/png"
+              onLoad={(img) => model()?.[`${selectedContour()!}Overlay`].set(img)}
+              onRemove={() => model()?.[`${selectedContour()!}Overlay`].set(null)}
               partType={"body"}
             />
           </EditorGuiGroup>
@@ -200,25 +209,117 @@ function ModelSPGuiSection() {
   return (
     <EditorGuiGroup>
       <SPButton
-        name="Fingerboard"
-        component={"fingerboard"}
-        spSignal={model()?.spawnPoints.fingerboard}
-      />
-      <SPButton
-        name="Fingerboard Back End"
-        component={"fingerboardBackEnd"}
-        spSignal={model()?.spawnPoints.fingerboardBackEnd}
-      />
-      <SPButton
         name="Bridge"
         component={"bridge"}
         spSignal={model()?.spawnPoints.bridge}
       />
       <SPButton
-        name="Pickguard"
-        component={"pickguard"}
-        spSignal={model()?.spawnPoints.pickguard}
+        name="Top End"
+        component={"topEnd"}
+        spSignal={model()?.spawnPoints.top}
       />
+      <SPButton
+        name="Bottom End"
+        component={"bottomEnd"}
+        spSignal={model()?.spawnPoints.bottom}
+      />
+      <SPButton
+        name="Sound Hole Left"
+        component={"soundHoleLeft"}
+        spSignal={model()?.spawnPoints.soundHoleLeft}
+      />
+      <Show when={model()?.spawnPoints.soundHoleLeft.position.get()}>
+        <Range
+          value={model()?.spawnPoints.soundHoleLeft.rotation.get()}
+          onChange={(e) => model()?.spawnPoints.soundHoleLeft.rotation.set(e)}
+          step={0.01}
+          min={-Math.PI}
+          max={Math.PI}
+        />
+      </Show>
+
+      <ToggleableButton
+        isActive={model()?.mirrorSoundHole.get() ?? false}
+        onClick={() => model()?.mirrorSoundHole.set((prev) => !prev)}
+      > Mirror Sound Hole </ToggleableButton>
+
+      <Show when={!model()?.mirrorSoundHole.get()}>
+        <SPButton
+          name="Sound Hole Right"
+          component={"soundHoleRight"}
+          spSignal={model()?.spawnPoints.soundHoleRight}
+        />
+        <Show when={model()?.spawnPoints.soundHoleRight.position.get()}>
+          <Range
+            value={model()?.spawnPoints.soundHoleRight.rotation.get()}
+            onChange={(e) => model()?.spawnPoints.soundHoleRight.rotation.set(e)}
+            step={0.01}
+            min={-Math.PI}
+            max={Math.PI}
+          />
+        </Show>
+      </Show>
+
+      <SPButton
+        name="Electronic Cover"
+        component={"electronicCover"}
+        spSignal={model()?.spawnPoints.electronicCover}
+      />
+      <Show when={model()?.spawnPoints.electronicCover.position.get()}>
+        <Range
+          value={model()?.spawnPoints.electronicCover.rotation.get()}
+          onChange={(e) => model()?.spawnPoints.electronicCover.rotation.set(e)}
+          step={0.01}
+          min={-Math.PI}
+          max={Math.PI}
+        />
+      </Show>
+      
+      <SPButton
+        name="Minor Electronic Cover"
+        component={"minorElectronicCover"}
+        spSignal={model()?.spawnPoints.minorElectronicCover}
+      />
+      <Show when={model()?.spawnPoints.minorElectronicCover.position.get()}>
+        <Range
+          value={model()?.spawnPoints.minorElectronicCover.rotation.get()}
+          onChange={(e) => model()?.spawnPoints.minorElectronicCover.rotation.set(e)}
+          step={0.01}
+          min={-Math.PI}
+          max={Math.PI}
+        />
+      </Show>
+
+      <SPButton
+        name="Battery Cover"
+        component={"batteryCover"}
+        spSignal={model()?.spawnPoints.batteryCover}
+      />
+      <Show when={model()?.spawnPoints.batteryCover.position.get()}>
+        <Range
+          value={model()?.spawnPoints.batteryCover.rotation.get()}
+          onChange={(e) => model()?.spawnPoints.batteryCover.rotation.set(e)}
+          step={0.01}
+          min={-Math.PI}
+          max={Math.PI}
+        />
+      </Show>
+
+      <SPButton
+        name="Logo"
+        component={"logo"}
+        spSignal={model()?.spawnPoints.logo}
+      />
+      <Show when={model()?.spawnPoints.logo.position.get()}>
+        <Range
+          value={model()?.spawnPoints.logo.rotation.get()}
+          onChange={(e) => model()?.spawnPoints.logo.rotation.set(e)}
+          step={0.01}
+          min={-Math.PI}
+          max={Math.PI}
+        />
+      </Show>
+
       <SPButton
         name="Switch"
         component={"switch"}
@@ -233,24 +334,6 @@ function ModelSPGuiSection() {
           max={Math.PI}
         />
       </Show>
-      <div class="flex flex-col gap-2">
-        <span class="text-sm ">Pickup</span>
-        <SPButton
-          name="Middle"
-          component={"pickupMiddle"}
-          spSignal={model()?.spawnPoints.pickup.middle}
-        />
-        <SPButton
-          name="Neck"
-          component={"pickupNeck"}
-          spSignal={model()?.spawnPoints.pickup.neck}
-        />
-        <SPButton
-          name="Bridge"
-          component={"pickupBridge"}
-          spSignal={model()?.spawnPoints.pickup.bridge}
-        />
-      </div>
       <div class="flex flex-col gap-2">
         <span class="text-sm ">Jack</span>
         <SPButton

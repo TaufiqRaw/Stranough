@@ -1,4 +1,4 @@
-import { Accessor, Setter} from "solid-js";
+import { Accessor, Resource, Setter} from "solid-js";
 import { Satisfies } from "stranough-common/dist/util-types";
 import { ServerEntities } from "stranough-server";
 import { KeyOf } from "stranough-server/dist/interfaces/class-key.interface";
@@ -13,33 +13,44 @@ import {
 } from "~/commons/interfaces/signal-object";
 import { SpawnPointType } from "../../electric-model-editor/utils/types";
 import { ImageType } from "~/commons/interfaces/image-type";
+import { Texture } from "pixi.js";
 
 export interface AcousticGuitarModelContextType extends EntityContext<AcousticGuitarModel> {}
 
 export interface AcousticGuitarModel extends CommonEntity {
   spawnPoints : {
-    selected : SignalObject<'fingerboard' | 'fingerboardBackEnd' | 'bridge' | 'jack' | undefined>,
+    selected : SignalObject<'bridge' | 'bottomEnd' | 'topEnd' | 'preamp' | undefined>,
     getSelectedSignal : ()=>({
       get : Accessor<Position | undefined>,
       set : Setter<Position | undefined>,
     }) | undefined,
     asArray : ()=>{position : SignalObject<Position | undefined>, rotation ?: SignalObject<number>}[],
-    fingerboard : SpawnPointType,
-    fingerboardBackEnd : SpawnPointType,
     bridge : SpawnPointType,
-    jack : SpawnPointType & {rotation : SignalObject<number>},
+    topEnd : SpawnPointType,
+    bottomEnd : SpawnPointType,
+    preamp : SpawnPointType & {rotation : SignalObject<number>},
   },
+  mask : Accessor<Texture | undefined>,
+  normalFullMask : Accessor<Texture | undefined>,
   selectedCutaway : SignalObject<undefined | 'soft' | 'venetian' | 'florentine'>,
-  getSelectedCutawaySignal : ()=>NullableImageTypeSignal,
-  getSelectedCutawayBurstSignal : ()=>NullableImageTypeSignal,
+  getSelectedCutawaySignal : ()=>NullableImageTypeSignal | undefined,
   thumbnail : NullableImageTypeSignal,
   maskScale : SignalObject<number>,
-  noneCutawayMask : NullableImageTypeSignal,
+  
+  isBeveled : SignalObject<boolean>,
+  normalMask : NullableImageTypeSignal,
+  beveledMask : NullableImageTypeSignal,
+
   softCutawayMask : NullableImageTypeSignal,
   venetianCutawayMask : NullableImageTypeSignal,
   florentineCutawayMask : NullableImageTypeSignal,
-  noneCutawayBurst : NullableImageTypeSignal,
-  softCutawayBurst : NullableImageTypeSignal,
-  venetianCutawayBurst : NullableImageTypeSignal,
-  florentineCutawayBurst : NullableImageTypeSignal,
+
+  loadedMask : {
+    normalMask : Resource<HTMLImageElement | undefined>,
+    beveledMask : Resource<HTMLImageElement | undefined>,
+
+    softCutawayMask : Resource<HTMLImageElement | undefined>,
+    venetianCutawayMask : Resource<HTMLImageElement | undefined>,
+    florentineCutawayMask : Resource<HTMLImageElement | undefined>,
+  }
 }

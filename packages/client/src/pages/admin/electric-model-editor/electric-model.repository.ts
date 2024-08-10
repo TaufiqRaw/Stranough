@@ -74,13 +74,13 @@ export const electricModelRepository = {
   queryKey: (props?: {
     id?: number;
     page?: number;
-    isElectric?: boolean;
+    isBass?: boolean;
     limit?: number;
   }): [string, { [x: string]: any }] => {
     const option: { [x: string]: any } = {};
     props?.id && (option.id = props?.id);
     props?.page && (option.page = props?.page);
-    props?.isElectric && (option.isElectric = props?.isElectric);
+    props?.isBass && (option.isBass = props?.isBass);
     props?.limit && (option.limit = props?.limit);
 
     return ["electric-guitars", option];
@@ -96,58 +96,53 @@ function signalToDto(m: ElectricModel): ServerDtos.ElectricGuitarModelDto {
   const switchSp = m.spawnPoints.switch.position.get();
   const topJack = m.spawnPoints.jack.top.position.get();
   const sideJack = m.spawnPoints.jack.side.position.get();
+  const soundHoleLeft = m.spawnPoints.soundHoleLeft.position.get();
+  const soundHoleRight = m.spawnPoints.soundHoleRight.position.get();
+  const electronicCover = m.spawnPoints.electronicCover.position.get();
+  const minorElectronicCover = m.spawnPoints.minorElectronicCover.position.get();
+  const batteryCover = m.spawnPoints.batteryCover.position.get();
+  const logo = m.spawnPoints.logo.position
 
   const spawnpoints : ServerDtos.ElectricGuitarModelDto = {
     bridgeSpawnPoint: m.spawnPoints.bridge.position.get()!,
-    fingerboardSpawnPoint: m.spawnPoints.fingerboard.position.get()!,
-    pickupSpawnPoint: {
-      neck: m.spawnPoints.pickup.neck.position.get(),
-      bridge: m.spawnPoints.pickup.bridge.position.get(),
-      middle: m.spawnPoints.pickup.middle.position.get(),
-    },
-    pickguardSpawnPoint: m.spawnPoints.pickguard.position.get(),
-    knobSpawnPoint: knobs.length > 0 ? knobs : undefined,
+    topSpawnPoint : m.spawnPoints.top.position.get()!,
+    bottomSpawnPoint: m.spawnPoints.bottom.position.get()!,
+    knobSpawnPoint: knobs.length > 0 ? knobs : null,
+    soundHoleSpawnPointLeft: soundHoleLeft ? { ...soundHoleLeft, rotation: m.spawnPoints.soundHoleLeft.rotation.get() } : null,
+    soundHoleSpawnPointRight: soundHoleRight ? { ...soundHoleRight, rotation: m.spawnPoints.soundHoleRight.rotation.get() } : null,
+    electronicCoverSpawnPoint: electronicCover ? { ...electronicCover, rotation: m.spawnPoints.electronicCover.rotation.get() } : null,
+    minorElectronicCoverSpawnPoint: minorElectronicCover ? { ...minorElectronicCover, rotation: m.spawnPoints.minorElectronicCover.rotation.get() } : null,
+    batteryCoverSpawnPoint: batteryCover ? { ...batteryCover, rotation: m.spawnPoints.batteryCover.rotation.get() } : null,
+    logoSpawnPoint: logo.get() ? { ...logo.get()!, rotation: m.spawnPoints.logo.rotation.get() } : null,
     switchSpawnPoint: switchSp
       ? { ...switchSp, rotation: m.spawnPoints.switch.rotation.get() }
-      : undefined,
+      : null,
     topJackSpawnPoint: topJack
       ? { ...topJack, rotation: m.spawnPoints.jack.top.rotation.get() }
-      : undefined,
+      : null,
     sideJackSpawnPoint: sideJack
       ? { ...sideJack, rotation: m.spawnPoints.jack.side.rotation.get() }
-      : undefined,
+      : null,
   };
 
-  const masks = R.pipe(
-    m,
-    R.pick(ElectricModelConfig.constructionKeys),
-    R.mapValues((x)=>nullOrValue(x.mask.get(), x.mask.get()?.id)),
-    R.mapKeys((k)=>k+"Mask"),
-  )
-
-  const shadow = R.pipe(
-    m,
-    R.pick(ElectricModelConfig.contourKeys),
-    R.mapValues((x)=>nullOrValue(x.shadow.get(), x.shadow.get()?.id)),
-    R.mapKeys((k)=>k+"Shadow"),
-  )
-
-  const spec = R.pipe(
-    m,
-    R.pick(ElectricModelConfig.contourKeys),
-    R.mapValues((x)=>nullOrValue(x.spec.get(), x.spec.get()?.id)),
-    R.mapKeys((k)=>k+"Spec"),
-  )
+  const contours : ServerDtos.ElectricGuitarModelDto = {
+    flatContourOverlay : m.flatContourOverlay.get()?.id,
+    tummyContourOverlay : m.tummyContourOverlay.get()?.id,
+    forearmContourOverlay : m.forearmContourOverlay.get()?.id,
+    carvedContourOverlay : m.carvedContourOverlay.get()?.id,
+  }
 
   return {
     name: m.name.get(),
     description: m.description.get(),
     price: m.price.get(),
-    maskScale : m.maskScale.get(),
     thumbnail: m.thumbnail.get()?.id,
-    ...masks,
-    ...shadow,
-    ...spec,
+    mask: m.mask.get()?.id,
+    maskScale : m.maskScale.get(),
+    soundHoleScale: m.soundHoleScale.get(),
+    mirrorSoundHole: m.mirrorSoundHole.get(),
+    isBass: m.isBass.get(),
     ...spawnpoints,
+    ...contours,
   };
 }

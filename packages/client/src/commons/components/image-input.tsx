@@ -14,6 +14,7 @@ export default function (_props: {
   onRemove: () => void;
   imageFilename?: string;
   label ?: string | JSX.Element;
+  acceptedTypes ?: string
 }) {
   const props = mergeProps({ onError : (err : Error)=>{console.log(err)}}, _props)
   const [isExpanded, setIsExpanded] = createSignal(false);
@@ -76,7 +77,7 @@ export default function (_props: {
       <input
         ref={fileInput}
         type="file"
-        accept="image/png"
+        accept={props.acceptedTypes ? props.acceptedTypes : "image/*"}
         class="invisible absolute"
         width={0}
       />

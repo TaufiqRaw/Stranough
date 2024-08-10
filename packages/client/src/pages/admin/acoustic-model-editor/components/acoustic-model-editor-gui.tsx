@@ -49,8 +49,27 @@ export function AcousticModelEditorGui() {
         placeholder={model()?.placeholder}
         price={model()?.price}
         thumbnail={model()?.thumbnail}
-      />
-      <EditorGuiGroup>
+      >
+        <ImageInput
+          label={<span class="text-sm">Normal Mask</span>}
+          imageFilename={
+            model()?.normalMask.get()?.filename
+          }
+          acceptedTypes="image/svg+xml"
+          onLoad={(id) => model()?.normalMask.set(id)}
+          onRemove={() => model()?.normalMask.set(null)}
+          partType={"body"}
+        />
+        <ImageInput
+          label={<span class="text-sm">Beveled Mask</span>}
+          imageFilename={
+            model()?.beveledMask.get()?.filename
+          }
+          acceptedTypes="image/svg+xml"
+          onLoad={(id) => model()?.beveledMask.set(id)}
+          onRemove={() => model()?.beveledMask.set(null)}
+          partType={"body"}
+        />
         <span>Scale</span>
         <input
           type="range"
@@ -60,40 +79,50 @@ export function AcousticModelEditorGui() {
           min={0.25}
           max={2}
         />
-        {/* <For each={AcousticModel.cutawayKeys}>
-          { key => <>
-            <span class="text-sm -mt-1">{key}</span>
-            <ImageInput
-              label="Mask"
-              partType="body"
-              onLoad={(image) => {
-                model()?.[key].set(image);
-              }}
-              onRemove={() => {
-                model()?.[key].set(null);
-              }}
-              imageFilename={model()?.[key].get()?.filename}
-            />
-          </>
-          }
-        </For> */}
-        
-      </EditorGuiGroup>
+        <ToggleableButton
+            isActive={!!model()?.isBeveled.get()}
+            onClick={() => {
+              model()?.isBeveled.set((prev) => !prev);
+            }}
+          >
+            Preview Beveled
+          </ToggleableButton>
+      </NameDescriptionGroup>
       <EditorGuiGroup parent>
           <span class="font-bold text-center mx-3">Cutaway</span>
       </EditorGuiGroup>
       <EditorGuiGroup>
         <For each={AcousticModel.cutawayKeys}>
           { key => <ToggleableButton
-            isActive={model()?.selectedCutaway.get() + "CutawayMask" === key}
+            isActive={model()?.selectedCutaway.get() + "Cutaway" === key}
             onClick={() => {
-              model()?.selectedCutaway.set(key.replace('CutawayMask', '') as any);
+              model()?.selectedCutaway.set(key.replace('Cutaway', '') as any);
             }}
           >
               {key}
             </ToggleableButton>
           }
         </For>
+      </EditorGuiGroup>
+      <EditorGuiGroup>
+        <For each={AcousticModel.cutawayKeys}>
+          { key => <>
+            <span class="text-sm -mt-1">{key}</span>
+            <ImageInput
+              label="Mask"
+              partType="body"
+              onLoad={(image) => {
+                model()?.[`${key}Mask`].set(image);
+              }}
+              onRemove={() => {
+                model()?.[`${key}Mask`].set(null);
+              }}
+              imageFilename={model()?.[`${key}Mask`].get()?.filename}
+            />
+          </>
+          }
+        </For>
+        
       </EditorGuiGroup>
       <EditorGuiGroup parent>
           <span class="font-bold text-center mx-3">Spawnpoints</span>
@@ -111,7 +140,7 @@ function ModelSPGuiSection() {
   const model = createMemo(() => useAcousticGuitarModel().get());
   return (
     <EditorGuiGroup>
-      <SPButton
+      {/* <SPButton
         name="Fingerboard"
         partName="fingerboard"
         spSignal={model()?.spawnPoints.fingerboard}
@@ -120,13 +149,13 @@ function ModelSPGuiSection() {
         name="Fingerboard Back End"
         partName="fingerboardBackEnd"
         spSignal={model()?.spawnPoints.fingerboardBackEnd}
-      />
+      /> */}
       <SPButton
           name="Bridge"
           partName="bridge"
           spSignal={model()?.spawnPoints.bridge}
         />
-        <SPButton
+        {/* <SPButton
           name="Jack"
           partName="jack"
           spSignal={model()?.spawnPoints.jack}
@@ -139,7 +168,7 @@ function ModelSPGuiSection() {
             min={-Math.PI}
             max={Math.PI}
           />
-        </Show>
+        </Show> */}
     </EditorGuiGroup>
   );
 }
@@ -150,26 +179,26 @@ function SPButton(props: {
   partName : 'fingerboard' | 'fingerboardBackEnd' | 'bridge' | 'jack';
 }) {
   const model = createMemo(() => useAcousticGuitarModel().get());
-  return (
-    <ToggleableButtonWithState
-      isActive={!!props.spSignal?.position.get()}
-      isFocus={model()?.spawnPoints.selected.get() === props.partName}
-      onReset={() => props.spSignal?.position.set()}
-      onView={() => props.spSignal?.isShow.set((prev) => !prev)}
-      viewActive={props.spSignal?.isShow.get()}
-      onClick={() => {
-        !props.spSignal?.position.get() &&
-          props.spSignal?.position.set(Constants.defaultPos);
-        model()?.spawnPoints.selected.set(props.partName);
-      }}
-      // onHover={() => {
-      //   hoveredSP?.set(props.spEnum);
-      // }}
-      // onLeave={() => {
-      //   hoveredSP?.set();
-      // }}
-    >
-      {props.name}
-    </ToggleableButtonWithState>
+  return ( <></>
+    // <ToggleableButtonWithState
+    //   isActive={!!props.spSignal?.position.get()}
+    //   isFocus={model()?.spawnPoints.selected.get() === props.partName}
+    //   onReset={() => props.spSignal?.position.set()}
+    //   onView={() => props.spSignal?.isShow.set((prev) => !prev)}
+    //   viewActive={props.spSignal?.isShow.get()}
+    //   onClick={() => {
+    //     !props.spSignal?.position.get() &&
+    //       props.spSignal?.position.set(Constants.defaultPos);
+    //     model()?.spawnPoints.selected.set(props.partName);
+    //   }}
+    //   // onHover={() => {
+    //   //   hoveredSP?.set(props.spEnum);
+    //   // }}
+    //   // onLeave={() => {
+    //   //   hoveredSP?.set();
+    //   // }}
+    // >
+    //   {props.name}
+    // </ToggleableButtonWithState>
   );
 }

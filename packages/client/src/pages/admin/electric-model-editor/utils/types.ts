@@ -1,13 +1,15 @@
-import { Accessor, Resource, Setter } from "solid-js";
+import { Accessor, Resource, ResourceReturn, Setter } from "solid-js";
 import { Position } from "~/commons/interfaces/position";
-import { SignalObject } from "~/commons/interfaces/signal-object";
+import { CustomSetterFunctionableSignalObject, CustomSetterSignalObject, SignalObject } from "~/commons/interfaces/signal-object";
 import { ImageType } from "~/commons/interfaces/image-type";
 import { EntityContext } from "~/commons/interfaces/entity";
 import { EntityWithoutBase, Satisfies, ServerEntities } from "stranough-server";
 import { KeyOf } from "stranough-server/dist/interfaces/class-key.interface";
 import {ElectricModel} from "stranough-common"
+import { Texture } from "pixi.js";
+import { Pickguard } from "../../pickguard-editor/utils/types";
 
-export type SelectableElectricModelComponents = 'fingerboard' | 'fingerboardBackEnd' | 'bridge' | 'switch' | 'jackSide' | 'jackTop' | 'pickupNeck' | 'pickupMiddle' | 'pickupBridge' | 'knobs' | 'pickguard';
+export type SelectableElectricModelComponents = 'bridge' | 'switch' | 'jackSide' | 'jackTop' | 'knobs' | 'topEnd' | 'bottomEnd' | 'logo' | 'soundHoleLeft' | 'soundHoleRight' | 'electronicCover' | 'minorElectronicCover' | 'batteryCover' | 'bottomHeadless';
 
 export interface GuitarModelContextType extends EntityContext<ElectricModel> {}
 
@@ -23,76 +25,59 @@ export type ElectricModel = Satisfies<KeyOf<EntityWithoutBase<ServerEntities.Ele
     name: SignalObject<string>;
     description: SignalObject<string>;
   };
-  boltOnConstruction: {
-    mask : SignalObject<ImageType | null | undefined>;
-  }
-  neckThroughConstruction: {
-    mask : SignalObject<ImageType | null | undefined>;
-  }
-  setInConstruction: {
-    mask : SignalObject<ImageType | null | undefined>;
-  }
-  flatContour : {
-    shadow : SignalObject<ImageType | null | undefined>;
-    spec : SignalObject<ImageType | null | undefined>;
-  }
-  forearmContour : {
-    shadow : SignalObject<ImageType | null | undefined>;
-    spec : SignalObject<ImageType | null | undefined>;
-  }
-  tummyContour : {
-    shadow : SignalObject<ImageType | null | undefined>;
-    spec : SignalObject<ImageType | null | undefined>;
-  }
-  carvedContour : {
-    shadow : SignalObject<ImageType | null | undefined>;
-    spec : SignalObject<ImageType | null | undefined>;
-  }
+
+  mask : CustomSetterFunctionableSignalObject<ImageType | null | undefined>;
+  maskScale : SignalObject<number>;
   thumbnail : SignalObject<ImageType | null | undefined>;
   price : SignalObject<number>;
-  maskScale : SignalObject<number>;
+  soundHoleScale : SignalObject<number>;
+  mirrorSoundHole : SignalObject<boolean>;
+  isBass : SignalObject<boolean>;
+
+  maskBordersPoints : Resource<Position[] | undefined>;
+  leftMostPoint : Accessor<Position | undefined>;
+  
+  flatContourOverlay : SignalObject<ImageType | null | undefined>;
+  forearmContourOverlay : SignalObject<ImageType | null | undefined>;
+  tummyContourOverlay : SignalObject<ImageType | null | undefined>;
+  carvedContourOverlay : SignalObject<ImageType | null | undefined>;
+
   save ?: ()=> Promise<void>;
 
   selectedConstruction : SignalObject< typeof ElectricModel.constructionKeys[number] | undefined>;
-  getSelectedConstructionSignal : () => ({
-    mask : SignalObject<ImageType | null | undefined>,
-  } | undefined);
 
-  selectedTopContour : SignalObject<Exclude<typeof ElectricModel.contourKeys[number], 'tummyContour'> | undefined>;
-  getSelectedTopContourSignal : () => {
-    shadow : SignalObject<ImageType | null | undefined>,
-    spec : SignalObject<ImageType | null | undefined>,
-  } | null | undefined;
+  selectedTopContour : SignalObject<typeof ElectricModel.topContourKeys[number] | undefined>;
+  getSelectedTopContourSignal : () => SignalObject<ImageType | null | undefined> | null | undefined;
 
-  selectedBackContour : SignalObject<Exclude<typeof ElectricModel.contourKeys[number], "forearmContour"> | undefined>;
-  getSelectedBackContourSignal : () => {
-    shadow : SignalObject<ImageType | null | undefined>,
-    spec : SignalObject<ImageType | null | undefined>,
-  } | null | undefined;
+  selectedBackContour : SignalObject<typeof ElectricModel.backContourKeys[number] | undefined>;
+  getSelectedBackContourSignal : () => SignalObject<ImageType | null | undefined> | null | undefined;
+
+  electronicCoverOverlay : SignalObject<ImageType | null | undefined>;
+  bridgeToBottom : SignalObject<number>;
+
+  selectedPickguard : SignalObject<Pickguard | undefined>;
 
   spawnPoints : {
     selected : SignalObject<SelectableElectricModelComponents | undefined>,
-    getSelectedSignal : ()=>({
-      get : Accessor<Position | undefined>,
-      set : Setter<Position | undefined>,
-    } | undefined),
+    getSelectedSignal : ()=>(CustomSetterFunctionableSignalObject<Position | undefined> | undefined),
     asArray : ()=>{position : SignalObject<Position | undefined>, rotation ?: SignalObject<number>}[],
     hovered : SignalObject<SelectableElectricModelComponents | undefined>,
-    fingerboard : SpawnPointType,
-    fingerboardBackEnd : SpawnPointType,
+    
+    soundHoleLeft : SpawnPointType & {rotation : SignalObject<number>},
+    soundHoleRight : SpawnPointType & {rotation : SignalObject<number>},
+    electronicCover : SpawnPointType & {rotation : SignalObject<number>},
+    minorElectronicCover : SpawnPointType & {rotation : SignalObject<number>},
+    batteryCover : SpawnPointType & {rotation : SignalObject<number>},
+    logo : SpawnPointType & {rotation : SignalObject<number>},
+
     bridge : SpawnPointType,
     switch : SpawnPointType & {rotation : SignalObject<number>},
+    top : SpawnPointType; // top of the guitar body
+    bottom : SpawnPointType; // bottom of the guitar body
     jack : {
       side : SpawnPointType & {rotation : SignalObject<number>},
       top : SpawnPointType & {rotation : SignalObject<number>},
     }, 
-    pickguard : SpawnPointType,
-    pickup : {
-      neck : SpawnPointType,
-      middle : SpawnPointType,
-      bridge : SpawnPointType,
-      remove : (name : 'neck' | 'middle' | 'bridge') => void,
-    },
     knobs : {
       get :  Accessor<SignalObject<Position | undefined>[]>,
       addKnobs : () => void,

@@ -2,7 +2,7 @@ import { Accessor, JSX, Show, createSignal } from "solid-js";
 
 export function Checkbox(props: {
   onChange?: (checked: boolean) => void;
-  checked?: Accessor<boolean>;
+  checked?: ()=>boolean;
   label?: JSX.Element;
   containerClass?: string;
 }) {

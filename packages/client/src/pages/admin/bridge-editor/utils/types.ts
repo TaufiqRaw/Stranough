@@ -1,12 +1,15 @@
 import { Accessor} from "solid-js";
+import { Bridge as BridgeConfig, Pickup as PickupConfig } from "stranough-common";
 import { EntityContext } from "~/commons/interfaces/entity";
 import {
   NullableImageTypeSignal,
   ImageTypeSignal,
 } from "~/commons/interfaces/image-type-signal";
-import { Position } from "~/commons/interfaces/position";
+import { Position, PositionWithRotation } from "~/commons/interfaces/position";
 import {
+  CustomSetterFunctionableSignalObject,
   SignalObject,
+  SignalObjectArray,
 } from "~/commons/interfaces/signal-object";
 
 export interface BridgeContextType extends EntityContext<Bridge> {}
@@ -29,15 +32,23 @@ export interface Bridge {
   scale: SignalObject<number>;
   texture: ImageTypeSignal;
   pivotPosition: SignalObject<Position | undefined>;
+  bottomPoint: CustomSetterFunctionableSignalObject<Position | undefined>;
+
+  isTremolo: SignalObject<boolean>;
+  isBass: SignalObject<boolean>;
+  headless: SignalObject<boolean>;
+  multiscale: SignalObject<boolean>;
   stringCount: SignalObject<number>;
-  selectedItem: SignalObject<"pivot" | "stringSpawnPoint" | undefined>;
-  getSelectedItem: () => SignalObject<Position | undefined> | undefined;
-  stringSpawnPoint: {
-    state: Accessor<StringSPType[]>;
-    get: (i: number) => StringSPType | undefined;
-    add: () => void;
-    remove: (index: number) => void;
-    selectedIndex: SignalObject<[number, number] | undefined>;
-  };
+  supportedPickup : SignalObject<`${PickupConfig.PickupType}` | undefined>;
+  type : CustomSetterFunctionableSignalObject<`${BridgeConfig.BridgeType}` | undefined>;
+  pickupSpawnPoint: SignalObject<PositionWithRotation | undefined>;
+  extendable: SignalObject<boolean>;
+
+  selectedItem: SignalObject<"pivot" | "stringSpawnPoint" | "pickupSpawnPoint" | "bottomPoint" | undefined>;
+  getSelectedItem: () => CustomSetterFunctionableSignalObject<Position | undefined> | undefined;
+  stringSpawnPoint: SignalObjectArray<{
+    position : SignalObject<Position | undefined>,
+  } | undefined, Position>;
+
   save?: () => Promise<void>;
 }

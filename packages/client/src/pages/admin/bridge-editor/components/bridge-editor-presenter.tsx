@@ -37,6 +37,9 @@ export function BridgeEditorPresenter() {
       }}
     >
       <StringPointsIndicator />
+      <Show when={bridge()?.bottomPoint.get()}>
+        <CircleIndicator point={bridge()?.bottomPoint.get()} />
+      </Show>
       <Sprite 
         zIndex={11} 
         texture={viewportCtx?.textures.target() ?? Texture.EMPTY}
@@ -56,7 +59,13 @@ export function BridgeEditorPresenter() {
     >
       <ElectricModelPresenter
         {...electricModelToPresenter(editorCtx!.modelPreview.selectedModel)}
-        bridge={Bridge}
+        stringCount={()=>bridge()?.stringCount.get() === 1 ? 6 : bridge()?.stringCount.get()}
+        bridge={(bridge()?.type.get() && bridge()?.bottomPoint.get()) ? [{
+          render: Bridge,
+          type: bridge()?.type.get()!,
+          bottom: bridge()?.bottomPoint.get()!,
+          bottomPointY: bridge()?.bottomPoint.get()?.y ?? 0,
+        }, undefined] : undefined}
       />
     </Show>
   );
@@ -66,11 +75,7 @@ function StringPointsIndicator() {
   const bridge = createMemo(() => useGuitarBridge().get());
   return (
     <For each={bridge()?.stringSpawnPoint.state()}>
-      {(pp) => (
-        <For each={pp.state()}>
-          {(point) => <CircleIndicator point={point.get()} />}
-        </For>
-      )}
+      {(point) => <CircleIndicator point={point.get()?.position.get()} />}
     </For>
   );
 }

@@ -4,7 +4,9 @@ import { createJack } from "./utils/create-jack";
 import { createCommonRepository } from "~/commons/functions/create-common-repository";
 import { nullOrValue } from "~/commons/functions/null-or-value";
 
-export const jackRepository = createCommonRepository(
+export const jackRepository = createCommonRepository<Jack, ServerDtos.JackDto, {
+  isSide ?: boolean,
+}>(
   "jacks",
   createJack,
   signalToDto

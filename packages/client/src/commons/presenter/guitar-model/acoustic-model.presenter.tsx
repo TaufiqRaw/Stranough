@@ -41,7 +41,6 @@ const invertColorFilter = new ColorMatrixFilter();
 invertColorFilter.negative(true);
 
 interface PrivateCtxType { 
-  scale: () => number | undefined;
   hasTopWood: () => boolean;
   hasFingerboard: () => boolean;
   textures : {
@@ -65,6 +64,7 @@ export function AcousticModelPresenter(_props: AcousticModelPresenterProps) {
 
   const [neckTexture, setNeckTexture] =
     createSignal<Texture | null>(null);
+  const [neckContainer, setNeckContainer] = createSignal<pxContainer | undefined>(undefined);
 
   const selectedWoodTexture = createPixiTexture(
     () =>
@@ -77,7 +77,6 @@ export function AcousticModelPresenter(_props: AcousticModelPresenterProps) {
   );
 
   const textures = {
-    mask: createPixiTexture(() => props.body.mask),
     shadowTexture: createPixiTexture(() => props.body.shadowTexture),
     pickguardTexture: createPixiTexture(() => props.pickguard?.()),
     specularTexture: createPixiTexture(
@@ -92,7 +91,7 @@ export function AcousticModelPresenter(_props: AcousticModelPresenterProps) {
   // make sure the body texture height is not bigger than the guitar wood height
   // if it is, scale it down using this number, both width and height
   const woodToBodyScale = createMemo(() => {
-    return (textures.mask()?.height ?? 1) / (selectedWoodTexture()?.height ?? 1);
+    return (props.body.mask?.height ?? 1) / (selectedWoodTexture()?.height ?? 1);
   });
 
   return (
@@ -103,7 +102,14 @@ export function AcousticModelPresenter(_props: AcousticModelPresenterProps) {
           setNeckTexture: setNeckTexture,
           neckPosition: () => props.spawnpoints.fingerboard,
           isElectric: () => false,
-          selectedMask: textures.mask,
+          selectedMask: ()=>props.body.mask,
+          container,
+          scale : ()=>props.body.scale ?? 1,
+          leftMostPoint : ()=>({
+            x : -250,
+            y : 0,
+          }),
+          neckContainer
         }}
       >
         <PrivateCtx.Provider
@@ -117,7 +123,6 @@ export function AcousticModelPresenter(_props: AcousticModelPresenterProps) {
             hasTopWood: () => props.body.topWood !== undefined,
             hasFingerboard: () => props.fingerboard !== undefined,
             fingerboardSP : () => props.spawnpoints.fingerboard,
-            scale: () => props.body.scale ?? 1,
           }}
         >
         {/* Fill the container for centering pivot*/}
@@ -145,6 +150,7 @@ export function AcousticModelPresenter(_props: AcousticModelPresenterProps) {
             <Container
               zIndex={props.isFront ? 1.02 : 0}
               position={props.spawnpoints.fingerboard}
+              uses={setNeckContainer}
             >
               {props.fingerboard!()}
             </Container>
@@ -154,12 +160,12 @@ export function AcousticModelPresenter(_props: AcousticModelPresenterProps) {
             <Container scale={props.body.scale} zIndex={1.01}>{props.colorOverlay!()}</Container>
           </Show>
 
-          <Show when={props.pickguard && textures.pickguardTexture() && textures.mask()}>
+          <Show when={props.pickguard && textures.pickguardTexture() && props.body.mask}>
             <Container zIndex={1.015} position={{ x: 0, y: 0 }} scale={props.body.scale}>
               <Sprite 
                 texture={textures.pickguardTexture() ?? Texture.EMPTY}
-                height={textures.mask()?.height}
-                width={textures.mask()?.width}
+                height={props.body.mask?.height}
+                width={props.body.mask?.width}
                 anchor={0.5}
               />
             </Container>
@@ -216,7 +222,7 @@ function Body(){
   return <>
     <Container
       zIndex={model.isFront() ? 0 : 1}
-      scale={privateCtx.scale() ?? 1}
+      scale={model.scale() ?? 1}
     >
       <MaskedBodyPresenter>
         {()=><Sprite

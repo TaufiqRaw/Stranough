@@ -26,7 +26,7 @@ export function createSwitch(
     description: createSignalObject(),
     placeholder: {
       name: createSignalObject(b ? b.name : "Switch Name"),
-      description: createSignalObject(b ? b.description : "Switch Description"),
+      description: createSignalObject(b?.description ?? "Switch Description"),
     },
     thumbnail: createSignalObject<ImageType | null | undefined>(
       b?.thumbnail && {

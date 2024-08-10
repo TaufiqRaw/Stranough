@@ -16,11 +16,21 @@ export interface PegContextType extends EntityContext<Peg> {}
 
 export interface Peg extends CommonEntity {
   thumbnail: NullableImageTypeSignal;
-  selectedItem: SignalObject<"pegBackPivot" | "pivot" | undefined>;
+  selectedItem: SignalObject<"pegBackPivot" | "pivot" | "pegRodPivot" | undefined>;
   getSelectedItem: () => SignalObject<Position | undefined> | undefined;
   pegCapTexture : SignalObject<ImageType | undefined>;
   pegBackTexture : SignalObject<ImageType | undefined>;
+  pegRodTexture : SignalObject<ImageType | undefined>;
+
+  pegRodPivotPosition : SignalObject<Position | undefined>;
   pegBackPivotPosition : SignalObject<Position | undefined>;
   pivotPosition : SignalObject<Position | undefined>;
+  
   scale : SignalObject<number>;
+  
+  isBass : SignalObject<boolean>;
+  forSlottedHeadstock : SignalObject<boolean>;
+  slottedStringCount : SignalObject<number | undefined>;
+  slottedGuardColor : SignalObject<string | undefined>;
+
 }

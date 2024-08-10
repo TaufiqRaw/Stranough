@@ -27,7 +27,7 @@ export function createPickup(
     description: createSignalObject(),
     placeholder: {
       name: createSignalObject(b ? b.name : "Pickup Name"),
-      description: createSignalObject(b ? b.description : "Pickup Description"),
+      description: createSignalObject(b?.description ?? "Pickup Description"),
     },
     thumbnail: createSignalObject<ImageType | null | undefined>(
       b?.thumbnail && {

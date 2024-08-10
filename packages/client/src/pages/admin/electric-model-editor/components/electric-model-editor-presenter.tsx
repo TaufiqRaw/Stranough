@@ -33,7 +33,6 @@ export function ElectricModelEditorPresenter() {
 
   const viewportCtx = useViewportContext();
   const isFront = createMemo(()=>viewportCtx?.isFront.get())
-  
   return (
     <Show when={!!model()?.selectedConstruction.get()}>
       <ElectricModelPresenter
@@ -44,7 +43,7 @@ export function ElectricModelEditorPresenter() {
             ?.spawnPoints.getSelectedSignal()
             ?.set(e);
         }}
-        fingerboard={model()?.spawnPoints.fingerboard.isShow.get() ? ()=><NeckPresenter isFront={isFront}/> : undefined}
+        fingerboard={model()?.spawnPoints.bridge.isShow.get() ? ()=><NeckPresenter isFront={isFront}/> : undefined}
       >
         <SpawnPointsIndicator />
       </ElectricModelPresenter>
@@ -78,6 +77,7 @@ function SpawnPointsIndicator() {
             uses={c=>{
               c.rotation = point.rotation?.get() ?? 0;
             }}
+            zIndex={10}
           >
             <Graphics
               zIndex={10}

@@ -15,21 +15,27 @@ import {
   Suspense,
   createContext,
   createEffect,
+  createMemo,
   createSignal,
   mergeProps,
   onCleanup,
   useContext,
 } from "solid-js";
-import { Container, Sprite, useParent } from "solid-pixi";
+import { Container, Graphics, Sprite, useParent } from "solid-pixi";
 import { useEditorPageContext } from "~/commons/components/editor-page";
 import { useNeckContext } from "~/commons/presenter/neck.presenter";
 import { useViewportContext } from "~/commons/components/viewport";
 import { createPixiTexture } from "~/commons/functions/create-texture";
-import { Position, PositionWithRotation } from "~/commons/interfaces/position";
+import { PosRotWithFlipped, Position, PositionWithRotation } from "~/commons/interfaces/position";
 import { useGuitarBodyPresenterContext } from "./guitar-model/electric-model.presenter";
+import { HeadstockPresenterProps } from "./types";
+import { useGuitarBuilderContext } from "~/pages/guitar-builder/guitar-builder";
+import { GuitarBuilderRegisterStringSpawnpoints } from "~/pages/guitar-builder/presenter/guitar-builder-string-presenter";
 
 const headstockCtx = createContext<{
   childSpawnPos?: PositionWithRotation;
+  slottedRodOffset?: ()=>number | undefined;
+  flipped?: ()=>boolean | undefined;
 }>()
 
 export function useHeadstockContext() {
@@ -38,21 +44,9 @@ export function useHeadstockContext() {
 
 // TODO: Use context that provides guitar fingerboard (if this component assigned to fingerboard) instead of using setParentMask
 // right now just assume the component assigned in a guitar fingerboard if setParentMask is provided
-export function HeadstockPresenter(_props: {
-  woodTexture?: string;
-  texture?: string;
-  frontShadowTexture?: string;
-  backShadowTexture?: string;
-  pivot?: Position;
-  scale?: number;
-  onClick?: (e: Point) => void;
-  children?: JSX.Element;
-  isFront?: ()=>boolean | undefined;
-  pegs?: (() => JSX.Element)[];
-  pegsSpawnPoint ?: PositionWithRotation[];
-}) {
+export function HeadstockPresenter(_props: HeadstockPresenterProps) {
   const guitarBodyCtx = useGuitarBodyPresenterContext();
-  const props = mergeProps({ isFront: guitarBodyCtx?.isFront ?? (()=>true), pegSpawnPoints : [] }, _props);
+  const props = mergeProps({ isFront: guitarBodyCtx?.isFront ?? (()=>true), pegsSpawnPoint : [] as PosRotWithFlipped[] }, _props);
   const fingerboardCtx = useNeckContext();
   const viewportCtx = useViewportContext();
   const [maskSprite, setMaskSprite] = createSignal<pxSprite | undefined>();
@@ -61,8 +55,11 @@ export function HeadstockPresenter(_props: {
     mask: createPixiTexture(()=>props.texture),
     frontShadow: createPixiTexture(()=>props.frontShadowTexture),
     backShadow: createPixiTexture(()=>props.backShadowTexture),
-    woodTexture : createPixiTexture(()=>props.woodTexture),
+    neckWoodTexture : createPixiTexture(()=>props.neckWoodTexture),
   };
+  const woodTexture = createMemo(()=>selectedTex.neckWoodTexture() ?? fingerboardCtx?.neckWoodTexture?.() ?? viewportCtx?.textures.defaultWood() ?? Texture.EMPTY);
+  const woodToMaskScale = createMemo(()=>(selectedTex.mask()?.height ?? 0) / (woodTexture()?.height ?? 1))
+
   createEffect(()=>{
     props.pivot && props.scale
     maskForFingerboard()?.emit('change')
@@ -74,7 +71,7 @@ export function HeadstockPresenter(_props: {
       <Suspense>
         <Container
           zIndex={1}
-          position={fingerboardCtx?.childSpawnPos ?? { x: 0, y: 0 }}
+          position={fingerboardCtx?.childSpawnPos?.() ?? { x: 0, y: 0 }}
           interactive
           uses={[
             (container) => {
@@ -110,44 +107,65 @@ export function HeadstockPresenter(_props: {
               pivot={props.pivot ?? { x: 0, y: 0 }}
               texture={selectedTex.mask() ?? Texture.EMPTY}
             />
-            <Show when={!fingerboardCtx}>
-              <Sprite
-                pivot={props.pivot ?? { x: 0, y: 0 }}
-                texture={selectedTex.woodTexture() ?? viewportCtx?.textures.defaultWood() ?? Texture.EMPTY}
-              />
-            </Show>
             <Show when={props.isFront()}>
               <Sprite
+                texture={woodTexture()}
+                scale={woodToMaskScale()}
+                position={{
+                  x : -(props.pivot?.x ?? 0),
+                  y : -(props.pivot?.y ?? 0)
+                }}
+              />
+              <Sprite
                 zIndex={1}
-                pivot={props.pivot ?? { x: 0, y: 0 }}
                 texture={selectedTex.frontShadow() ?? Texture.EMPTY}
               />
             </Show>
             <Show when={!props.isFront()}>
               <Sprite
                 zIndex={1}
-                pivot={props.pivot ?? { x: 0, y: 0 }}
                 texture={selectedTex.backShadow() ?? Texture.EMPTY}
               />
+              <Show when={!fingerboardCtx}>
+                <Graphics
+                  draw={[
+                    ['rect', 0, 0, selectedTex.mask()?.width ?? 0, selectedTex.mask()?.height ?? 0],
+                    ['fill', 0xff0000]
+                  ]}
+                />
+                <Sprite
+                  position={{
+                    x : -(props.pivot?.x ?? 0),
+                    y : -(props.pivot?.y ?? 0)
+                  }}
+                  texture={woodTexture()}
+                  scale={woodToMaskScale()}
+                />
+              </Show>
             </Show>
           </Container>
           <Container zIndex={1}>
             {props.children}
           </Container>
         </Container>
-        <Show when={props.pegs && props.pegs.length >= props.pegSpawnPoints.length}>
+        <Show when={props.pegs && props.pegs.length >= props.pegsSpawnPoint.length}>
           <For each={props.pegsSpawnPoint}>
             {(pegSp, i) => <headstockCtx.Provider value={{
               childSpawnPos : {
-                x : pegSp.x + (fingerboardCtx?.childSpawnPos?.x ?? 0),
-                y : pegSp.y + (fingerboardCtx?.childSpawnPos?.y ?? 0),
+                x : pegSp.x + (fingerboardCtx?.childSpawnPos?.()?.x ?? 0),
+                y : pegSp.y + (fingerboardCtx?.childSpawnPos?.()?.y ?? 0),
                 rotation : pegSp.rotation,
               },
+              slottedRodOffset : props.slottedRodOffset,
+              flipped : ()=>pegSp.flipped,
             }}>
               {props.pegs?.[i()]?.() ?? <></>}
             </headstockCtx.Provider>}
           </For>
         </Show>
+        <GuitarBuilderRegisterStringSpawnpoints spawnpoints={()=>props.pegsSpawnPoint.map(el=>(
+          { x: el.x + (fingerboardCtx?.childSpawnPos?.()?.x ?? 0), y: el.y + (fingerboardCtx?.childSpawnPos?.()?.y ?? 0) }
+        ))} type="headstock"/>
       </Suspense>
   )
 }

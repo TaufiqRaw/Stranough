@@ -10,6 +10,7 @@ import { ToggleableButton } from "~/commons/components/toggleable-button";
 import { NameDescriptionGroup } from "~/commons/components/name-description-group";
 import { useGuitarNut } from "../nut-editor.page";
 import { ElectricModelPreviewExplorer } from "~/commons/components/electric-model-preview-explorer";
+import { Checkbox } from "~/commons/components/checkbox";
 
 export function NutEditorGui() {
   const nut = createMemo(() => useGuitarNut().get());
@@ -67,8 +68,18 @@ export function NutEditorGui() {
           value={nut()?.scale.get()}
           oninput={(e) => nut()?.scale.set(parseFloat(e.target.value))}
           step={0.01}
-          min={0.25}
+          min={0.1}
           max={2}
+        />
+        <Checkbox
+          checked={nut()?.isBass.get}
+          label="Is For Bass?"
+          onChange={nut()?.isBass.set}
+        />
+        <Checkbox
+          checked={nut()?.headlessOnly.get}
+          label="Headless Only?"
+          onChange={nut()?.headlessOnly.set}
         />
       </EditorGuiGroup>
       <EditorGuiGroup parent>

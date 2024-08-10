@@ -12,6 +12,7 @@ import { useEditorPageContext } from "~/commons/components/editor-page";
 import { createQuery } from "@tanstack/solid-query";
 import { electricModelRepository } from "../../electric-model-editor/electric-model.repository";
 import { ElectricModelPreviewExplorer } from "~/commons/components/electric-model-preview-explorer";
+import { PickguardConfig } from "stranough-common";
 
 export function PickguardEditorGui() {
   const pickguard = createMemo(() => useGuitarPickguard().get());
@@ -74,12 +75,23 @@ export function PickguardEditorGui() {
             )}
           </For>
         </Select>
+        <span class="text-sm -mt-1">Type</span>
+        <Select onChange={type=>{
+            pickguard()?.type.set(type as PickguardConfig.PickguardType);
+          }}
+          value={pickguard()?.type.get() ?? ''}
+        >
+          <For each={Object.values(PickguardConfig.PickguardType)}>
+            {(type) => <Option value={type}>{type}</Option>}
+          </For>
+        </Select>
       </NameDescriptionGroup>
       <EditorGuiGroup>
         <ImageInput
           label="Texture"
           partType="pickguard"
           onError={(e) => console.error(e)}
+          acceptedTypes="image/svg+xml"
           onLoad={(image) => {
             pickguard()?.texture.set(image);
           }}
