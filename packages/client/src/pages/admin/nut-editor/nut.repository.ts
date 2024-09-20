@@ -25,7 +25,10 @@ function signalToDto(b: Nut): ServerDtos.NutDto {
     stringCount: b.stringCount.get(),
     headlessOnly: b.headlessOnly.get(),
     isBass: b.isBass.get(),
-    stringSpawnPoint: b.stringSpawnPoint.state().map((s) => s.get()!),
+    stringSpawnPoint: b.stringSpawnPoint.state().map((s) => s?.get() ?? {
+      x :0,
+      y: 0,
+    }),
     texture: b.texture.get()!.id,
     thumbnail: nullOrValue(b.thumbnail.get(), b.thumbnail.get()?.id),
   };

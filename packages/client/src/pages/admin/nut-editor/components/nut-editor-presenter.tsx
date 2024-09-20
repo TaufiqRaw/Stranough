@@ -72,7 +72,7 @@ function StringPointsIndicator() {
   const nut = createMemo(() => useGuitarNut().get());
   return (
     <For each={nut()?.stringSpawnPoint.state()}>
-      {(point) => <CircleIndicator point={point.get()} />}
+      {(point) => <CircleIndicator point={point?.get()} />}
     </For>
   );
 }

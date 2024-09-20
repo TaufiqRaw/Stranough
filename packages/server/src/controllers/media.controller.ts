@@ -9,7 +9,7 @@ import { BadRequestError } from "../utils/classes/error.class.util";
 import * as Enums from "../enums";
 import * as Constants from "../constants";
 import asyncMiddleware from "middleware-async";
-import { multerUpload } from "../middlewares";
+import { multerUpload, multerUploadPrefImage } from "../middlewares";
 export const router = Router();
 
 router.get("/", async (req, res) => {
@@ -25,7 +25,7 @@ router.post(`/thumbnails`,multerUpload , asyncMiddleware(Service.createGuitarTex
   maxHeight : 200
 })));
 
-router.post(`/user-preference`, multerUpload, asyncMiddleware(Service.createUserPreferenceHandler({
+router.post(`/user-preference`, multerUploadPrefImage, asyncMiddleware(Service.createUserPreferenceHandler({
   maxWidth : 500,
   name : async (req) => {
     if (!req.body.name) {

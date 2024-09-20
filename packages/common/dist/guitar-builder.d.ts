@@ -37,9 +37,9 @@ export interface SelectedItem {
         topBinding: KeyOf<typeof bindings>;
         backBinding: KeyOf<typeof bindings>;
         topBodyColorType: KeyOf<typeof bodyColorType>;
-        topBodyColor: KeyOf<typeof bodyColorTypeToColorsMap[KeyOf<typeof bodyColorType>]>;
+        topBodyColor: KeyOf<typeof bodyColorTypeToColorsMap[KeyOf<Omit<typeof bodyColorType, 'natural'>>]>;
         backBodyColorType: KeyOf<typeof bodyColorType>;
-        backBodyColor: KeyOf<typeof bodyColorTypeToColorsMap[KeyOf<typeof bodyColorType>]>;
+        backBodyColor: KeyOf<typeof bodyColorTypeToColorsMap[KeyOf<Omit<typeof bodyColorType, 'natural'>>]>;
         burstType: KeyOf<typeof burstTypes>;
         burstColor: KeyOf<typeof burstColors>;
         neckWood: KeyOf<typeof neckWoods>;
@@ -49,7 +49,7 @@ export interface SelectedItem {
         carbonFiberRod: boolean;
         neckBinding: KeyOf<typeof bindings>;
         neckColorType: KeyOf<typeof neckColorType>;
-        neckColor: KeyOf<typeof neckColorTypeToColorsMap[KeyOf<typeof neckColorType>]>;
+        neckColor: KeyOf<typeof neckColorTypeToColorsMap[KeyOf<Omit<typeof neckColorType, 'natural'>>]>;
         fingerboardWood: KeyOf<typeof fingerboardWoods>;
         sideInlay: KeyOf<typeof sideInlay>;
         fingerboardRadius: KeyOf<typeof fingerboardRadius>;
@@ -77,9 +77,9 @@ export interface SelectedItem {
         backBinding: KeyOf<typeof bindings>;
         bodyLogo: KeyOf<typeof bodyLogo>;
         topBodyColorType: KeyOf<typeof bodyColorType>;
-        topBodyColor: KeyOf<typeof bodyColorTypeToColorsMap[KeyOf<typeof bodyColorType>]>;
+        topBodyColor: KeyOf<typeof bodyColorTypeToColorsMap[KeyOf<Omit<typeof bodyColorType, 'natural'>>]>;
         backBodyColorType: KeyOf<typeof bodyColorType>;
-        backBodyColor: KeyOf<typeof bodyColorTypeToColorsMap[KeyOf<typeof bodyColorType>]>;
+        backBodyColor: KeyOf<typeof bodyColorTypeToColorsMap[KeyOf<Omit<typeof bodyColorType, 'natural'>>]>;
         burstType: KeyOf<typeof burstTypes>;
         burstColor: KeyOf<typeof burstColors>;
         neckWood: KeyOf<typeof neckWoods>;
@@ -89,7 +89,7 @@ export interface SelectedItem {
         neckBinding: KeyOf<typeof bindings>;
         carbonFiberRod: boolean;
         neckColorType: KeyOf<typeof neckColorType>;
-        neckColor: KeyOf<typeof neckColorTypeToColorsMap[KeyOf<typeof neckColorType>]>;
+        neckColor: KeyOf<typeof neckColorTypeToColorsMap[KeyOf<Omit<typeof neckColorType, 'natural'>>]>;
         fingerboardWood: KeyOf<typeof fingerboardWoods>;
         inlay: KeyOf<typeof inlayTypes>;
         sideInlay: KeyOf<typeof sideInlay>;
@@ -101,10 +101,13 @@ export interface SelectedItem {
         headstockOverlay: KeyOf<typeof headstockOverlay>;
         headstockLogo: KeyOf<typeof headstockLogo>;
         headstockBinding: KeyOf<typeof bindings>;
+        headstockColorType: KeyOf<typeof headstockColorType>;
+        headstockColor: KeyOf<typeof headstockColorTypeToColorsMap[KeyOf<Omit<typeof headstockColorType, 'natural'>>]>;
         peg: number;
         nut: number;
         bridge: number;
         bridge2?: number;
+        pickguard: number;
         pickguardMaterial: KeyOf<typeof pickguardMaterials>;
         knob: number;
         jack: KeyOf<typeof jackTypes>;
@@ -114,10 +117,13 @@ export interface SelectedItem {
         middlePickup: number;
     };
 }
+export declare const selectedItemLabels: {
+    [k in SelectedItemKeys]: string;
+};
 export declare const electricItemLabels: {
     [k in keyof SelectedItem['electric']]: string;
 };
-export declare const mustImplementLabel: readonly ["bridge", "bridgePickup", "guitarModel", "headstock", "knob", "middlePickup", "neckPickup", "nut", "peg", "bridge2"];
+export declare const mustImplementLabel: readonly ["bridge", "bridgePickup", "guitarModel", "headstock", "knob", "middlePickup", "neckPickup", "nut", "peg", "bridge2", "pickguard"];
 export declare const selectedElectricItemNames: {
     [k in keyof Omit<SelectedItem['electric'], typeof mustImplementLabel[number]>]: (key?: SelectedItem['electric'][k]) => string | undefined;
 };
@@ -141,6 +147,10 @@ export declare const inlayTypes: Readonly<{
     };
     readonly "pearloid-dot": {
         readonly name: "Pearloid Dot";
+    };
+    readonly "mother-of-pearl-dot": {
+        readonly name: "Mother of Pearl Dot";
+        readonly price: 50000;
     };
     readonly "abalone-dot": {
         readonly name: "Abalone Dot";
@@ -567,11 +577,6 @@ export declare const stringCounts: Readonly<{
             readonly value: 8;
             readonly price: 500000;
         };
-        readonly "12 String": {
-            readonly name: "12 String";
-            readonly value: 12;
-            readonly price: 500000;
-        };
     };
     readonly "acoustic-guitar": {
         readonly "6 String": {
@@ -772,6 +777,10 @@ export declare const bodyCoreWoods: Readonly<{
     };
 }>;
 export declare const bodyColorType: Readonly<{
+    readonly natural: {
+        readonly name: "Natural";
+        readonly price: 150000;
+    };
     readonly solid: {
         readonly name: "Solid";
         readonly price: 150000;
@@ -786,6 +795,28 @@ export declare const bodyColorType: Readonly<{
     };
 }>;
 export declare const neckColorType: Readonly<{
+    readonly natural: {
+        readonly name: "Natural";
+        readonly price: 150000;
+    };
+    readonly solid: {
+        readonly name: "Solid";
+        readonly price: 150000;
+    };
+    readonly transparent: {
+        readonly name: "Transparent";
+        readonly price: 150000;
+    };
+    readonly metallic: {
+        readonly name: "Metallic";
+        readonly price: 350000;
+    };
+}>;
+export declare const headstockColorType: Readonly<{
+    readonly natural: {
+        readonly name: "Natural";
+        readonly price: 150000;
+    };
     readonly solid: {
         readonly name: "Solid";
         readonly price: 150000;
@@ -844,6 +875,10 @@ export declare const bodyColorTypeToColorsMap: Readonly<{
         readonly RAL5001: {
             readonly name: "hijau - RAL5001";
             readonly value: 2044984;
+        };
+        readonly RAL5025: {
+            readonly name: "biru - RAL5025";
+            readonly value: 2189692;
         };
         readonly RAL5007: {
             readonly name: "biru - RAL5007";
@@ -1118,6 +1153,10 @@ export declare const bodyColorTypeToColorsMap: Readonly<{
         readonly RAL5001: {
             readonly name: "hijau - RAL5001";
             readonly value: 2044984;
+        };
+        readonly RAL5025: {
+            readonly name: "biru - RAL5025";
+            readonly value: 2189692;
         };
         readonly RAL5007: {
             readonly name: "biru - RAL5007";
@@ -1472,6 +1511,10 @@ export declare const neckColorTypeToColorsMap: Readonly<{
             readonly name: "hijau - RAL5001";
             readonly value: 2044984;
         };
+        readonly RAL5025: {
+            readonly name: "biru - RAL5025";
+            readonly value: 2189692;
+        };
         readonly RAL5007: {
             readonly name: "biru - RAL5007";
             readonly value: 4087690;
@@ -1745,6 +1788,645 @@ export declare const neckColorTypeToColorsMap: Readonly<{
         readonly RAL5001: {
             readonly name: "hijau - RAL5001";
             readonly value: 2044984;
+        };
+        readonly RAL5025: {
+            readonly name: "biru - RAL5025";
+            readonly value: 2189692;
+        };
+        readonly RAL5007: {
+            readonly name: "biru - RAL5007";
+            readonly value: 4087690;
+        };
+        readonly RAL5013: {
+            readonly name: "biru - RAL5013";
+            readonly value: 1974589;
+        };
+        readonly RAL5014: {
+            readonly name: "biru - RAL5014";
+            readonly value: 6319756;
+        };
+        readonly RAL5015: {
+            readonly name: "biru - RAL5015";
+            readonly value: 2257331;
+        };
+        readonly RAL5017: {
+            readonly name: "biru - RAL5017";
+            readonly value: 407921;
+        };
+        readonly RAL5020: {
+            readonly name: "biru - RAL5020";
+            readonly value: 1913674;
+        };
+        readonly RAL5022: {
+            readonly name: "biru - RAL5022";
+            readonly value: 2435152;
+        };
+        readonly RAL5024: {
+            readonly name: "biru - RAL5024";
+            readonly value: 6134683;
+        };
+        readonly RAL6034: {
+            readonly name: "hijau - RAL6034";
+            readonly value: 8369589;
+        };
+        readonly RAL7000: {
+            readonly name: "abu-abu - RAL7000";
+            readonly value: 7898507;
+        };
+        readonly RAL6000: {
+            readonly name: "hijau - RAL6000";
+            readonly value: 3237456;
+        };
+        readonly RAL6001: {
+            readonly name: "hijau - RAL6001";
+            readonly value: 2650675;
+        };
+        readonly RAL6003: {
+            readonly name: "hijau - RAL6003";
+            readonly value: 4343346;
+        };
+        readonly RAL6004: {
+            readonly name: "hijau - RAL6004";
+            readonly value: 2046525;
+        };
+        readonly RAL6011: {
+            readonly name: "hijau - RAL6011";
+            readonly value: 5796422;
+        };
+        readonly RAL6012: {
+            readonly name: "hijau - RAL6012";
+            readonly value: 3423808;
+        };
+        readonly RAL6018: {
+            readonly name: "hijau - RAL6018";
+            readonly value: 5744185;
+        };
+        readonly RAL6019: {
+            readonly name: "hijau - RAL6019";
+            readonly value: 12446902;
+        };
+        readonly RAL7002: {
+            readonly name: "abu-abu - RAL7002";
+            readonly value: 8289106;
+        };
+        readonly RAL7033: {
+            readonly name: "abu-abu - RAL7033";
+            readonly value: 8225905;
+        };
+        readonly RAL3012: {
+            readonly name: "merah - RAL3012";
+            readonly value: 12683115;
+        };
+        readonly RAL3014: {
+            readonly name: "merah - RAL3014";
+            readonly value: 13856368;
+        };
+        readonly RAL3015: {
+            readonly name: "merah - RAL3015";
+            readonly value: 15370650;
+        };
+        readonly RAL4003: {
+            readonly name: "merah - RAL4003";
+            readonly value: 14568586;
+        };
+        readonly RAL4009: {
+            readonly name: "merah - RAL4009";
+            readonly value: 10585492;
+        };
+        readonly RAL4008: {
+            readonly name: "merah - RAL4008";
+            readonly value: 9588349;
+        };
+        readonly RAL4007: {
+            readonly name: "merah - RAL4007";
+            readonly value: 4856108;
+        };
+        readonly RAL4005: {
+            readonly name: "merah - RAL4005";
+            readonly value: 7095925;
+        };
+        readonly RAL4004: {
+            readonly name: "merah - RAL4004";
+            readonly value: 6560820;
+        };
+        readonly RAL4002: {
+            readonly name: "merah - RAL4002";
+            readonly value: 9579326;
+        };
+        readonly RAL3007: {
+            readonly name: "hitam - RAL3007";
+            readonly value: 4268583;
+        };
+        readonly RAL2001: {
+            readonly name: "merah - RAL2001";
+            readonly value: 13188128;
+        };
+        readonly RAL2002: {
+            readonly name: "merah - RAL2002";
+            readonly value: 13314081;
+        };
+        readonly RAL2012: {
+            readonly name: "merah - RAL2012";
+            readonly value: 15028535;
+        };
+        readonly RAL3001: {
+            readonly name: "merah - RAL3001";
+            readonly value: 10821657;
+        };
+        readonly RAL3003: {
+            readonly name: "merah - RAL3003";
+            readonly value: 10162462;
+        };
+        readonly RAL3005: {
+            readonly name: "merah - RAL3005";
+            readonly value: 6168873;
+        };
+        readonly RAL3018: {
+            readonly name: "merah - RAL3018";
+            readonly value: 13971506;
+        };
+        readonly RAL3027: {
+            readonly name: "merah - RAL3027";
+            readonly value: 12918068;
+        };
+        readonly RAL8004: {
+            readonly name: "merah - RAL8004";
+            readonly value: 9322538;
+        };
+        readonly RAL2003: {
+            readonly name: "merah - RAL2003";
+            readonly value: 16741652;
+        };
+        readonly RAL2010: {
+            readonly name: "merah - RAL2010";
+            readonly value: 16741652;
+        };
+        readonly RAL8023: {
+            readonly name: "merah - RAL8023";
+            readonly value: 10903086;
+        };
+        readonly RAL1000: {
+            readonly name: "hijau - RAL1000";
+            readonly value: 12500351;
+        };
+        readonly RAL1003: {
+            readonly name: "kuning - RAL1003";
+            readonly value: 15056385;
+        };
+        readonly RAL1011: {
+            readonly name: "coklat - RAL1011";
+            readonly value: 9070146;
+        };
+        readonly RAL1016: {
+            readonly name: "kuning - RAL1016";
+            readonly value: 15597345;
+        };
+        readonly RAL1017: {
+            readonly name: "kuning - RAL1017";
+            readonly value: 16109619;
+        };
+        readonly RAL1021: {
+            readonly name: "kuning - RAL1021";
+            readonly value: 15981067;
+        };
+        readonly RAL1027: {
+            readonly name: "kuning - RAL1027";
+            readonly value: 10326273;
+        };
+        readonly RAL1001: {
+            readonly name: "kuning - RAL1001";
+            readonly value: 12759160;
+        };
+        readonly RAL1012: {
+            readonly name: "kuning - RAL1012";
+            readonly value: 13087814;
+        };
+        readonly RAL8000: {
+            readonly name: "hijau - RAL8000";
+            readonly value: 8547380;
+        };
+        readonly RAL8001: {
+            readonly name: "coklat - RAL8001";
+            readonly value: 9789216;
+        };
+        readonly RAL8008: {
+            readonly name: "coklat - RAL8008";
+            readonly value: 7294760;
+        };
+        readonly RAL8011: {
+            readonly name: "coklat - RAL8011";
+            readonly value: 5978665;
+        };
+        readonly RAL8025: {
+            readonly name: "coklat - RAL8025";
+            readonly value: 7691336;
+        };
+    }>;
+    metallic: Readonly<{
+        readonly black: {
+            readonly name: "hitam";
+        };
+        readonly blue: {
+            readonly name: "biru";
+        };
+        readonly "bright-yellow": {
+            readonly name: "kuning terang";
+        };
+        readonly brown: {
+            readonly name: "coklat";
+        };
+        readonly copper: {
+            readonly name: "tembaga";
+        };
+        readonly crimson: {
+            readonly name: "merah tua";
+        };
+        readonly emerald: {
+            readonly name: "hijau zamrud";
+        };
+        readonly gray: {
+            readonly name: "abu-abu";
+        };
+        readonly green: {
+            readonly name: "hijau";
+        };
+        readonly "light-blue": {
+            readonly name: "biru muda";
+        };
+        readonly "light-brown": {
+            readonly name: "coklat muda";
+        };
+        readonly "light-gray": {
+            readonly name: "abu-abu muda";
+        };
+        readonly "light-green": {
+            readonly name: "hijau muda";
+        };
+        readonly "light-orange": {
+            readonly name: "orange muda";
+        };
+        readonly "light-pink": {
+            readonly name: "pink muda";
+        };
+        readonly "light-purple": {
+            readonly name: "ungu muda";
+        };
+        readonly "light-yellow": {
+            readonly name: "kuning muda";
+        };
+        readonly orange: {
+            readonly name: "orange";
+        };
+        readonly "pure-white": {
+            readonly name: "putih";
+        };
+        readonly purple: {
+            readonly name: "ungu";
+        };
+        readonly red: {
+            readonly name: "merah";
+        };
+        readonly seafoam: {
+            readonly name: "biru laut";
+        };
+        readonly turquoise: {
+            readonly name: "biru langit";
+        };
+        readonly white: {
+            readonly name: "ivory";
+        };
+        readonly yellow: {
+            readonly name: "kuning";
+        };
+    }>;
+}>;
+export declare const headstockColorTypeToColorsMap: Readonly<{
+    solid: Readonly<{
+        readonly RAL9010: {
+            readonly name: "putih - RAL9010";
+            readonly value: 15854817;
+        };
+        readonly RAL9002: {
+            readonly name: "putih - RAL9002";
+            readonly value: 14144971;
+        };
+        readonly RAL1013: {
+            readonly name: "putih - RAL1013";
+            readonly value: 14932422;
+        };
+        readonly RAL9001: {
+            readonly name: "kuning - RAL9001";
+            readonly value: 15327442;
+        };
+        readonly RAL5004: {
+            readonly name: "hitam - RAL5004";
+            readonly value: 1646120;
+        };
+        readonly RAL7022: {
+            readonly name: "abu-abu - RAL7022";
+            readonly value: 4999748;
+        };
+        readonly RAL7005: {
+            readonly name: "abu-abu - RAL7005";
+            readonly value: 6581091;
+        };
+        readonly RAL7023: {
+            readonly name: "abu-abu - RAL7023";
+            readonly value: 6843486;
+        };
+        readonly RAL7035: {
+            readonly name: "abu-abu - RAL7035";
+            readonly value: 14145495;
+        };
+        readonly RAL7004: {
+            readonly name: "abu-abu - RAL7004";
+            readonly value: 9869714;
+        };
+        readonly RAL5001: {
+            readonly name: "hijau - RAL5001";
+            readonly value: 2044984;
+        };
+        readonly RAL5025: {
+            readonly name: "biru - RAL5025";
+            readonly value: 2189692;
+        };
+        readonly RAL5007: {
+            readonly name: "biru - RAL5007";
+            readonly value: 4087690;
+        };
+        readonly RAL5013: {
+            readonly name: "biru - RAL5013";
+            readonly value: 1974589;
+        };
+        readonly RAL5014: {
+            readonly name: "biru - RAL5014";
+            readonly value: 6319756;
+        };
+        readonly RAL5015: {
+            readonly name: "biru - RAL5015";
+            readonly value: 2257331;
+        };
+        readonly RAL5017: {
+            readonly name: "biru - RAL5017";
+            readonly value: 407921;
+        };
+        readonly RAL5020: {
+            readonly name: "biru - RAL5020";
+            readonly value: 1913674;
+        };
+        readonly RAL5022: {
+            readonly name: "biru - RAL5022";
+            readonly value: 2435152;
+        };
+        readonly RAL5024: {
+            readonly name: "biru - RAL5024";
+            readonly value: 6134683;
+        };
+        readonly RAL6034: {
+            readonly name: "hijau - RAL6034";
+            readonly value: 8369589;
+        };
+        readonly RAL7000: {
+            readonly name: "abu-abu - RAL7000";
+            readonly value: 7898507;
+        };
+        readonly RAL6000: {
+            readonly name: "hijau - RAL6000";
+            readonly value: 3237456;
+        };
+        readonly RAL6001: {
+            readonly name: "hijau - RAL6001";
+            readonly value: 2650675;
+        };
+        readonly RAL6003: {
+            readonly name: "hijau - RAL6003";
+            readonly value: 4343346;
+        };
+        readonly RAL6004: {
+            readonly name: "hijau - RAL6004";
+            readonly value: 2046525;
+        };
+        readonly RAL6011: {
+            readonly name: "hijau - RAL6011";
+            readonly value: 5796422;
+        };
+        readonly RAL6012: {
+            readonly name: "hijau - RAL6012";
+            readonly value: 3423808;
+        };
+        readonly RAL6018: {
+            readonly name: "hijau - RAL6018";
+            readonly value: 5744185;
+        };
+        readonly RAL6019: {
+            readonly name: "hijau - RAL6019";
+            readonly value: 12446902;
+        };
+        readonly RAL7002: {
+            readonly name: "abu-abu - RAL7002";
+            readonly value: 8289106;
+        };
+        readonly RAL7033: {
+            readonly name: "abu-abu - RAL7033";
+            readonly value: 8225905;
+        };
+        readonly RAL3012: {
+            readonly name: "merah - RAL3012";
+            readonly value: 12683115;
+        };
+        readonly RAL3014: {
+            readonly name: "merah - RAL3014";
+            readonly value: 13856368;
+        };
+        readonly RAL3015: {
+            readonly name: "merah - RAL3015";
+            readonly value: 15370650;
+        };
+        readonly RAL4003: {
+            readonly name: "merah - RAL4003";
+            readonly value: 14568586;
+        };
+        readonly RAL4009: {
+            readonly name: "merah - RAL4009";
+            readonly value: 10585492;
+        };
+        readonly RAL4008: {
+            readonly name: "merah - RAL4008";
+            readonly value: 9588349;
+        };
+        readonly RAL4007: {
+            readonly name: "merah - RAL4007";
+            readonly value: 4856108;
+        };
+        readonly RAL4005: {
+            readonly name: "merah - RAL4005";
+            readonly value: 7095925;
+        };
+        readonly RAL4004: {
+            readonly name: "merah - RAL4004";
+            readonly value: 6560820;
+        };
+        readonly RAL4002: {
+            readonly name: "merah - RAL4002";
+            readonly value: 9579326;
+        };
+        readonly RAL3007: {
+            readonly name: "hitam - RAL3007";
+            readonly value: 4268583;
+        };
+        readonly RAL2001: {
+            readonly name: "merah - RAL2001";
+            readonly value: 13188128;
+        };
+        readonly RAL2002: {
+            readonly name: "merah - RAL2002";
+            readonly value: 13314081;
+        };
+        readonly RAL2012: {
+            readonly name: "merah - RAL2012";
+            readonly value: 15028535;
+        };
+        readonly RAL3001: {
+            readonly name: "merah - RAL3001";
+            readonly value: 10821657;
+        };
+        readonly RAL3003: {
+            readonly name: "merah - RAL3003";
+            readonly value: 10162462;
+        };
+        readonly RAL3005: {
+            readonly name: "merah - RAL3005";
+            readonly value: 6168873;
+        };
+        readonly RAL3018: {
+            readonly name: "merah - RAL3018";
+            readonly value: 13971506;
+        };
+        readonly RAL3027: {
+            readonly name: "merah - RAL3027";
+            readonly value: 12918068;
+        };
+        readonly RAL8004: {
+            readonly name: "merah - RAL8004";
+            readonly value: 9322538;
+        };
+        readonly RAL2003: {
+            readonly name: "merah - RAL2003";
+            readonly value: 16741652;
+        };
+        readonly RAL2010: {
+            readonly name: "merah - RAL2010";
+            readonly value: 16741652;
+        };
+        readonly RAL8023: {
+            readonly name: "merah - RAL8023";
+            readonly value: 10903086;
+        };
+        readonly RAL1000: {
+            readonly name: "hijau - RAL1000";
+            readonly value: 12500351;
+        };
+        readonly RAL1003: {
+            readonly name: "kuning - RAL1003";
+            readonly value: 15056385;
+        };
+        readonly RAL1011: {
+            readonly name: "coklat - RAL1011";
+            readonly value: 9070146;
+        };
+        readonly RAL1016: {
+            readonly name: "kuning - RAL1016";
+            readonly value: 15597345;
+        };
+        readonly RAL1017: {
+            readonly name: "kuning - RAL1017";
+            readonly value: 16109619;
+        };
+        readonly RAL1021: {
+            readonly name: "kuning - RAL1021";
+            readonly value: 15981067;
+        };
+        readonly RAL1027: {
+            readonly name: "kuning - RAL1027";
+            readonly value: 10326273;
+        };
+        readonly RAL1001: {
+            readonly name: "kuning - RAL1001";
+            readonly value: 12759160;
+        };
+        readonly RAL1012: {
+            readonly name: "kuning - RAL1012";
+            readonly value: 13087814;
+        };
+        readonly RAL8000: {
+            readonly name: "hijau - RAL8000";
+            readonly value: 8547380;
+        };
+        readonly RAL8001: {
+            readonly name: "coklat - RAL8001";
+            readonly value: 9789216;
+        };
+        readonly RAL8008: {
+            readonly name: "coklat - RAL8008";
+            readonly value: 7294760;
+        };
+        readonly RAL8011: {
+            readonly name: "coklat - RAL8011";
+            readonly value: 5978665;
+        };
+        readonly RAL8025: {
+            readonly name: "coklat - RAL8025";
+            readonly value: 7691336;
+        };
+    }>;
+    transparent: Readonly<{
+        readonly RAL9010: {
+            readonly name: "putih - RAL9010";
+            readonly value: 15854817;
+        };
+        readonly RAL9002: {
+            readonly name: "putih - RAL9002";
+            readonly value: 14144971;
+        };
+        readonly RAL1013: {
+            readonly name: "putih - RAL1013";
+            readonly value: 14932422;
+        };
+        readonly RAL9001: {
+            readonly name: "kuning - RAL9001";
+            readonly value: 15327442;
+        };
+        readonly RAL5004: {
+            readonly name: "hitam - RAL5004";
+            readonly value: 1646120;
+        };
+        readonly RAL7022: {
+            readonly name: "abu-abu - RAL7022";
+            readonly value: 4999748;
+        };
+        readonly RAL7005: {
+            readonly name: "abu-abu - RAL7005";
+            readonly value: 6581091;
+        };
+        readonly RAL7023: {
+            readonly name: "abu-abu - RAL7023";
+            readonly value: 6843486;
+        };
+        readonly RAL7035: {
+            readonly name: "abu-abu - RAL7035";
+            readonly value: 14145495;
+        };
+        readonly RAL7004: {
+            readonly name: "abu-abu - RAL7004";
+            readonly value: 9869714;
+        };
+        readonly RAL5001: {
+            readonly name: "hijau - RAL5001";
+            readonly value: 2044984;
+        };
+        readonly RAL5025: {
+            readonly name: "biru - RAL5025";
+            readonly value: 2189692;
         };
         readonly RAL5007: {
             readonly name: "biru - RAL5007";
@@ -2094,6 +2776,10 @@ export declare const bindings: Readonly<{
 export declare const headstockOverlay: Readonly<{
     readonly pvc: {
         readonly name: "PVC";
+        readonly price: 50000;
+    };
+    readonly "pvc-black": {
+        readonly name: "PVC Black";
         readonly price: 50000;
     };
     readonly rosewood: {

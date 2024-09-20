@@ -5,7 +5,7 @@ import { IGuitarBuilder } from "../../utils/types";
 
 export function SelectorRequireComponent(
   props : {
-    children : (ctx:IGuitarBuilder)=>JSX.Element
+    children : (ctx:NonNullable<ReturnType<typeof useGuitarBuilderContext>>)=>JSX.Element,
     requires : {
       message : string,
       test : (ctx : IGuitarBuilder)=>boolean,

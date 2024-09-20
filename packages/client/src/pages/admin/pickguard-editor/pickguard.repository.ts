@@ -4,7 +4,9 @@ import { createPickguard } from "./utils/create-pickguard";
 import { createCommonRepository } from "~/commons/functions/create-common-repository";
 import { nullOrValue } from "~/commons/functions/null-or-value";
 
-export const pickguardRepository = createCommonRepository(
+export const pickguardRepository = createCommonRepository<Pickguard, ServerDtos.PickguardDto, {
+  model ?: number,
+}>(
   "pickguards",
   createPickguard,
   signalToDto

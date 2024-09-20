@@ -12,6 +12,7 @@ import { Pickup } from "~/pages/admin/pickup-editor/utils/types";
 import {OmitProperties, PickProperties} from 'ts-essentials';
 import { Nut } from "~/pages/admin/nut-editor/utils/types";
 import { Position } from "~/commons/interfaces/position";
+import { Pickguard } from "~/pages/admin/pickguard-editor/utils/types";
 
 
 type electricOmitNumber = OmitProperties<GuitarBuilder.SelectedItem['electric'],number | undefined>
@@ -42,6 +43,7 @@ type SelectedItemAsSignalObject = {
     headstock : SignalObject<Headstock | undefined>,
     peg : SignalObject<Peg | undefined>,
     bridge2 : SignalObject<Bridge | undefined>,
+    pickguard : SignalObject<Pickguard | undefined>,
   }> & {
     stringCountValue : Accessor<number | undefined>,
     fretCountValue : Accessor<number | undefined>,
@@ -62,6 +64,30 @@ type SelectedItemAsSignalObject = {
   getSelectedCategory : ()=>'electric' | 'acoustic' | undefined,
   getSelectedCategoryObj : ()=>SelectedItemAsSignalObject['electric'] | SelectedItemAsSignalObject['acoustic'] | undefined,
 }
+
+export type SelectedItemAsObj = {
+  guitarType : GuitarBuilder.SelectedItem['guitarType'] | undefined,
+  orientation : GuitarBuilder.SelectedItem['orientation'] | undefined,
+  assembleGuitar : boolean | undefined,
+  electric : {
+    [k in keyof electricOmitNumber]?: (GuitarBuilder.SelectedItem['electric'][k] | undefined)
+  } & UtilTypes.Satisfies<Partial<electricPickNumber>, {
+    nut ?: Nut | undefined,
+    guitarModel ?: ElectricModel | undefined,
+    bridge ?: Bridge | undefined,
+    // jack ?: Jack | undefined,
+    bridgePickup ?: Pickup | undefined,
+    neckPickup ?: Pickup | undefined,
+    middlePickup ?: Pickup | undefined,
+    knob ?: Knob | undefined,
+    headstock ?: Headstock | undefined,
+    peg ?: Peg | undefined,
+    bridge2 ?: Bridge | undefined,
+    pickguard ?: Pickguard | undefined,
+  }>,
+}
+
+export const selectedItemVirtuals = ['stringCountValue', 'fretCountValue', 'scaleLengthValue'] as const;
 
 export type IGuitarBuilder = SelectedItemAsSignalObject & {
   totalPrice : Accessor<number>,

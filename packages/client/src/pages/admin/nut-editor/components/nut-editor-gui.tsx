@@ -106,7 +106,7 @@ export function NutEditorGui() {
           {(sp, i) => (
             <ToggleableButtonWithState
             class="flex items-center"
-            isActive={!!sp.get()}
+            isActive={!!sp?.get()}
             isFocus={nut()?.stringSpawnPoint.selectedIndex.get() === i()}
             onClick={() => {
               nut()?.stringSpawnPoint.selectedIndex.set(i());

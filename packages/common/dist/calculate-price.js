@@ -28,7 +28,7 @@ exports.selectedElectricCalculator = exports.mustImplementCalculationKeys = void
 const _1 = require(".");
 const electric_model_1 = require("./electric-model");
 const GuitarBuilder = __importStar(require("./guitar-builder"));
-exports.mustImplementCalculationKeys = ['bridge', 'bridgePickup', 'guitarModel', 'headstock', 'knob', 'middlePickup', 'neckPickup', 'nut', 'peg', 'bridge2', 'pickguardMaterial'];
+exports.mustImplementCalculationKeys = ['bridge', 'bridgePickup', 'guitarModel', 'headstock', 'knob', 'middlePickup', 'neckPickup', 'nut', 'peg', 'bridge2', 'pickguardMaterial', 'pickguard'];
 exports.selectedElectricCalculator = {
     backBinding: (item) => GuitarBuilder.bindings[item].price ?? 0,
     backContour: (item) => electric_model_1.backContourPrice[item],
@@ -51,6 +51,8 @@ exports.selectedElectricCalculator = {
     fingerboardWood: (item) => GuitarBuilder.fingerboardWoods[item].price ?? 0,
     fretCount: (item) => GuitarBuilder.fretCount[item].price ?? 0,
     headstockBinding: (item) => GuitarBuilder.bindings[item].price ?? 0,
+    headstockColorType: (item) => GuitarBuilder.headstockColorType[item].price ?? 0,
+    headstockColor: (item) => 0, //TODO: Implement this
     headstockLogo: (item) => GuitarBuilder.headstockLogo[item].price ?? 0,
     headstockOverlay: (item) => GuitarBuilder.headstockOverlay[item].price ?? 0,
     neckBinding: (item) => GuitarBuilder.bindings[item].price ?? 0,

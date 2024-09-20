@@ -23,7 +23,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sideInlay = exports.fingerboardEdge = exports.fingerboardRadius = exports.fingerboardWoods = exports.fretCount = exports.neckWoods = exports.headstockLogo = exports.bodyLogo = exports.headstockOverlay = exports.bindings = exports.neckColorTypeToColorsMap = exports.bodyColorTypeToColorsMap = exports.neckColorType = exports.bodyColorType = exports.bodyCoreWoods = exports.trussRodPositions = exports.bodyTopWoods = exports.electricBodyTypes = exports.stringCounts = exports.scaleLengths = exports.TrussRodType = exports.guitarTypes = exports.neckProfiles = exports.burstTypes = exports.orientation = exports.pickguardMaterials = exports.nullableSelectedItem = exports.inlayTypes = exports.jackTypes = exports.selectedElectricItemNames = exports.mustImplementLabel = exports.electricItemLabels = exports.getGuitarCategory = exports.binaryOptions = exports.getValue = exports.asArray = void 0;
+exports.sideInlay = exports.fingerboardEdge = exports.fingerboardRadius = exports.fingerboardWoods = exports.fretCount = exports.neckWoods = exports.headstockLogo = exports.bodyLogo = exports.headstockOverlay = exports.bindings = exports.headstockColorTypeToColorsMap = exports.neckColorTypeToColorsMap = exports.bodyColorTypeToColorsMap = exports.headstockColorType = exports.neckColorType = exports.bodyColorType = exports.bodyCoreWoods = exports.trussRodPositions = exports.bodyTopWoods = exports.electricBodyTypes = exports.stringCounts = exports.scaleLengths = exports.TrussRodType = exports.guitarTypes = exports.neckProfiles = exports.burstTypes = exports.orientation = exports.pickguardMaterials = exports.nullableSelectedItem = exports.inlayTypes = exports.jackTypes = exports.selectedElectricItemNames = exports.mustImplementLabel = exports.electricItemLabels = exports.selectedItemLabels = exports.getGuitarCategory = exports.binaryOptions = exports.getValue = exports.asArray = void 0;
 const colors_1 = require("./colors");
 const electric_model_1 = require("./electric-model");
 const R = __importStar(require("remeda"));
@@ -67,23 +67,26 @@ function getGuitarCategory(type) {
     }
 }
 exports.getGuitarCategory = getGuitarCategory;
-exports.electricItemLabels = {
+exports.selectedItemLabels = {
     guitarModel: "Bentuk dasar gitar",
     stringCount: "Jumlah senar",
     constructionMethod: "Metode konstruksi",
     scaleLength: "Panjang skala",
+    assembleGuitar: "Rakit gitar",
+    guitarType: "Tipe gitar",
+    orientation: "Orientasi",
     bodyType: "Tipe body",
-    topContour: "Kontur top",
-    backContour: "Kontur back",
+    topContour: "Kontur atas",
+    backContour: "Kontur bawah",
     bodyCoreWood: "Kayu inti body",
-    bodyTopWood: "Kayu top body",
-    topBinding: "Binding top",
-    backBinding: "Binding back",
+    bodyTopWood: "Kayu atas body",
+    topBinding: "Binding atas",
+    backBinding: "Binding bawah",
     bodyLogo: "Logo body",
-    topBodyColorType: "Tipe warna top",
-    topBodyColor: "Warna top",
-    backBodyColorType: "Tipe warna back",
-    backBodyColor: "Warna back",
+    topBodyColorType: "Tipe warna atas",
+    topBodyColor: "Warna atas",
+    backBodyColorType: "Tipe warna bawah",
+    backBodyColor: "Warna bawah",
     burstType: "Tipe burst",
     burstColor: "Warna burst",
     neckWood: "Kayu leher",
@@ -99,14 +102,17 @@ exports.electricItemLabels = {
     fingerboardRadius: "Radius fingerboard",
     useFret: "Fret",
     fretCount: "Jumlah fret",
-    fingerboardEdge: "Edge fingerboard",
+    fingerboardEdge: "Tepi fingerboard",
     inlay: "Inlay",
     headstock: "Headstock",
     headstockOverlay: "Overlay headstock",
     headstockLogo: "Logo headstock",
     headstockBinding: "Binding headstock",
+    headstockColorType: "Tipe warna headstock",
+    headstockColor: "Warna headstock",
     peg: "Peg",
     nut: "Nut",
+    pickguard: "Pickguard",
     pickguardMaterial: "Material pickguard",
     knob: "Knob",
     jack: "Jack",
@@ -117,7 +123,60 @@ exports.electricItemLabels = {
     bridge: "Bridge",
     bridge2: "Bridge 2",
 };
-exports.mustImplementLabel = ['bridge', 'bridgePickup', 'guitarModel', 'headstock', 'knob', 'middlePickup', 'neckPickup', 'nut', 'peg', 'bridge2'];
+exports.electricItemLabels = {
+    guitarModel: "Bentuk dasar gitar",
+    stringCount: "Jumlah senar",
+    constructionMethod: "Metode konstruksi",
+    scaleLength: "Panjang skala",
+    bodyType: "Tipe body",
+    topContour: "Kontur atas",
+    backContour: "Kontur bawah",
+    bodyCoreWood: "Kayu inti body",
+    bodyTopWood: "Kayu atas body",
+    topBinding: "Binding atas",
+    backBinding: "Binding bawah",
+    bodyLogo: "Logo body",
+    topBodyColorType: "Tipe warna atas",
+    topBodyColor: "Warna atas",
+    backBodyColorType: "Tipe warna bawah",
+    backBodyColor: "Warna bawah",
+    burstType: "Tipe burst",
+    burstColor: "Warna burst",
+    neckWood: "Kayu leher",
+    neckProfile: "Profil leher",
+    trussRodType: "Tipe truss rod",
+    trussRodPosition: "Posisi truss rod",
+    neckBinding: "Binding leher",
+    carbonFiberRod: "Truss rod karbon",
+    neckColorType: "Tipe warna leher",
+    neckColor: "Warna leher",
+    fingerboardWood: "Kayu fingerboard",
+    sideInlay: "Inlay samping",
+    fingerboardRadius: "Radius fingerboard",
+    useFret: "Fret",
+    fretCount: "Jumlah fret",
+    fingerboardEdge: "Tepi fingerboard",
+    inlay: "Inlay",
+    headstock: "Headstock",
+    headstockOverlay: "Overlay headstock",
+    headstockLogo: "Logo headstock",
+    headstockBinding: "Binding headstock",
+    headstockColorType: "Tipe warna headstock",
+    headstockColor: "Warna headstock",
+    peg: "Peg",
+    nut: "Nut",
+    pickguard: "Pickguard",
+    pickguardMaterial: "Material pickguard",
+    knob: "Knob",
+    jack: "Jack",
+    pickupConfiguration: "Konfigurasi pickup",
+    bridgePickup: "Pickup bridge",
+    neckPickup: "Pickup neck",
+    middlePickup: "Pickup middle",
+    bridge: "Bridge",
+    bridge2: "Bridge 2",
+};
+exports.mustImplementLabel = ['bridge', 'bridgePickup', 'guitarModel', 'headstock', 'knob', 'middlePickup', 'neckPickup', 'nut', 'peg', 'bridge2', 'pickguard'];
 exports.selectedElectricItemNames = {
     backBinding: (item) => item ? exports.bindings[item].name : undefined,
     backContour: (item) => item ? electric_model_1.contourLabels[item] : undefined,
@@ -133,6 +192,8 @@ exports.selectedElectricItemNames = {
     fingerboardRadius: (item) => item ? exports.fingerboardRadius[item].name : undefined,
     fingerboardWood: (item) => item ? exports.fingerboardWoods[item].name : undefined,
     headstockBinding: (item) => item ? exports.bindings[item].name : undefined,
+    headstockColorType: (item) => item ? exports.headstockColorType[item].name : undefined,
+    headstockColor: (item) => item,
     headstockLogo: (item) => item ? exports.headstockLogo[item].name : undefined,
     headstockOverlay: (item) => item ? exports.headstockOverlay[item].name : undefined,
     neckBinding: (item) => item ? exports.bindings[item].name : undefined,
@@ -179,10 +240,10 @@ exports.inlayTypes = Object.freeze({
     "pearloid-dot": {
         name: "Pearloid Dot",
     },
-    // "mother-of-pearl-dot" : {
-    //   name : "Mother of Pearl Dot",
-    //   price : 50000,
-    // },
+    "mother-of-pearl-dot": {
+        name: "Mother of Pearl Dot",
+        price: 50000,
+    },
     "abalone-dot": {
         name: "Abalone Dot",
         price: 50000,
@@ -612,11 +673,11 @@ exports.stringCounts = Object.freeze({
             value: 8,
             price: 500000,
         },
-        "12 String": {
-            name: "12 String",
-            value: 12,
-            price: 500000,
-        },
+        // "12 String": {
+        //   name : "12 String",
+        //   value : 12,
+        //   price : 500000,
+        // },
     },
     "acoustic-guitar": {
         "6 String": {
@@ -817,6 +878,10 @@ exports.bodyCoreWoods = Object.freeze({
     },
 });
 exports.bodyColorType = Object.freeze({
+    "natural": {
+        name: "Natural",
+        price: 150000,
+    },
     "solid": {
         name: "Solid",
         price: 150000,
@@ -843,6 +908,28 @@ exports.bodyColorType = Object.freeze({
     // },
 });
 exports.neckColorType = Object.freeze({
+    "natural": {
+        name: "Natural",
+        price: 150000,
+    },
+    "solid": {
+        name: "Solid",
+        price: 150000,
+    },
+    "transparent": {
+        name: "Transparent",
+        price: 150000,
+    },
+    "metallic": {
+        name: "Metallic",
+        price: 350000,
+    },
+});
+exports.headstockColorType = Object.freeze({
+    "natural": {
+        name: "Natural",
+        price: 150000,
+    },
     "solid": {
         name: "Solid",
         price: 150000,
@@ -862,6 +949,11 @@ exports.bodyColorTypeToColorsMap = Object.freeze({
     "metallic": colors_1.metallicColors
 });
 exports.neckColorTypeToColorsMap = Object.freeze({
+    "solid": colors_1.solidColors,
+    "transparent": colors_1.solidColors,
+    "metallic": colors_1.metallicColors
+});
+exports.headstockColorTypeToColorsMap = Object.freeze({
     "solid": colors_1.solidColors,
     "transparent": colors_1.solidColors,
     "metallic": colors_1.metallicColors
@@ -907,6 +999,10 @@ exports.bindings = Object.freeze({
 exports.headstockOverlay = Object.freeze({
     "pvc": {
         name: "PVC",
+        price: 50000
+    },
+    "pvc-black": {
+        name: "PVC Black",
         price: 50000
     },
     "rosewood": {

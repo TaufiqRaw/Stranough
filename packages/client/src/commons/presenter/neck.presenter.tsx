@@ -109,7 +109,7 @@ export function NeckPresenter(_props: {
   });
 
   const neckWidthTop = createMemo(() => getNeckWidth.top(props.stringCount()!));
-  
+
   const neckWidthBottom = createMemo(() => getNeckWidth.bottom(props.stringCount()!));
 
   const [renderedMaskTex, setRenderedMaskTex] = createSignal<Texture>();
@@ -160,7 +160,9 @@ export function NeckPresenter(_props: {
       fretDistance: ()=>fretDistance(),
     }}>
       <Container
-        zIndex={props.isFront() ? 1.02 : 0.1}
+        zIndex={guitarBodyCtx?.type?.() === "neckThroughConstruction"
+          ? props.isFront() ? 2 : 0.1
+          : props.isFront() ? 1.02 : 0.1}
         {...(guitarBodyCtx?.type?.() === "neckThroughConstruction"
           ? {
             position: guitarBodyCtx?.neckPosition() ??
@@ -170,17 +172,18 @@ export function NeckPresenter(_props: {
           >
         <SelectedItemIndicator/>
         <neckCtx.Provider
-          value={{ 
+          value={{
             childSpawnPos: ()=>({ x: 0, y: fingerboardHeight() }),
             neckWoodTexture: ()=>neckWood(),
           }}
         >
-          <Container zIndex={props.isFront() ? 2.1 : 1} y={-fingerboardHeight()}>{props.nut?.()}</Container>
+          <Show when={props.isFront()}>
+            <Container zIndex={props.isFront() ? 2.1 : 1} y={-fingerboardHeight()}>{props.nut?.()}</Container>
+          </Show>
         </neckCtx.Provider>
         <Fingerboard
           fingerboardWood={fingerboardWood}
           fretDistance={fretDistance}
-          nut={props.nut}
         />
         <NeckWoodAndShadow neckWood={neckWood} />
         <TextureRenderer
@@ -275,7 +278,6 @@ function FingerboardBackShadow() {
 
 function Fingerboard(props: {
   fingerboardWood: () => Texture | undefined;
-  nut?: () => JSX.Element;
   fretDistance: () => number[];
 }) {
   const [fingerboardMask, setFingerboardMask] = createSignal<pxSprite>();
@@ -305,7 +307,9 @@ function Fingerboard(props: {
         </Container>
       </Container>
 
-      <TrussRod/>
+      <Show when={privateCtx.isFront()}>
+        <TrussRod/>
+      </Show>
 
       <RenderedGraphics
         uses={setFingerboardMask}
@@ -346,7 +350,8 @@ function NeckWoodAndShadow(props: { neckWood: () => Texture | undefined }) {
 
   createEffect(()=>{
     if(neckWoodSprite() === undefined) return;
-    if(guitarBuilderCtx?.getSelectedCategoryObj()?.neckColor.get()){
+    if(guitarBuilderCtx?.getSelectedCategoryObj()?.neckColorType.get() === 'natural') return;
+    if(guitarBuilderCtx?.getSelectedCategoryObj()?.neckColor.get() || !neckWoodSprite()?.texture){
       const grayscale = new ColorMatrixFilter();
       grayscale.desaturate();
       neckWoodSprite()!.filters = [grayscale];
@@ -390,7 +395,7 @@ function NeckColor() {
   const neckColor = createMemo(()=>guitarBuilderCtx?.getSelectedCategoryObj()?.neckColor.get());
 
   const solidNeckColor = createMemo(()=>
-    (['solid', 'transparent'].includes(neckColorType() ?? '') && neckColor()) 
+    (['solid', 'transparent'].includes(neckColorType() ?? '') && neckColor())
       ? Colors.solidColors[neckColor()! as keyof typeof Colors.solidColors].value
       : undefined
   );
@@ -399,7 +404,7 @@ function NeckColor() {
     return (privateCtx.renderedMaskTex()?.height ?? 1) / (metallicTexture()?.height ?? 1);
   });
 
-  return <Show when={neckColor() && neckColorType()}>
+  return <Show when={neckColor() && neckColorType() && neckColorType() !== 'natural'}>
     <Show when={neckColorType() === 'metallic'}
       fallback={
         <Graphics
@@ -449,8 +454,8 @@ function Frets(props: { distancesFromNut: number[] }) {
 
 function SelectedItemIndicator(props : {
 }) {
-  
-  //TODO: when hover show the name of item (eg. neck profile) and key (eg. 'c') 
+
+  //TODO: when hover show the name of item (eg. neck profile) and key (eg. 'c')
   return (
     <Container>
       <NeckInside/>
@@ -476,7 +481,7 @@ function NeckInside(){
     }else {
       return radius;
     }
-  }) 
+  })
   const fingerboardEdge = createMemo(()=>{
     const edge = guitarBuilderCtx?.getSelectedCategoryObj()?.fingerboardEdge.get();
     if(!edge) return 0;
@@ -499,14 +504,6 @@ function NeckInside(){
   return (
     <Show when={neckProfileExist()}>
       <Container position={{ x : privateCtx.neckWidthBottom() + 20, y: -(privateCtx.fingerboardHeight()/2)-50}}>
-        <Graphics 
-          zIndex={-1}
-          draw={[
-            ['roundRect', -5, -5, ((neckProfileMask()?.width ?? 80) * (neckProfileMask()?.width ? scaleIntoDesiredWidth(neckProfileMask()!.width, 90) : 1)) + 10, 80, 5],
-            ['fill', { color: 0xffffff }],
-            ['stroke', { color: 0x000000, width: 2}],
-          ]}
-        />
         <Text
           position={{
             x : 3 + (privateCtx.isFront() ? 0 : ((neckProfileMask()?.width ?? 80) * (neckProfileMask()?.width ? scaleIntoDesiredWidth(neckProfileMask()!.width, 90) : 1)) + 0),
@@ -560,6 +557,28 @@ function NeckInside(){
           scale={neckProfileMask()?.width ? scaleIntoDesiredWidth(neckProfileMask()!.width, 90) : 1}
           mask={neckMask()}
         >
+          <Container
+            zIndex={3}
+            position={{
+              x : (neckProfileMask()?.width ?? 0)/2,
+              y : 40,
+            }}
+          >
+            <Graphics
+              draw={[
+                ...guitarBuilderCtx?.electric.trussRodType.get() ? [
+                  ['circle', 0, 0, 30],
+                  ['fill', { color: 0xaaaaaa }],
+                ] as DrawCall[] : [],
+                ...guitarBuilderCtx?.electric.carbonFiberRod.get() ? [
+                  ['circle', 80, 0, 30],
+                  ['circle', -80, 0, 30],
+                  ['fill', { color: 0x888888 }],
+                ] as DrawCall[] : [],
+
+              ]}
+            />
+          </Container>
           <Sprite
             texture={privateCtx.neckWood() ?? Texture.EMPTY}
             scale={woodToMaskScale()}
@@ -606,7 +625,7 @@ function NeckSide(){
     if(_neckColor() === undefined) return undefined;
     switch(neckColorType()){
       case 'solid' :
-      case 'transparent' : 
+      case 'transparent' :
         return Colors.solidColors[_neckColor()! as keyof typeof Colors.solidColors].value
       case 'metallic' :
         return Constants.metallicColorUrl[_neckColor()! as keyof typeof Colors.metallicColors]
@@ -632,7 +651,7 @@ function NeckSide(){
       x : (bodyCtx.leftMostPoint()?.x ?? 0) - ((bodyCtx.selectedMask()?.width ?? 0) / 2) * (bodyCtx.scale() ?? 0) - 40,
       y : 0,
     }}>
-      {/* 
+      {/*
       <Text
         position={{
           x : 3 + (privateCtx.isFront() ? 0 : ((neckProfileMask()?.width ?? 80) * (neckProfileMask()?.width ? scaleIntoDesiredWidth(neckProfileMask()!.width, 90) : 1)) + 0),
@@ -649,6 +668,24 @@ function NeckSide(){
         >
         {"Tampilan\nDalam\nNeck"}
       </Text> */}
+      <Show when={privateCtx.isFront()}>
+        <Text
+          position={{
+            x : 0,
+            y : -privateCtx.fingerboardHeight(),
+          }}
+          scale={{
+            x : privateCtx.isFront() ? 1 : -1,
+            y : 1,
+          }}
+            style={new TextStyle({
+              fontSize: 20,
+              align: "center",
+            })}
+          >
+          {"Tampilan\nSamping\nNeck"}
+        </Text>
+      </Show>
 
       <Container
         position={{
@@ -677,7 +714,7 @@ function NeckSide(){
                 zIndex={2.1}
                 anchor={{x:0.5, y:1}}
                 texture={neckTexture() ?? Texture.EMPTY}
-                scale={(neckTexture()?.height ?? 1)/ privateCtx.fingerboardHeight()}
+                scale={privateCtx.fingerboardHeight()/(neckTexture()?.height ?? 1)}
               />
             </Show>
           </Show>
@@ -778,26 +815,42 @@ function NeckSide(){
 }
 
 function Inlay(){
+  const guitarBuilderCtx = useGuitarBuilderContext();
   const privateCtx = useContext(privateNeckCtx)!;
+  const inlayType = createMemo(()=>guitarBuilderCtx?.electric.inlay.get());
   const offset = 0.1;
   const yPositions = createMemo(()=>privateCtx.fretDistance().map((d,i)=>-privateCtx.fingerboardHeight() + NUT_FROM_FIRST_FRET + d * (FRET_DISTANCE )))
-  const midYPositions = createMemo(()=>yPositions().map((y, i)=>((y - yPositions()[i-1]) /2) + y));
-  const singleInlayPositions = createMemo(()=>[1, 3, 5, 7, 13, 15, 17, 19].map(i=>midYPositions()[i]));
-  const doubleInlayPositions = createMemo(()=>[10, 22].map(i=>midYPositions()[i]));
+  const midYPositions = createMemo(()=>yPositions().map((y, i, arr)=>((y - (arr[i-1] ?? -privateCtx.fingerboardHeight())) /2) + y));
+  const singleInlayPositions = createMemo(()=>[1, 3, 5, 7, 13, 15, 17, 19].filter(v=>v<midYPositions().length).map(i=>midYPositions()[i]));
+  const doubleInlayPositions = createMemo(()=>[10, 22].filter(v=>v<midYPositions().length).map(i=>midYPositions()[i]));
   const blockWidth = createMemo(()=>privateCtx.neckWidthTop() - 10 );
+  const topMostMidY = createMemo(()=>-((-privateCtx.fingerboardHeight() - yPositions()[0])/2 + privateCtx.fingerboardHeight()))
+  createEffect(()=>console.log(topMostMidY()))
   return <>
-    <Graphics
-      draw={[
-        ...singleInlayPositions().map((y)=>['circle', 0, y, 3] as DrawCall),
-        ...doubleInlayPositions().map(y=>[
-          ['circle', 10, y, 3],
-          ['circle', -10, y, 3]
-        ] as DrawCall[]).flat(),
-        ['fill', { color: 0xffffff }],
-      ]}
-      zIndex={2}
-      position={{ x : 0, y:0}}
-    />
+    <Show when={inlayType() === 'pearloid-block'}>
+      <Graphics
+        draw={[
+          ...[topMostMidY(),...singleInlayPositions(), ...doubleInlayPositions()].map((y,i,arr)=>['rect', -blockWidth()/2, y - (10 + 25/(i+1))/2, blockWidth(), 10 + 25/(i+1)] as DrawCall),
+          ['fill', { color: 0xdddddd }],
+        ]}
+        zIndex={2}
+        position={{ x : 0, y:0}}
+      />
+    </Show>
+    <Show when={inlayType() === 'pvc-dot'}>
+      <Graphics
+        draw={[
+          ...singleInlayPositions().map((y)=>['circle', 0, y, 3] as DrawCall),
+          ...doubleInlayPositions().map(y=>[
+            ['circle', 10, y, 3],
+            ['circle', -10, y, 3]
+          ] as DrawCall[]).flat(),
+          ['fill', { color: 0xffffff }],
+        ]}
+        zIndex={2}
+        position={{ x : 0, y:0}}
+      />
+    </Show>
   </>
 
   // return <Graphics
@@ -825,7 +878,7 @@ function TextureRenderer(props: {
   createEffect(()=>{
     guitarBodyCtx?.neckPosition()
     bodyYPos()
-    setTimeout(()=>renderer()?.emit("maskUpdated"), 300);
+    setTimeout(()=>renderer()?.emit("maskUpdated"), 200);
   })
   return (
     <Container
@@ -839,10 +892,8 @@ function TextureRenderer(props: {
                 target: c,
               });
               if (newTex) {
-                const prev = privateCtx.renderedMaskTex();
                 guitarBodyCtx?.setNeckTexture(newTex);
                 props.setRenderedMaskTex(newTex);
-                prev?.destroy(true);
               }
               c.alpha = 0;
             },
@@ -936,7 +987,7 @@ function TrussRod(){
   return <Show when={guitarBuilderCtx?.getSelectedCategoryObj()?.trussRodPosition.get()}>
     {<Switch>
       <Match when={guitarBuilderCtx?.getSelectedCategoryObj()?.trussRodPosition.get() === 'heel'}>
-        <Show when={guitarBuilderCtx?.getSelectedCategory() === 'electric'}>
+        {/* <Show when={guitarBuilderCtx?.getSelectedCategory() === 'electric'}>
           <Show when={doubleTrussRod()}
             fallback={
               <Graphics
@@ -944,6 +995,7 @@ function TrussRod(){
                   ['roundRect', -8, 0, 16, 10, 2],
                   ['fill', { color: 0x000000 }],
                 ]}
+                zIndex={2.1}
               />
             }
           >
@@ -952,9 +1004,17 @@ function TrussRod(){
                 ['roundRect', -12, 0, 24, 10, 2],
                 ['fill', { color: 0x000000 }],
               ]}
+              zIndex={2.1}
             />
           </Show>
-        </Show>
+        </Show> */}
+        <Graphics
+          draw={[
+            ['roundRect', -12, 0, 24, 10, 2],
+            ['fill', { color: 0x000000 }],
+          ]}
+          zIndex={2.1}
+        />
       </Match>
       <Match when={guitarBuilderCtx?.getSelectedCategoryObj()?.trussRodPosition.get() === 'headstock'}>
         <Show when={doubleTrussRod()}
@@ -967,6 +1027,7 @@ function TrussRod(){
               anchor={{ x: 0.5, y: 1 }}
               texture={headstockTrussRod() ?? Texture.EMPTY}
               scale={0.75}
+              zIndex={3}
             />
           }
         >
@@ -978,6 +1039,7 @@ function TrussRod(){
             anchor={{ x: 0.5, y: 1 }}
             texture={headstockTrussRod() ?? Texture.EMPTY}
             scale={0.75}
+            zIndex={3}
           />
           <Sprite
             position={{
@@ -987,6 +1049,7 @@ function TrussRod(){
             anchor={{ x: 0.5, y: 1 }}
             texture={headstockTrussRod() ?? Texture.EMPTY}
             scale={0.75}
+            zIndex={3}
           />
         </Show>
       </Match>

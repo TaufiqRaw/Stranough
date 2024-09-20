@@ -27,6 +27,7 @@ import { BodyColorSelector } from "../../selectors/body-color-selector";
 import { BodyColorTypeSelector } from "../../selectors/body-color-type-selector";
 import { NeckColorSelector } from "../../selectors/neck-color-selector";
 import { NeckColorTypeSelector } from "../../selectors/neck-color-type-selector";
+import { HeadstockOverlaySelector } from "../../selectors/electric/headstock-overlay-selector";
 
 export type OmittedCommonAssistant = 'guitarModel'
 
@@ -49,7 +50,7 @@ export const commonAssistant : {
   neckColorType : NeckColorTypeAssist,
   stringCount: StringCountAssist,
   headstock : HeadstockAssist,
-  headstockOverlay : ()=>null,
+  headstockOverlay : HeadstockOverlayAssist,
   peg : PegAssist,
   scaleLength : ()=>null,
   nut : NutAssist,
@@ -79,6 +80,7 @@ function NeckProfileAssist(){
   return <AssistantSelector
     title="Pilih jenis profil leher"
     componentKey="neckProfile"
+    guidance={()=>"profil leher adalah kontur atau bentuk cengkeraman leher, penting untuk permainan yang optimal dan kenyamanan tangan."}
     itemSelector={NeckProfileSelector}
   />
 }
@@ -118,6 +120,12 @@ function TrussRodTypeAssist(){
 function CarbonFiberRodAssist(){
   return <AssistantSelector
     title="Apakah anda ingin menggunakan carbon fiber rod?"
+    guidance={()=><>
+      <img src="/assets/gui/carbon-fiber.jpg" alt="carbon fiber rod" />
+      <span>
+        carbon fiber rod dapat melengkapi truss rod untuk membantu mencegah neck dari bending yang berlebihan.
+      </span>
+    </>}
     componentKey="carbonFiberRod"
     itemSelector={CarbonFiberRodSelector}
   />
@@ -143,6 +151,10 @@ function FingerboardRadiusAssist(){
   return <AssistantSelector
     title="Pilih radius fingerboard"
     componentKey="fingerboardRadius"
+    guidance={()=><>
+      <span>Radius fingerboard adalah ukuran lengkungan fingerboard di sepanjang lebarnya</span>
+      <span>compound radius memiliki radius yang lebih kecil (lebih bulat) pada nut, dan radius yang lebih besar (lebih datar) pada sambungan leher dan badan.</span>
+    </>}
     itemSelector={FingerboardRadiusSelector}
   />
 }
@@ -288,5 +300,13 @@ function NeckColorTypeAssist(){
     title="Pilih jenis warna neck gitar"
     componentKey="neckColorType"
     itemSelector={NeckColorTypeSelector}
+  />
+}
+
+function HeadstockOverlayAssist(){
+  return <AssistantSelector
+    title="Pilih headstock overlay"
+    componentKey="headstockOverlay"
+    itemSelector={HeadstockOverlaySelector}
   />
 }

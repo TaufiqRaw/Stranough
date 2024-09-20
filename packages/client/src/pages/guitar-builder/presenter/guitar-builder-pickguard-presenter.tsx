@@ -24,7 +24,11 @@ export function GuitarBuilderPickguardPresenter(){
         interactive
       >
         {({ maskTexture }) => {
-          const scaleToMask = createMemo(()=>((maskTexture()?.height ?? 1) * (pickguard()?.scale.get() ?? 1)) / (selectedMaterialtexture()?.height ?? 1));
+          const maskIsYBigger = createMemo(()=>(maskTexture()?.height ?? 0) > (maskTexture()?.width ?? 0));
+          const scaleToMask = createMemo(()=>(maskIsYBigger()
+            ? (maskTexture()?.height ?? 1) * (pickguard()?.scale.get() ?? 1) / (selectedMaterialtexture()?.height ?? 1)
+            : (maskTexture()?.width ?? 1) * (pickguard()?.scale.get() ?? 1) / (selectedMaterialtexture()?.width ?? 1)
+          ));
           return <Sprite
             texture={selectedMaterialtexture() ?? Texture.EMPTY}
             scale={scaleToMask()}

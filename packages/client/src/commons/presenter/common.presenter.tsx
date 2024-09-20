@@ -5,17 +5,21 @@ import {
   Point,
   Texture,
   Filter,
+  Assets,
 } from "pixi.js";
 import {
   JSX,
   Show,
   Suspense,
+  createEffect,
+  createMemo,
   createSignal,
   onCleanup,
 } from "solid-js";
 import { Container, Sprite } from "solid-pixi";
 import { createPixiTexture } from "~/commons/functions/create-texture";
 import { Position } from "~/commons/interfaces/position";
+import { usePixiLoadedAssetCounter } from "../contexts/pixi-loaded-asset-counter.context";
 
 export function CommonPresenter(props: {
   texture?: string;
@@ -27,8 +31,8 @@ export function CommonPresenter(props: {
   filter?: Filter;
   rotation?: number;
 }) {
-  const selectedTex = createPixiTexture(() => props.texture);
-
+  const selectedTex = createPixiTexture(()=>props.texture);
+  const assetCounterCtx = usePixiLoadedAssetCounter();
   return (
     <Show when={selectedTex()}>
       <Suspense>

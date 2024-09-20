@@ -1,4 +1,4 @@
-import { Accessor, JSX } from "solid-js";
+import { Accessor, JSX, Setter } from "solid-js";
 import { PosRotWithFlipped, Position, PositionWithRotation } from "../interfaces/position";
 import { ImageType } from "../interfaces/image-type";
 import {Bridge as BridgeConfig, ElectricModel as ElectricModelConfig, Pickup} from 'stranough-common'
@@ -8,6 +8,7 @@ export interface ElecticModelPresenterProps {
   children?: JSX.Element;
   isFront?: boolean;
   neckWood?: string;
+  setOnRender? : Setter<(()=>Promise<HTMLImageElement| undefined>) | undefined>;
   body: {
     mask?: string;
     type?: typeof ElectricModelConfig.constructionKeys[number];

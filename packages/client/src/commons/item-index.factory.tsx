@@ -12,18 +12,21 @@ export function EntityIndexFactory<T extends ServerEntities.BaseEntity & {
   thumbnail : ServerEntities.Media | null;
 }>(props : {
   entityName : string;
+  imgUrl ?: (item : T)=>string;
+  deep ?: boolean;
 }){
   return ()=>{
     const queryClient = useQueryClient();
     const [page, setPage] = createSignal(1);
-    const [limit, setLimit] = createSignal(10);
+    const [limit, setLimit] = createSignal(8);
     const items = createQuery(()=>({
       queryKey : [props.entityName, {
         page : page(),
-        limit : limit()
+        limit : limit(),
+        deep : props.deep
       }],
       queryFn : async ()=>{
-        const {data} = await axios.get<[T[], number]>(`/${props.entityName}?page=${page()}?limit=${limit()}`);
+        const {data} = await axios.get<[T[], number]>(`/${props.entityName}${props.deep ? "/deep": ""}?page=${page()}&limit=${limit()}`);
         return data;
       }
     }))
@@ -39,7 +42,7 @@ export function EntityIndexFactory<T extends ServerEntities.BaseEntity & {
       }
     }
 
-    return <div class="p-3 h-full bg-slate-100">
+    return <div class="p-3 min-h-full bg-gray-200">
       <Button href={`new`}>
         Create New
       </Button>
@@ -48,7 +51,7 @@ export function EntityIndexFactory<T extends ServerEntities.BaseEntity & {
           <div class="grid grid-cols-4 gap-2 mt-3">
             <For each={items.data![0]}>
               {item => <div class="bg-white p-2 rounded-md group relative ">
-                <div class="absolute right-2 p-2 bg-white rounded-md border border-gray-500 hidden group-hover:flex shadow-md gap-2">
+                <div class="absolute right-2 p-2  rounded-md border border-gray-500 bg-white hidden group-hover:flex shadow-md gap-2">
                   <Button href={`${item.id}`}>
                     <i class="bi bi-pen"/>
                   </Button>
@@ -56,10 +59,14 @@ export function EntityIndexFactory<T extends ServerEntities.BaseEntity & {
                     <i class="bi bi-trash"/>
                   </Button>
                 </div>
-                <img src={serverImgUrl(item.thumbnail?.filename)} alt={item.name + "-thumbnail"} class="w-full h-48 object-cover"/>
-                <div class="p-2 relative h-36 overflow-hidden">
+                <div class="h-48 bg-gray-200 grid place-items-center">
+                  <img src={props.imgUrl 
+                      ? props.imgUrl(item)
+                      : serverImgUrl(item.thumbnail?.filename)} alt={item.name + "-thumbnail"} class="w-full h-44 object-contain"/>
+                </div>
+                <div class="p-2 relative h-20 overflow-hidden">
                   <div class="font-bold">{item.name}</div>
-                  <div>{item.description}</div>
+                  <div class="text-gray-500">{item.description}</div>
                   <div class="bg-gradient-to-t from-white to-[#ffffff00] h-10 absolute bottom-0 w-full" />
                 </div>
               </div>}

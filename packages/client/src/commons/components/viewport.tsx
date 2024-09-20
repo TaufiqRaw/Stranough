@@ -1,5 +1,5 @@
 import { Application, Assets, Container, Graphics, RenderedGraphics, useApplication } from "solid-pixi";
-import {Accessor, Component, JSX, Show, createContext, createEffect, createMemo, createSignal, mergeProps, onCleanup, onMount, useContext} from 'solid-js'
+import {Accessor, Component, JSX, Setter, Show, createContext, createEffect, createMemo, createSignal, mergeProps, onCleanup, onMount, useContext} from 'solid-js'
 import { Color, ContainerChild, Graphics as pxGraphics, Container as pxContainer, Application as pxApplication, Texture, FederatedPointerEvent} from "pixi.js";
 import { createResizeObserver } from "@solid-primitives/resize-observer";
 import { ViewportContextType } from "../interfaces/common-context-type";
@@ -20,6 +20,7 @@ export const useViewportContext = ()=>{
 
 export function Viewport(props : {
   children ?: JSX.Element,
+  childrenBack ?: JSX.Element,
   allowZoom ?: boolean,
   allowMove ?: boolean,
   displayCenterIndicator ?: boolean,
@@ -34,6 +35,8 @@ export function Viewport(props : {
   const [screenHeight, setScreenHeight] = createSignal<number>(0);
   const [app, setApp] = createSignal<pxApplication | null>(null);
   const isFront = createSignalObject<boolean>(true);
+  const [scaler, setScaler] = createSignal<Setter<number>>();
+  const [getScale, setScaleGetter]= createSignal<Accessor<number>>();
 
   onMount(() => {
     createResizeObserver(appContainer, ({ width, height }, el) => {
@@ -62,16 +65,30 @@ export function Viewport(props : {
   });
 
 return <div class="relative h-full bg-inherit" ref={setAppContainer}>
-  <div class="absolute left-5 top-5 md:hidden z-10 shadow-lg">
-    <div class={(isFront.get() ? "bg-blue-500 text-white" : "bg-white border-blue-500 border-2 text-blue-500 cursor-pointer") + " rounded-t-md p-2"}
-      onClick={()=>isFront.set(true)}
-    >
-      Depan
+  <div class="absolute left-5 top-5 md:hidden z-10 flex flex-col gap-2">
+    <div class="shadow-lg ">
+      <div class={(isFront.get() ? "bg-blue-500 text-white" : "bg-white border-blue-500 border-2 text-blue-500 cursor-pointer") + " rounded-t-md p-2"}
+        onClick={()=>isFront.set(true)}
+      >
+        Depan
+      </div>
+      <div class={(isFront.get() ? "bg-white border-blue-500 border-2 text-blue-500 cursor-pointer" : "bg-blue-500 text-white") + " rounded-b-md p-2"}
+        onClick={()=>isFront.set(false)}
+      >
+        Belakang
+      </div>
     </div>
-    <div class={(isFront.get() ? "bg-white border-blue-500 border-2 text-blue-500 cursor-pointer" : "bg-blue-500 text-white") + " rounded-b-md p-2"}
-      onClick={()=>isFront.set(false)}
-    >
-      Belakang
+    <div class="text-blue bg-white border-2 border-blue-500 rounded-md flex flex-col lg:hidden items-center">
+      <i class="bi bi-zoom-in text-blue-500"></i>
+      <input 
+        type="range"
+        min="0.2" 
+        max="2" 
+        step="0.01" 
+        value={getScale()?.() ?? DEFAULT_SCALE} 
+        class="w-20 -rotate-90 h-24" 
+        onInput={(e)=>scaler()?.(parseFloat((e.target as HTMLInputElement).value))}
+      />
     </div>
   </div>
   <Show when={appContainer()}>
@@ -112,6 +129,8 @@ return <div class="relative h-full bg-inherit" ref={setAppContainer}>
           screenWidth={screenWidth}
           dualView={screenWidth() > 768}
           menuOpened={props.menuOpened}
+          setScaler={setScaler}
+          setScaleGetter={setScaleGetter}
         >
           <Assets
             load={[["/assets/alder.jpg", "/assets/target.png"]]}
@@ -140,7 +159,7 @@ return <div class="relative h-full bg-inherit" ref={setAppContainer}>
             <Assets
               load={[["/assets/alder.jpg", "/assets/target.png"]]}
             >
-              {props.children}
+              {props.childrenBack ?? props.children}
             </Assets>
           </VContainer>
         </Show>
@@ -161,6 +180,8 @@ function VContainer(_props : {
   x ?: number,
   dualView ?: boolean,
   menuOpened ?: Accessor<boolean>,
+  setScaler ?: Setter<Setter<number> | undefined>,
+  setScaleGetter ?: Setter<Accessor<number> | undefined>,
 }) {
   const props = mergeProps({allowZoom : true, allowMove : true, displayCenterIndicator : true}, _props);
   const app = useApplication();
@@ -170,6 +191,13 @@ function VContainer(_props : {
   const [y, setY] = createSignal<number>();
   const [scale, setScale] = createSignal(DEFAULT_SCALE);
   const [mask, setMask] = createSignal<pxGraphics | null>(null);
+
+  onMount(()=>{
+    if(props.dualView)
+      return;
+    props.setScaler?.(()=>setScale);
+    props.setScaleGetter?.(()=>scale);
+  })
 
   const defaultY = createMemo(()=>props.screenHeight() / 2);
 
@@ -216,7 +244,7 @@ function VContainer(_props : {
     />
     <Container
       position={{x :props.screenWidth()/(props.dualView ? 4 : 2), y : props.screenHeight()*(
-        (props.dualView && !props.menuOpened?.()) ? 0.5 : 0.9
+        (props.menuOpened?.()) ? 0.15 : 0.5
       )}}
     >
       <Container

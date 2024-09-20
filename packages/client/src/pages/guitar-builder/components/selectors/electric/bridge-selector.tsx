@@ -1,5 +1,5 @@
 import { createQuery } from "@tanstack/solid-query"
-import { createMemo } from "solid-js"
+import { batch, createMemo } from "solid-js"
 import { ItemSelector } from "../../utils/item-selector"
 import { bridgeRepository } from "~/pages/admin/bridge-editor/bridge.repository"
 import { SelectorRequireComponent } from "../_selector-require-component"
@@ -41,10 +41,22 @@ export const BridgeSelector = ()=><SelectorRequireComponent
     }))
     return m
   }} onClick={async(item, o, ctx)=>{
+      const lastBridge = ctx.electric.bridge.get();
+      if(lastBridge && [`${Bridge.BridgeType.Tailpiece}`, `${Bridge.BridgeType.NearTailpiece}`].includes(lastBridge.type.get()!)){
+        ctx.stringSpawnpoints.tailpiece.forEach(sp=>sp?.set(undefined));
+      }else{
+        ctx.stringSpawnpoints.bridge.forEach(sp=>sp?.set(undefined));
+      }
       const data = await bridgeRepository.get(item.key as number, {
         owner : o,
       })
-      ctx?.electric.bridge.set(data);
+      ctx?.electric.bridge.set(undefined);
+      setTimeout(()=>{
+        batch(()=>{
+          ctx?.electric.bridge.set(data);
+          ctx?.electric.bridge2.set(undefined);
+        });
+      }, 100);
   }}
   selected={(item, ctx)=>{
     return item.key === ctx?.electric.bridge.get()?.id.get()
@@ -100,7 +112,10 @@ export const Bridge2Selector = ()=><SelectorRequireComponent
         const data = await bridgeRepository.get(item.key as number, {
           owner : o,
         })
-        ctx?.electric.bridge2.set(data);
+        ctx.electric.bridge2.set(undefined);
+        setTimeout(()=>{
+          ctx?.electric.bridge2.set(data);
+        }, 100);
     }}
     selected={(item, ctx)=>{
       return item.key === ctx?.electric.bridge2.get()?.id.get()

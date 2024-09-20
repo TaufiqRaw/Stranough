@@ -11,6 +11,7 @@ import {
   Sprite as pxSprite,
   RenderContainer,
   Color,
+  BlurFilter,
 } from "pixi.js";
 import {
   Accessor,
@@ -36,8 +37,6 @@ import { createPixiTexture } from "~/commons/functions/create-texture";
 import { Position, PositionWithRotation } from "~/commons/interfaces/position";
 import { Constants } from "~/constants";
 import * as R from "remeda";
-import fragment from "~/commons/shader/whiteify.frag?raw";
-import vertex from "~/commons/shader/whiteify.vert?raw";
 import { ElecticModelPresenterProps } from "../types";
 import { ColorGradientFilter, DropShadowFilter, GlowFilter, GrayscaleFilter, OutlineFilter, SimpleLightmapFilter } from "pixi-filters";
 import {ElectricModel as ElectricModelConfig, Bridge as BridgeConfig, GuitarBuilder, Colors} from 'stranough-common'
@@ -97,7 +96,10 @@ export function ElectricModelPresenter(_props: ElecticModelPresenterProps) {
     {stringCount : () => _props.stringCount?.() ? _props.stringCount()! === 12 ? 6 :  Math.max(_props.stringCount()!, 6) : 6}
   );
   const guitarBuilderCtx = useGuitarBuilderContext();
+  const application = useApplication()
+
   const [container, setContainer] = createSignal<pxContainer | null>(null);
+
 
   const [neckTexture, setNeckTexture] =
     createSignal<Texture | null>(null);
@@ -137,6 +139,13 @@ export function ElectricModelPresenter(_props: ElecticModelPresenterProps) {
 
   //TODO: make hole dynamic (user can choose)
   const fHoleSprite = createPixiTexture(() => Constants.fHoleTexture, false);
+
+  onMount(()=>{
+    props.setOnRender?.(()=>async ()=>{
+      if(!container()) return undefined;
+      return await application?.renderer.extract.image(container()!);
+    })
+  })
 
   return (
     <Container>
@@ -215,7 +224,7 @@ export function ElectricModelPresenter(_props: ElecticModelPresenterProps) {
           <TopWood textureUrl={props.body.topWood}/>
 
           <Sprite
-            zIndex={2}
+            zIndex={1.03}
             texture={
               (props.isFront
                 ? textures.frontContourTexture()
@@ -343,7 +352,7 @@ export function ElectricModelPresenter(_props: ElecticModelPresenterProps) {
                   fallback={
                     // if bridge is mono
                     <Container 
-                      zIndex={1.03}
+                      zIndex={1.04}
                       position={{
                         x : props.spawnpoints.bridge?.x! + 7,
                         y : props.spawnpoints.bridge?.y!,
@@ -377,20 +386,23 @@ export function ElectricModelPresenter(_props: ElecticModelPresenterProps) {
                       alpha: 0.4,
                       resolution: 4,
                     })]}
-                    zIndex={1.03} 
-                    position={props.bridge![0]!.type === BridgeConfig.BridgeType.Tailpiece ? {
-                      x: props.spawnpoints.bridge!.x!,
-                      y: ((props.bridgeToBottom?.() ?? 0) < props.bridge![0]!.bottomPointY) 
-                        ? props.spawnpoints.bridge!.y + 50
-                        : props.spawnpoints.bottomEnd!.y - props.bridge![0]!.bottom.y
-                    } : props.spawnpoints.bridge}
+                    zIndex={[`${BridgeConfig.BridgeType.Tailpiece}`, `${BridgeConfig.BridgeType.NearTailpiece}`].includes(props.bridge![0]!.type!) ? 1.041 : 1.04}  
+                    position={props.bridge![0]!.type === BridgeConfig.BridgeType.Tailpiece 
+                      ? { x: props.spawnpoints.bridge!.x!,
+                          y: ((props.bridgeToBottom?.() ?? 0) < props.bridge![0]!.bottomPointY) 
+                            ? props.spawnpoints.bridge!.y + 50
+                            : props.spawnpoints.bottomEnd!.y - props.bridge![0]!.bottom.y } 
+                      : props.bridge![0]!.type === BridgeConfig.BridgeType.NearTailpiece
+                        ? { x: props.spawnpoints.bridge!.x!,
+                            y: props.spawnpoints.bridge!.y + 50 } 
+                        : props.spawnpoints.bridge}
                   >
                     {props.bridge![0]!.render()}
                   </Container>
                 </Show>
               </Show>
 
-              {/* invariant : bridge[1] (bridge2) will always either be tuneomatic or tailpiece  */}
+              {/* invariant : bridge[1] (bridge2) will always either be tuneomatic ,tailpiece, or near-tailpiece  */}
               <Show
                 when={props.bridge![1]}
               >
@@ -401,13 +413,18 @@ export function ElectricModelPresenter(_props: ElecticModelPresenterProps) {
                     alpha: 0.4,
                     resolution: 4,
                   })]}
-                  zIndex={1.03} 
-                  position={props.bridge![1]!.type === BridgeConfig.BridgeType.Tailpiece ? {
-                    x: props.spawnpoints.bridge!.x!,
-                    y: ((props.bridgeToBottom?.() ?? 0) < props.bridge![1]!.bottomPointY) 
+                  zIndex={[`${BridgeConfig.BridgeType.Tailpiece}`, `${BridgeConfig.BridgeType.NearTailpiece}`].includes(props.bridge![1]!.type!) ? 1.041 : 1.04} 
+                  position={props.bridge![1]!.type === BridgeConfig.BridgeType.Tailpiece 
+                    ? {
+                      x: props.spawnpoints.bridge!.x!,
+                      y: ((props.bridgeToBottom?.() ?? 0) < props.bridge![1]!.bottomPointY) 
                         ? props.spawnpoints.bridge!.y + 50
                         : props.spawnpoints.bottomEnd!.y - props.bridge![1]!.bottom.y
-                  } : props.spawnpoints.bridge}
+                      } 
+                    : props.bridge![1]!.type === BridgeConfig.BridgeType.NearTailpiece
+                      ? { x: props.spawnpoints.bridge!.x!,
+                          y: props.spawnpoints.bridge!.y + 50 } 
+                      : props.spawnpoints.bridge}
                 >
                   {props.bridge![1]!.render()}
                 </Container>
@@ -492,6 +509,14 @@ export function ElectricModelPresenter(_props: ElecticModelPresenterProps) {
           </Show>
           {/* Back Facing Components */}
           <Show when={!props.isFront}>
+            <Show when={props.spawnpoints.bridge}>
+              <BoltOnPlate bridgePosition={
+                props.spawnpoints.bridge!
+              }/>
+              <SetNeckHolder bridgePosition={
+                props.spawnpoints.bridge!
+              }/>
+            </Show>
             <ElectronicCover/>
             <BatteryCover/>
           </Show>
@@ -501,6 +526,119 @@ export function ElectricModelPresenter(_props: ElecticModelPresenterProps) {
       </GuitarBodyPresenterContext.Provider>
     </Container>
   );
+}
+
+function SetNeckHolder(
+  props : {
+    bridgePosition : Position;
+  }
+){
+  const privateCtx = useContext(PrivateCtx)!;
+  const bodyCtx = useGuitarBodyPresenterContext()!;
+  const neckWoodTexture = createMemo(()=>privateCtx.textures.selectedNeckWoodTexture());
+  const [mask, setMask] = createSignal<pxSprite | null>(null);
+  const neckWidthBottom = createMemo(() => getNeckWidth.bottom(6) - 5);
+  const isSetNeck = createMemo(()=>bodyCtx.type?.() === 'setInConstruction');
+  return <Show when={privateCtx.topPoint() && neckWidthBottom() && neckWoodTexture() && isSetNeck()}>
+    <Container
+      zIndex={1.03}
+      uses={c=>{
+        c.filters = [new DropShadowFilter({
+          offset: { x: 0, y: -4 },
+          blur: 5,
+          quality: 5,
+          alpha: 0.2,
+          color: 0x000000,
+        })]
+      }}
+      position={{
+        x : props.bridgePosition.x,
+        y : privateCtx.topPoint()?.y! + 2,
+      }}
+    >
+      <Container
+        mask={mask()}
+      >
+        <Graphics
+          uses={setMask}
+          zIndex={1.02}
+          draw={[
+            ['moveTo', -neckWidthBottom()/2, 0],
+            ['quadraticCurveTo', 0, -60, neckWidthBottom()/2, 0],
+            ['fill', 0xffffff],
+          ]}
+        />
+        <Sprite
+          texture={neckWoodTexture() ?? Texture.EMPTY}
+          anchor={0.5}
+          scale={0.5}
+        />
+      </Container>
+    </Container>
+  </Show>
+}
+
+function BoltOnPlate(props : {
+  bridgePosition : Position;
+}){
+  const privateCtx = useContext(PrivateCtx)!;
+  const bodyCtx = useGuitarBodyPresenterContext()!;
+  const isBoltOn = createMemo(()=>bodyCtx.type?.() === 'boltOnConstruction');
+  const [mask, setMask] = createSignal<pxSprite | null>(null);
+  return <Show when={privateCtx.topPoint()  && isBoltOn() }>
+    <Container 
+      zIndex={1.02}
+      mask={mask()}
+      position={{
+        x : props.bridgePosition.x,
+        y : privateCtx.topPoint()!.y + 5,
+      }}
+    >
+      <Graphics
+        uses={setMask}
+        zIndex={1.02}
+        draw={[
+          ['roundRect', 0 - 35, 0, 70, 70, 5],
+          ['fill', 0xA4A6AD],
+        ]}
+      />
+      <Graphics
+        zIndex={1.02}
+        draw={[
+          ['roundRect', 0 - 35, 0, 70, 70, 5],
+          ['fill', 0xA4A6AD],
+        ]}
+      />
+      <Graphics
+        zIndex={1.04}
+        uses={g=>{
+          g.filters = [new DropShadowFilter({
+            offset: { x: 0, y: 0 },
+            blur: 5,
+            quality: 5,
+            color: 0xffffff,
+            shadowOnly: true,
+          })]
+        }}
+        draw={[
+          ['roundRect', 0, 0, 70, 70, 5],
+          ['fill', 0xA4A6AD],
+        ]}
+      />
+      <Graphics
+        zIndex={1.03}
+        uses={g=>{
+          g.filters = [new BlurFilter({
+            strength: 5,
+          })]
+        }}
+        draw={[
+          ['roundRect', privateCtx.topPoint()!.x - 40, privateCtx.topPoint()!.y + 35, 80, 40, 5],
+          ['fill', 0x838790],
+        ]}
+      />
+    </Container>
+  </Show>
 }
 
 function SideViewer(){
@@ -552,7 +690,7 @@ function SideViewer(){
   zIndex={0}
   position={{
     x : (model.leftMostPoint()?.x ?? 0) - ((model.selectedMask()?.width ?? 0) / 2) * (model.scale() ?? 0) - 150,
-    y : ((privateCtx.topPoint()?.y ?? 0) + ((privateCtx.bottomPoint()?.y ?? 0)) / 2) * (model.scale() ?? 0) + 70,
+    y : ((Math.abs((privateCtx.fingerboardSP()?.y ?? 0)) + ((privateCtx.bottomPoint()?.y ?? 0)))/20) * (model.scale() ?? 0) + 70,
   }}
 >
   <Show when={!!model.selectedMask()}>
@@ -662,7 +800,7 @@ function Body(){
   const [woodSprite, setWoodSprite] = createSignal<pxSprite>();
   
   createEffect(()=>{
-    if(woodSprite() === undefined) return;
+    if(woodSprite() === undefined || !woodSprite()?.texture) return;
     if(model.isFront()){
       //grayscale the top color when top color is selected
       if(guitarBuilderCtx?.getSelectedCategoryObj()?.topBodyColor.get()){
@@ -924,7 +1062,7 @@ function NeckThroughBodyWithNeckWood(props : {
   const [neckWoodSprite, setNeckWoodSprite] = createSignal<pxSprite>();
 
   createEffect(()=>{
-    if(bodyOnlyAreaSpriteWood() === undefined) return;
+    if(bodyOnlyAreaSpriteWood() === undefined || !!bodyOnlyAreaSpriteWood()?.texture) return;
     if(model.isFront()){
       //grayscale the top color when top color is selected
       if(guitarBuilderCtx?.getSelectedCategoryObj()?.topBodyColor.get()){
@@ -944,7 +1082,7 @@ function NeckThroughBodyWithNeckWood(props : {
         bodyOnlyAreaSpriteWood()!.filters = [];
       }
     }
-    if(neckWoodSprite() === undefined) return;
+    if(neckWoodSprite() === undefined || !neckWoodSprite()?.texture) return;
     if(guitarBuilderCtx?.electric.neckColor.get()){
       const grayscale = new ColorMatrixFilter();
       grayscale.desaturate();
@@ -1074,7 +1212,7 @@ function TopWood(props : {
   });
   
   createEffect(()=>{
-    if(woodSprite() === undefined) return;
+    if(woodSprite() === undefined || woodSprite()?.texture) return;
     if(model.isFront()){
       //grayscale the top color when top color is selected
       if(guitarBuilderCtx?.getSelectedCategoryObj()?.topBodyColor.get()){
@@ -1109,14 +1247,15 @@ function Bursts(){
   const guitarBuilderCtx = useGuitarBuilderContext();
   const burstType = createMemo(()=>guitarBuilderCtx?.getSelectedCategoryObj()?.burstType.get());
   const burstColor = createMemo(()=>GuitarBuilder.getValue(Colors.burstColors, guitarBuilderCtx?.getSelectedCategoryObj()?.burstColor.get()));
+  
   return <Container zIndex={1.011}>
     <Show when={bodyCtx.isFront() && burstType() && burstColor()}>
       <Burst color={burstColor()![0]} baseLength={0} gradientLength={100} zIndex={1.1}/> 
-      <Burst color={burstColor()![1] ? burstColor()![1]! : burstColor()![0]} baseLength={30} gradientLength={100} zIndex={1}/>
+      <Burst color={burstColor()![1] ? burstColor()![1]! : burstColor()![0]} baseLength={50} gradientLength={100} zIndex={1}/>
     </Show>
     <Show when={!bodyCtx.isFront() && burstType() === "top-back" && burstColor()}>
       <Burst color={burstColor()![0]} baseLength={0} gradientLength={100} zIndex={1.1}/> 
-      <Burst color={burstColor()![1] ? burstColor()![1]! : burstColor()![0]} baseLength={30} gradientLength={100} zIndex={1}/>
+      <Burst color={burstColor()![1] ? burstColor()![1]! : burstColor()![0]} baseLength={50} gradientLength={100} zIndex={1}/>
     </Show>
   </Container>
 }
@@ -1144,17 +1283,21 @@ function Burst(props : {
       scale={guitarBodyCtx.scale() ?? 1}
       mask={burstMask()}
     >
-      <Sprite
-        texture={burstTexture() ?? Texture.EMPTY}
-        anchor={0.5}
-        uses={setBurstMask}
-      />
-      <Graphics
-        draw={[
-          ['rect', -500, -500, 2000, 2000],
-          ['fill', props.color],
-        ]}
-      />
+      <MaskedBodyPresenter>
+        {()=><>
+          <Sprite
+            texture={burstTexture() ?? Texture.EMPTY}
+            anchor={0.5}
+            uses={setBurstMask}
+          />
+          <Graphics
+            draw={[
+              ['rect', -500, -500, 2000, 2000],
+              ['fill', props.color],
+            ]}
+          />
+        </>}
+      </MaskedBodyPresenter>
     </Container>
   </Show>
 }

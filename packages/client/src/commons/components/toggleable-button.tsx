@@ -9,6 +9,7 @@ export type ToggleableButtonProps ={
   onClick: (e: MouseEvent) => void;
   class?: string;
   children?: JSX.Element | ((isActive : boolean)=>JSX.Element);
+  ref?: any;
 }
 
 export function ToggleableButton(props: ToggleableButtonProps) {
@@ -23,6 +24,7 @@ export function ToggleableButton(props: ToggleableButtonProps) {
       onClick={props.onClick}
       onMouseOver={props.onMouseOver}
       onMouseLeave={props.onMouseLeave}
+      ref={props.ref}
     >
       {typeof props.children === 'function' ? props.children(props.isActive) : props.children}
     </button>

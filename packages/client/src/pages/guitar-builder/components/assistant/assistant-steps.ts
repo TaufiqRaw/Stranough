@@ -1,15 +1,12 @@
 import { JSX } from "solid-js";
 import { AssistMode } from "./steps/assist-mode";
-import { DescribeGuitar } from "./steps/describe-guitar";
-import { UploadImage } from "./steps/upload-image";
-import { SelectType } from "./steps/select-type";
-import { StringCountSelector } from "../selectors/string-count-selector";
 import { electricAssistant } from "./steps/electric/electric-assistant";
 import { NeckProfileSelector } from "../selectors/neck-profile-selector";
 import { commonAssistant } from "./steps/common-assistant";
 import { fingerboardEdge, fingerboardRadius, fingerboardWoods, sideInlay} from "stranough-common/dist/guitar-builder";
 import { IGuitarBuilder } from "../../utils/types";
 import { Bridge, Pickup } from "stranough-common";
+import { ElectricModelAssistant } from "./steps/electric/electric-model-assistant";
 
 export type assistantStepKeysType = typeof assistantStepKeys[keyof typeof assistantStepKeys]; 
 
@@ -45,6 +42,7 @@ export const assistantStepKeys = Object.freeze({
   carbonFiberRod : 'carbon-fiber-rod',
 
   fingerboardWoods : 'fingerboard-woods',
+  inlay : 'inlay',
   sideInlay : 'side-inlay',
   fingerboardRadius : 'fingerboard-radius',
   useFret : 'use-fret',
@@ -52,6 +50,7 @@ export const assistantStepKeys = Object.freeze({
   fingerboardEdge : 'fingerboard-edge',
 
   headstock : 'headstock',
+  headstockOverlay : 'headstock-overlay',
   peg : 'peg',
   nut : 'nut',
   bridge : 'bridge',
@@ -79,15 +78,10 @@ export const assistantSteps : {
   {
     key : assistantStepKeys.assistMode,
     component : AssistMode
-  },{
-    key : assistantStepKeys.uploadImage,
-    component : UploadImage
-  },{
-    key : assistantStepKeys.describeGuitar,
-    component : DescribeGuitar
-  },{
+  }
+  ,{
     key : assistantStepKeys.electricModelType,
-    component : electricAssistant.guitarModel
+    component : ElectricModelAssistant
   },{
     key : assistantStepKeys.electricBodyType,
     component : electricAssistant.bodyType
@@ -123,14 +117,14 @@ export const assistantSteps : {
   },{
     key : assistantStepKeys.topBodyColor,
     component : commonAssistant.topBodyColor,
-    skip : (ctx)=>ctx.getSelectedCategoryObj()?.topBodyColorType.get() === undefined
+    skip : (ctx)=>ctx.getSelectedCategoryObj()?.topBodyColorType.get() === undefined || ctx.getSelectedCategoryObj()?.topBodyColorType.get() === 'natural'
   },{
     key : assistantStepKeys.backBodyColorType,
     component : commonAssistant.backBodyColorType,
   },{
     key : assistantStepKeys.backBodyColor,
     component : commonAssistant.backBodyColor,
-    skip : (ctx)=>ctx.getSelectedCategoryObj()?.backBodyColorType.get() === undefined
+    skip : (ctx)=>ctx.getSelectedCategoryObj()?.backBodyColorType.get() === undefined || ctx.getSelectedCategoryObj()?.backBodyColorType.get() === 'natural'
   },{
     key : assistantStepKeys.burstType,
     component : commonAssistant.burstType,
@@ -157,7 +151,7 @@ export const assistantSteps : {
   },{
     key : assistantStepKeys.neckColor,
     component : commonAssistant.neckColor,
-    skip : (ctx)=>ctx.getSelectedCategoryObj()?.neckColorType.get() === undefined
+    skip : (ctx)=>ctx.getSelectedCategoryObj()?.neckColorType.get() === undefined || ctx.getSelectedCategoryObj()?.neckColorType.get() === 'natural'
   }
   // ,{
   //   key : assistantStepKeys.neckBinding,
@@ -179,6 +173,9 @@ export const assistantSteps : {
     key : assistantStepKeys.useFret,
     component : commonAssistant.useFret,
   },{
+    key : assistantStepKeys.inlay,
+    component : electricAssistant.inlay,
+  },{
     key : assistantStepKeys.fretCount,
     component : commonAssistant.fretCount,
   },{
@@ -188,12 +185,16 @@ export const assistantSteps : {
     key : assistantStepKeys.headstock,
     component : commonAssistant.headstock,
   },{
+    key : assistantStepKeys.headstockOverlay,
+    component : commonAssistant.headstockOverlay
+  },{
     key : assistantStepKeys.peg,
     component : commonAssistant.peg,
   },{
     key : assistantStepKeys.nut,
     component : commonAssistant.nut,
-  },{
+  },
+  {
     key : assistantStepKeys.bridge,
     component : electricAssistant.bridge,
   },{
@@ -215,19 +216,20 @@ export const assistantSteps : {
     skip : (ctx)=>ctx.electric.guitarModel.get()?.selectedPickguard.get() === undefined,
     key : assistantStepKeys.pickguardMaterial,
     component : commonAssistant.pickguardMaterial,
-  },{
+  },
+  {
     key : assistantStepKeys.pickupConfiguration,
     component : electricAssistant.pickupConfiguration,
   },{
     key : assistantStepKeys.bridgePickup,
     component : electricAssistant.bridgePickup,
   },{
-    key : assistantStepKeys.neckPickup,
-    component : electricAssistant.neckPickup,
-    skip : (ctx)=>!ctx.electric.pickupConfiguration.get() || ({...Pickup.pickupConfigurations['electric-guitar'], ...Pickup.pickupConfigurations['electric-bass']}[ctx.electric.pickupConfiguration.get()!].length < 2) 
-  },{
     key : assistantStepKeys.middlePickup,
     component : electricAssistant.middlePickup,
     skip : (ctx)=>!ctx.electric.pickupConfiguration.get() || ({...Pickup.pickupConfigurations['electric-guitar'], ...Pickup.pickupConfigurations['electric-bass']}[ctx.electric.pickupConfiguration.get()!].length < 3)
+  },{
+    key : assistantStepKeys.neckPickup,
+    component : electricAssistant.neckPickup,
+    skip : (ctx)=>!ctx.electric.pickupConfiguration.get() || ({...Pickup.pickupConfigurations['electric-guitar'], ...Pickup.pickupConfigurations['electric-bass']}[ctx.electric.pickupConfiguration.get()!].length < 2) 
   }
 ]

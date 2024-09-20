@@ -11,7 +11,7 @@ export const NeckColorSelector = ()=><SelectorRequireComponent
   }]}
 >
 { (ctx)=><ItemSelector
-  items={()=>()=>GuitarBuilder.asArray(GuitarBuilder.neckColorTypeToColorsMap[ctx.getSelectedCategoryObj()!.neckColorType.get()!]).map(i=>{
+  items={()=>()=>GuitarBuilder.asArray(GuitarBuilder.neckColorTypeToColorsMap[ctx.getSelectedCategoryObj()!.neckColorType.get()! as GuitarBuilder.KeyOf<Omit<typeof GuitarBuilder.bodyColorType, 'natural'>>]).map(i=>{
     let thumbnail : string = '';
     switch(ctx.getSelectedCategoryObj()!.neckColorType.get()){
       case 'transparent' :

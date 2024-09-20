@@ -11,6 +11,7 @@ import {
   createMemo,
   createResource,
   createSignal,
+  onCleanup,
 } from "solid-js";
 import {
   GraphicsContext,

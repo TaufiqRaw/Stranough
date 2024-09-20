@@ -1,5 +1,5 @@
 import { createSignalObject } from "~/commons/functions/signal-object.util";
-import { IGuitarBuilder } from "./types";
+import { IGuitarBuilder, SelectedItemAsObj } from "./types";
 import { Constants } from "~/constants";
 import { ServerEntities } from "stranough-server";
 import { ElectricModel, GuitarBuilder, GuitarBuilderCalc, Pickup as PickupConfig } from "stranough-common";
@@ -8,20 +8,34 @@ import { SignalObject } from "~/commons/interfaces/signal-object";
 import * as R from "remeda"
 import { Position } from "~/commons/interfaces/position";
 
-export function createGuitarComponent() : Omit<IGuitarBuilder, 'isBottomSideMenuSwiped' | 'socket'>{
-  const constructionMethod = createSignalObject<typeof ElectricModel.constructionKeys[number] | undefined>();
-  const contourTop = createSignalObject<Exclude<typeof ElectricModel.contourKeys[number], 'tummyContour'> | undefined | undefined>();
-  const contourBack = createSignalObject<Exclude<typeof ElectricModel.contourKeys[number], 'forearmContour'> | undefined | undefined>();
-  const pickupConfiguration = createSignalObject<keyof typeof PickupConfig.pickupConfigurations['electric-guitar']>();
+export function createGuitarComponent(props ?: SelectedItemAsObj) : Omit<IGuitarBuilder, 'socket'>{
+  const constructionMethod = createSignalObject<typeof ElectricModel.constructionKeys[number] | undefined>(
+    props?.electric.constructionMethod
+  );
+  const contourTop = createSignalObject<Exclude<typeof ElectricModel.contourKeys[number], 'tummyContour'> | undefined | undefined>(
+    props?.electric.topContour
+  );
+  const contourBack = createSignalObject<Exclude<typeof ElectricModel.contourKeys[number], 'forearmContour'> | undefined | undefined>(
+    props?.electric.backContour
+  );
+  const pickupConfiguration = createSignalObject<keyof typeof PickupConfig.pickupConfigurations['electric-guitar'] | undefined>(
+    props?.electric.pickupConfiguration
+  );
 
   const preObj : {
     electric : {[key in keyof GuitarBuilder.SelectedItem['electric']] ?: SignalObject<GuitarBuilder.SelectedItem['electric'][key] | undefined>},
     acoustic : {[key in keyof GuitarBuilder.SelectedItem['acoustic']] ?: SignalObject<GuitarBuilder.SelectedItem['acoustic'][key] | undefined>},
   } = {
     electric : {
-      fretCount : createSignalObject(),
-      scaleLength : createSignalObject(), 
-      stringCount : createSignalObject()
+      fretCount : createSignalObject(
+        props?.electric.fretCount
+      ),
+      scaleLength : createSignalObject(
+        props?.electric.scaleLength
+      ), 
+      stringCount : createSignalObject<GuitarBuilder.SelectedItem['electric']['stringCount'] | undefined>(
+        props?.electric.stringCount
+      ),
     },
     acoustic : {
       fretCount : createSignalObject(),
@@ -32,8 +46,12 @@ export function createGuitarComponent() : Omit<IGuitarBuilder, 'isBottomSideMenu
 
   const obj : Omit<IGuitarBuilder, 'socket'> = {
     guitarType : createSignalObject('electric-guitar'),
-    orientation : createSignalObject(),
-    assembleGuitar : createSignalObject(),
+    orientation : createSignalObject(
+      props?.orientation
+    ),
+    assembleGuitar : createSignalObject(
+      props?.assembleGuitar
+    ),
     electricPrices : ()=>({} as {[k in keyof GuitarBuilder.SelectedItem['electric']] : number}),
     totalPrice : ()=>0,
     getSelectedCategory : ()=>obj.guitarType.get() ? GuitarBuilder.getGuitarCategory(obj.guitarType.get()!) : undefined,
@@ -57,11 +75,21 @@ export function createGuitarComponent() : Omit<IGuitarBuilder, 'isBottomSideMenu
       fromTop :()=>[],
     },
     electric : {
-      guitarModel : createSignalObject(),
-      bodyLogo : createSignalObject(),
-      nut : createSignalObject(),
-      headstockLogo : createSignalObject(),
-      headstockOverlay : createSignalObject(),
+      guitarModel : createSignalObject(
+        props?.electric.guitarModel
+      ),
+      bodyLogo : createSignalObject(
+        props?.electric.bodyLogo
+      ),
+      nut : createSignalObject(
+        props?.electric.nut
+      ),
+      headstockLogo : createSignalObject(
+        props?.electric.headstockLogo
+      ),
+      headstockOverlay : createSignalObject(
+        props?.electric.headstockOverlay
+      ),
       scaleLength : preObj.electric.scaleLength!,
       constructionMethod : {
         get : constructionMethod.get,
@@ -70,49 +98,129 @@ export function createGuitarComponent() : Omit<IGuitarBuilder, 'isBottomSideMenu
           constructionMethod.set(s);
         }
       },
-      bodyType : createSignalObject(),
-      bodyCoreWood : createSignalObject(),
-      bodyTopWood : createSignalObject(),
-      topBinding : createSignalObject(),
-      backBinding : createSignalObject(),
-      topBodyColor : createSignalObject(),
-      topBodyColorType : createSignalObject(),
-      backBodyColor : createSignalObject(),
-      backBodyColorType : createSignalObject(),
-      burstType : createSignalObject(),
-      burstColor : createSignalObject(),
+      bodyType : createSignalObject(
+        props?.electric.bodyType
+      ),
+      bodyCoreWood : createSignalObject(
+        props?.electric.bodyCoreWood
+      ),
+      bodyTopWood : createSignalObject(
+        props?.electric.bodyTopWood
+      ),
+      topBinding : createSignalObject(
+        props?.electric.topBinding
+      ),
+      backBinding : createSignalObject(
+        props?.electric.backBinding
+      ),
+      topBodyColor : createSignalObject(
+        props?.electric.topBodyColor
+      ),
+      topBodyColorType : createSignalObject(
+        props?.electric.topBodyColorType
+      ),
+      backBodyColor : createSignalObject(
+        props?.electric.backBodyColor
+      ),
+      backBodyColorType : createSignalObject(
+        props?.electric.backBodyColorType
+      ),
+      burstType : createSignalObject(
+        props?.electric.burstType
+      ),
+      burstColor : createSignalObject(
+        props?.electric.burstColor
+      ),
+      headstockColor : createSignalObject(
+        props?.electric.headstockColor
+      ),
+      headstockColorType : createSignalObject(
+        props?.electric.headstockColorType
+      ),
+      trussRodPosition : createSignalObject(
+        props?.electric.trussRodPosition
+      ),
+      trussRodType : createSignalObject(
+        props?.electric.trussRodType
+      ),
+      neckBinding : createSignalObject(
+        props?.electric.neckBinding
+      ),
+      neckColor : createSignalObject(
+        props?.electric.neckColor
+      ),
+      neckColorType : createSignalObject(
+        props?.electric.neckColorType
+      ),
+      neckWood : createSignalObject(
+        props?.electric.neckWood
+      ),
+      neckProfile : createSignalObject(
+        props?.electric.neckProfile
+      ),
+      carbonFiberRod : createSignalObject(
+        props?.electric.carbonFiberRod
+      ),
 
-      trussRodPosition : createSignalObject(),
-      trussRodType : createSignalObject(),
-      neckBinding : createSignalObject(),
-      neckColor : createSignalObject(),
-      neckColorType : createSignalObject(),
-      neckWood : createSignalObject(),
-      neckProfile : createSignalObject(),
-      carbonFiberRod : createSignalObject(),
-
-      fingerboardWood : createSignalObject(),
-      sideInlay : createSignalObject(),
-      inlay : createSignalObject(),
-      fingerboardRadius : createSignalObject(),
-      useFret : createSignalObject(),
+      fingerboardWood : createSignalObject(
+        props?.electric.fingerboardWood
+      ),
+      sideInlay : createSignalObject(
+        props?.electric.sideInlay
+      ),
+      inlay : createSignalObject(
+        props?.electric.inlay
+      ),
+      fingerboardRadius : createSignalObject(
+        props?.electric.fingerboardRadius
+      ),
+      useFret : createSignalObject(
+        props?.electric.useFret
+      ),
       fretCount : preObj.electric.fretCount!,
       // fingerboardScalloping : createSignalObject(),
-      fingerboardEdge : createSignalObject(),
+      fingerboardEdge : createSignalObject(
+        props?.electric.fingerboardEdge
+      ),
       
       stringCount : preObj.electric.stringCount!,
-      headstock : createSignalObject(),
-      headstockBinding : createSignalObject(),
+      headstock : createSignalObject(
+        props?.electric.headstock
+      ),
+      headstockBinding : createSignalObject(
+        props?.electric.headstockBinding
+      ),
       
-      peg : createSignalObject(),
-      bridge : createSignalObject(),
-      bridge2 : createSignalObject(),
-      jack : createSignalObject(),
-      pickguardMaterial : createSignalObject(),
-      knob : createSignalObject(),
-      bridgePickup : createSignalObject(),
-      neckPickup : createSignalObject(),
-      middlePickup : createSignalObject(),
+      peg : createSignalObject(
+        props?.electric.peg
+      ),
+      bridge : createSignalObject(
+        props?.electric.bridge
+      ),
+      bridge2 : createSignalObject(
+        props?.electric.bridge2
+      ),
+      jack : createSignalObject(
+        props?.electric.jack
+      ),
+      pickguard : createSignalObject(
+        props?.electric.pickguard
+      ),
+      pickguardMaterial : createSignalObject(
+        props?.electric.pickguardMaterial
+      ),
+      knob : createSignalObject(
+        props?.electric.knob
+      ),
+      bridgePickup : createSignalObject(
+        props?.electric.bridgePickup
+      ),
+      neckPickup : createSignalObject(
+        props?.electric.neckPickup
+      ),
+      middlePickup : createSignalObject(
+        props?.electric.middlePickup
+      ),
       pickupConfiguration : {
         get : pickupConfiguration.get,
         set : (s ?: keyof typeof PickupConfig.pickupConfigurations['electric-guitar'])=>{
@@ -231,7 +339,7 @@ export function createGuitarComponent() : Omit<IGuitarBuilder, 'isBottomSideMenu
       R.entries.strict(R.pick(obj.electric, GuitarBuilderCalc.mustImplementCalculationKeys)),
       R.forEach(([key, value])=>{
         if(key === 'pickguardMaterial'){
-          const selectedPickguardType = obj.electric.guitarModel.get()?.selectedPickguard.get()?.type.get();
+          const selectedPickguardType = obj.electric.pickguard.get()?.type.get();
           if(selectedPickguardType){
             const selectedPickguardMaterial = obj.electric.pickguardMaterial.get();
             if(selectedPickguardMaterial){
@@ -268,12 +376,6 @@ export function createGuitarComponent() : Omit<IGuitarBuilder, 'isBottomSideMenu
       }
     }
   })
-
-  createEffect(()=>console.log("Headstock String SP",obj.stringSpawnpoints.headstock.map(s=>s.get())))
-  createEffect(()=>console.log("Nut String SP",obj.stringSpawnpoints.nut.map(s=>s.get())))
-  createEffect(()=>console.log("Bridge String SP",obj.stringSpawnpoints.bridge.map(s=>s.get())))
-  createEffect(()=>console.log("Tailpiece String SP",obj.stringSpawnpoints.tailpiece.map(s=>s.get())))
-  createEffect(()=>console.log("String Spawnpoints", obj.stringSpawnpoints.fromTop()))
 
   return {...obj, totalPrice, electricPrices};
 }

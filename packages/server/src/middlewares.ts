@@ -22,9 +22,9 @@ export function errorHandler(
   res: Response,
   next: NextFunction
 ) {
-  
   if (err instanceof ExpressError) {
-    if(err.statusCode === 500) DI.logger.error(`${err.message} -- stack : ${err.stack}`);
+    if (err.statusCode === 500)
+      DI.logger.error(`${err.message} -- stack : ${err.stack}`);
     else DI.logger.debug(`${err.message} -- stack : ${err.stack}`);
 
     return res.status(err.statusCode).json({
@@ -33,7 +33,7 @@ export function errorHandler(
       context: err.context,
     });
   }
-  
+
   DI.logger.error(`${err.message} -- stack : ${err.stack}`);
   res.status(500).json({
     message: err.message,
@@ -41,19 +41,47 @@ export function errorHandler(
   });
 }
 
-export async function multerUpload(req: Request, res: Response, next: NextFunction) {
+export async function multerUpload(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   try {
-      await new Promise<void>((resolve, reject) => {
-          multer({ storage: multer.memoryStorage(), limits : {fileSize : imageSizeLimit}})
-          .single('file')(req, res, (err) => {
-            if (err) return reject(err);
+    await new Promise<void>((resolve, reject) => {
+      multer({
+        storage: multer.memoryStorage(),
+        limits: { fileSize: imageSizeLimit },
+      }).single("file")(req, res, (err) => {
+        if (err) return reject(err);
 
-              return resolve();
-          })
+        return resolve();
       });
+    });
 
-      next();
+    next();
   } catch (error) {
-      next(error);
+    next(error);
+  }
+}
+
+export async function multerUploadPrefImage(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    await new Promise<void>((resolve, reject) => {
+      multer({
+        storage: multer.memoryStorage(),
+        limits: { fileSize: imageSizeLimit },
+      }).array("files", 5)(req, res, (err) => {
+        if (err) return reject(err);
+        return resolve();
+      });
+    });
+
+    next();
+  } catch (error) {
+    next(error);
   }
 }

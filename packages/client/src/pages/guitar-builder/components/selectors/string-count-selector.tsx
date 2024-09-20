@@ -19,6 +19,10 @@ export function StringCountSelector(){
       }}
       onClick={(count, o, ctx)=>{
         ctx.getSelectedCategoryObj()?.stringCount?.set(count.key as any);
+        ctx.electric.bridge.set(undefined);
+        ctx.electric.bridge2.set(undefined);
+        ctx.getSelectedCategoryObj()?.nut.set(undefined);
+        ctx.getSelectedCategoryObj()?.headstock.set(undefined);
       }}
       selected={(count, ctx)=>count.key === ctx.getSelectedCategoryObj()?.stringCount.get()}
       type="text"

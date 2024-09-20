@@ -25,6 +25,18 @@ export class BadRequestError extends ExpressError {
   }
 }
 
+export class UnauthorizedError extends ExpressError {
+  constructor(context?: {[key : string] : any}) {
+    super(Constants.errorMessage[401], 401, context);
+  }
+}
+
+export class ForbiddenError extends ExpressError {
+  constructor(context?: {[key : string] : any}) {
+    super(Constants.errorMessage[403], 403, context);
+  }
+}
+
 export class NotFoundError extends ExpressError {
   constructor(context?: {[key : string] : any}) {
     super(Constants.errorMessage[404], 404, context);

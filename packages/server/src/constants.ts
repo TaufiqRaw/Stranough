@@ -23,6 +23,8 @@ export const imagePath = join(__dirname, "..", "public", serverImagesUrl);
 export const errorMessage = Object.freeze({
   404: "Not Found",
   400: "Bad Request",
+  401: "Unauthorized",
+  403: "Forbidden",
   500: "Internal Server Error",
 });
 

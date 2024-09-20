@@ -15,11 +15,9 @@ export const NeckColorTypeSelector = ()=><ItemSelector
   // }))
 }
   onClick={(item, o, ctx)=>{
+    ctx.getSelectedCategoryObj()?.neckColor.set(undefined);
     ctx.getSelectedCategoryObj()?.neckColorType.set(item.key);
   }}
   selected={(item, ctx)=>item.key === ctx.getSelectedCategoryObj()?.neckColorType.get()}
   type="text"
-  nullable
-  onClear={(ctx)=>ctx.getSelectedCategoryObj()?.neckColorType.set(undefined)}
-  hasSelected={(ctx)=>ctx.getSelectedCategoryObj()?.neckColorType.get() !== undefined}
 />

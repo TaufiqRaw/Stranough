@@ -145,6 +145,10 @@ export declare const solidColors: Readonly<{
         readonly name: "hijau - RAL5001";
         readonly value: 2044984;
     };
+    readonly RAL5025: {
+        readonly name: "biru - RAL5025";
+        readonly value: 2189692;
+    };
     readonly RAL5007: {
         readonly name: "biru - RAL5007";
         readonly value: 4087690;

@@ -7,6 +7,7 @@ import { Optional } from "utility-types";
 export interface OpenAiComponentRecomendation {
   message : string;
   recommendations : (string | number | boolean)[];
+  recommendationNames ?: string[];
 }
 
 export interface IUserChatContext{
@@ -37,9 +38,10 @@ export interface IUserChatContext{
       [key in keyof GuitarBuilder.SelectedItem['acoustic']] ?: GuitarBuilder.SelectedItem['electric'][key];
     }
   };
-  preferencesType ?: 'image' | 'description',
   preferencesDescription ?: string,
+  preferencesImgLength ?: number,
+  oldId ?: string;
+  isFinished : boolean;
   chats : ChatCompletionMessageParam[],
   userId : string;
-  currentStep ?: keyof GuitarBuilder.SelectedItem;  
 }

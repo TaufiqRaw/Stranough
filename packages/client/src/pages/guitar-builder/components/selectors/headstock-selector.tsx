@@ -38,6 +38,7 @@ export const HeadstockSelector = ()=>{
         owner : o,
       })
       ctx?.getSelectedCategoryObj()?.headstock.set(data);
+      ctx?.getSelectedCategoryObj()?.peg.set(undefined);
   }}
   selected={(item, ctx)=>{
     return item.key === ctx?.getSelectedCategoryObj()?.headstock.get()?.id.get()

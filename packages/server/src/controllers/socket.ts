@@ -4,8 +4,8 @@ import { EntityManager, MikroORM } from "@mikro-orm/postgresql";
 import { AssistantSocket, GuitarBuilder } from "stranough-common";
 import { AssistantService } from "../services/assistant.service";
 import {OpenAI} from "openai";
-
-const assistantService = new AssistantService();
+import { IUserChatContext } from "../interfaces/user-chat-context";
+import { findOneEntity } from "../utils/find-one-entity.util";
 
 export const SocketDI = {
   openai : new OpenAI(),
@@ -19,6 +19,8 @@ const noOpenAITest = false;
 
 export function initSocket() {
 
+  const assistantService = new AssistantService();
+
   SocketDI.em = DI.orm.em.fork();
   SocketDI.repository = initRepository(SocketDI.em);
 
@@ -30,13 +32,32 @@ export function initSocket() {
       id : socket.id
     })
 
+    socket.on("load-order", async (orderId : number, ack : (res : boolean)=>void)=>{
+      try{
+        const order = await findOneEntity(SocketDI.repository.orders, orderId);
+        if(!order){
+          throw new Error("Order not found");
+        }
+        assistantService.load(socket.id, order);
+        ack(true);
+      }catch(e){
+        DI.logger.error(e);
+        ack(false);
+      }
+    });
+
     socket.on("select-component", async (selected : {
       component : GuitarBuilder.SelectedItemKeys,
-      name : string,
-      key : string | boolean
+      name ?: string,
+      key ?: string | boolean
     }, ack : (res :boolean)=>void)=>{
+      console.log(selected);
       try{
-        assistantService.select(socket.id, selected.component, selected.name, selected.key);
+        if(selected.key && selected.name){
+          assistantService.select(socket.id, selected.component, selected.name, selected.key);
+        }else{
+          assistantService.clearComponent(socket.id, selected.component);
+        }
         ack(true);
       }catch(e){
         console.error(e);
@@ -44,28 +65,24 @@ export function initSocket() {
       }
     })
 
-    socket.on("upload-image", async (ack : (res :boolean)=>void)=>{
-      if(noOpenAITest){
-        ack(true);
-        return;
-      }
-
-      try{
-        await assistantService.uploadImage(socket.id);
-        ack(true);
-      }catch(e){
-        console.error(e);
-        ack(false);
-      }
+    socket.on("get-selected-items", async (ack : (res : any)=>void)=>{
+      const res = assistantService.getSelectedComponent(socket.id);
+      ack(res);
     })
-    socket.on("describe-guitar", async (description : string, ack : (res :boolean)=>void)=>{
+
+    socket.on("get-selected-item-names", async (ack : (res : any)=>void)=>{
+      const res = assistantService.getSelectedComponentName(socket.id);
+      ack(res);
+    })
+
+    socket.on("upload-pref", async (description : string, imgLength : number | undefined, ack : (res :boolean)=>void)=>{
       if(noOpenAITest){
         ack(true);
         return;
       }
 
       try{
-        await assistantService.describeGuitar(socket.id, description);
+        await assistantService.uploadPref(socket.id, description, imgLength);
         ack(true);
       }catch(e){
         ack(false);
@@ -95,7 +112,12 @@ export function initSocket() {
     })
     
     socket.on("disconnect", async () => {
-      await assistantService.delete(socket.id);
+      try{
+        assistantService.delete(socket.id);
+      }catch(e){
+        DI.logger.error(e);
+      }
+        
       DI.logger.info(`${Color.green("[Socket]")} a user with id : ${socket.id} has ${Color.red("disconnected")}`);
     });
 

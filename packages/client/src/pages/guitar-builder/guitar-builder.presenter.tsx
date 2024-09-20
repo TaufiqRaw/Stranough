@@ -1,5 +1,5 @@
 import { useGuitarBuilderContext } from "./guitar-builder";
-import { Accessor, JSX, Show, createContext, createEffect, createMemo } from "solid-js";
+import { Accessor, JSX, Setter, Show, createContext, createEffect, createMemo } from "solid-js";
 import { HeadstockPresenter } from "~/commons/presenter/headstock.presenter";
 import { headstockToPresenter } from "~/pages/admin/headstock-editor/utils/headstock-to-presenter";
 import { Container, Graphics, Sprite } from "solid-pixi";
@@ -28,7 +28,7 @@ import { createGuitarBuilderPickupHook } from "./presenter/guitar-builder-pickup
 import { createGuitarBuilderJackHook } from "./presenter/guitar-builder-jack-hook";
 
 export function GuitarBuilderPresenter(props : {
-
+  setOnRender? : Setter<any>
 }){
   const viewportCtx = useViewportContext();
   const guitarBuilderCtx = useGuitarBuilderContext()!;
@@ -41,9 +41,12 @@ export function GuitarBuilderPresenter(props : {
   const pickups = createGuitarBuilderPickupHook(guitarBuilderCtx);
   const jack = createGuitarBuilderJackHook(guitarBuilderCtx);
 
-  return  <Container position={{x:0, y : 100}}>
+  return  <Container position={{x:0, 
+    y : 0
+  }}>
     <Container scale={{x: guitarBuilderCtx.orientation.get() === 'left-handed' ? -1 : 1, y : 1}}>
       <ElectricModelPresenter
+        setOnRender={props.setOnRender}
         isFront={isFront()}
         {...electricModelPresenter()}
         body={{

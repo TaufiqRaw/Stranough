@@ -51,7 +51,7 @@ export const PickupSelector = (props: {
         }),
         queryFn : async ()=>await pickupRepository.index(1, {
           limit : 100,
-          stringCount : ctx.electric.stringCountValue(),
+          // stringCount : ctx.electric.stringCountValue(),
           type : pickupType()
         })
       }))

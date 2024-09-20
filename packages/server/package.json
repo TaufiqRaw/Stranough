@@ -7,11 +7,12 @@
     "start": "ts-node src/app.ts",
     "dev": "nodemon src/app.ts",
     "build": "tsc",
-    "start:dist": "node dist/src/app.js",
+    "start:dist": "node dist/app.js",
     "lint": "eslint --fix src test",
+    "test:guitar-recommendation" : "ts-node src/recommend-guitar.ts",
     "test": "jest",
     "recreate-migration": "ts-node src/database/cleanup.ts && npx mikro-orm migration:create && npx mikro-orm migration:up && rimraf public/img/* --glob && tsc",
-    "train": "ts-node src/train.ts"
+    "create-admin": "ts-node src/database/create-admin.ts"
   },
   "nodemonConfig": {
     "ignore": [
@@ -31,11 +32,14 @@
     "@mikro-orm/migrations": "^6.2.3",
     "@mikro-orm/postgresql": "^6.2.3",
     "@mikro-orm/reflection": "^6.2.3",
+    "@types/bcrypt": "^5.0.2",
     "@types/cli-color": "^2.0.6",
+    "@types/jsonwebtoken": "^9.0.6",
     "@types/mime-types": "^2.1.4",
     "@types/multer": "^1.4.11",
     "@types/pg": "^8.11.6",
     "@types/uuid": "^9.0.8",
+    "bcrypt": "^5.1.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "cli-color": "^2.0.4",
@@ -43,6 +47,7 @@
     "express": "^4.19.2",
     "fast-glob": "^3.3.2",
     "helmet": "^7.1.0",
+    "jsonwebtoken": "^9.0.2",
     "middleware-async": "^1.4.0",
     "mikro-orm": "^6.2.3",
     "mime-types": "^2.1.35",

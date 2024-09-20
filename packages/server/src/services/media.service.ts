@@ -68,16 +68,27 @@ export namespace MediaService {
     }
   ) : RequestHandler {
     return async (req, res) => {
-      const data = await validateDto(req, ImageUploadDto);
     
-      if(req.file == undefined)
+      if(!((req.files?.length as number ?? 0) > 0))
         throw new BadRequestError("No file uploaded");
     
       const name = await options.name(req);
-      const result = await MediaService.storeImage(name, req.file, {
-        maxWidth: options.maxWidth,
-        useName: name !== undefined,
-      });
+      const result : Media | {
+        filename: string;
+        mimeType: string;
+        height: number;
+        width: number;
+      }[] = [];
+
+      let i = 0;
+      for(const file of req.files as Express.Multer.File[]){
+        let res = await MediaService.storeImage(`${name}-${i}`, file, {
+          maxWidth: options.maxWidth,
+          useName: name !== undefined,
+        });
+        result.push(res);
+        i++;
+      }
 
       return res.json(result);
     }

@@ -1,7 +1,6 @@
 import { useGuitarBuilderContext } from "~/pages/guitar-builder/guitar-builder";
 import { GuitarBuilder } from "stranough-common";
-import { JSX, createMemo } from "solid-js";
-import { ElectricModelSelector } from "../../../selectors/electric/electric-model-selector";
+import { JSX, Show, createMemo } from "solid-js";
 import { AssistantSelector } from "../../utils/assistant-selector";
 import { bodyCoreWoodSelector } from "../../../selectors/electric/body-core-wood-selector";
 import { bodyTopWoodSelector } from "../../../selectors/electric/body-top-wood-selector";
@@ -22,19 +21,21 @@ import { PickupSelector } from "../../../selectors/electric/pickup-selector";
 import { InlaySelector } from "../../../selectors/electric/inlay-selector";
 
 
-type OmittedElectric = 'stringCount' | 'neckProfile' | keyof Omit<GuitarBuilder.SelectedItem['acoustic'], OmittedCommonAssistant>
+type OmittedElectric = 'stringCount' | 'neckProfile' | 'guitarModel'| keyof Omit<GuitarBuilder.SelectedItem['acoustic'], OmittedCommonAssistant>
 
 export const electricAssistant : {
   [k in keyof Omit<GuitarBuilder.SelectedItem['electric'], OmittedElectric>] : () => JSX.Element
 } = {
   backContour : BackContourAssist,
   bodyCoreWood : BodyCoreWoodAssist,
+  headstockColor : () => <div></div>,
+  headstockColorType : () => <div></div>,
+  pickguard : () => <div></div>,
   bodyLogo : () => <div></div>,
   bodyTopWood : BodyTopWoodAssist,
   bodyType : BodyTypeAssist,
   bridge : BridgeAssist,
   constructionMethod : ConstructionMethodAssist,
-  guitarModel : ElectricModelAssist,
   headstockLogo : () => <div></div>,
   // jack : JackAssist,
   knob : KnobAssist,
@@ -67,7 +68,23 @@ function BodyCoreWoodAssist(){
 
 function BodyTopWoodAssist(){
   return <AssistantSelector
-    title="Pilih kayu untuk top body gitar"
+    guidance={(ctx)=><>
+      <Show when={ctx.electric.bodyType.get() === 'solid'}
+        fallback={
+          <div>
+            Jika Anda memilih tipe body selain solid, maka anda wajib memilih kayu atas body.
+          </div>
+        }
+      >
+        <div>
+          Jika Anda memilih tipe body solid, maka pilihan ini hanya berperan sebagai estetika.
+        </div>
+      </Show>
+      <div>
+      kayu Laminated berarti kayu tersebut hanya sebagai lapisan atas saja, sedangkan kayu solid berarti seluruh kayu body atas akan terbuat dari kayu tersebut.
+      </div>
+    </>}
+    title="Pilih kayu untuk bagian atas body gitar"
     itemSelector={bodyTopWoodSelector}
     componentKey="bodyTopWood"
   />
@@ -85,16 +102,7 @@ function ConstructionMethodAssist(){
   return <AssistantSelector
     title="Pilih metode konstruksi"
     componentKey="constructionMethod"
-    guidance={electricAssistantGuidance.constructionMethod}
     itemSelector={ConstructionMethodSelector}
-  />
-}
-
-function ElectricModelAssist(){
-  return <AssistantSelector
-    title="Pilih bentuk dasar dari gitar listrik"
-    componentKey="guitarModel"
-    itemSelector={ElectricModelSelector}
   />
 }
 

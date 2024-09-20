@@ -10,9 +10,11 @@ import {
 import {
   For,
   JSX,
+  Match,
   Setter,
   Show,
   Suspense,
+  Switch,
   createContext,
   createEffect,
   createMemo,
@@ -21,7 +23,7 @@ import {
   onCleanup,
   useContext,
 } from "solid-js";
-import { Container, Graphics, Sprite, useParent } from "solid-pixi";
+import { Container, Graphics, RenderedGraphics, Sprite, useParent } from "solid-pixi";
 import { useEditorPageContext } from "~/commons/components/editor-page";
 import { useNeckContext } from "~/commons/presenter/neck.presenter";
 import { useViewportContext } from "~/commons/components/viewport";
@@ -31,6 +33,7 @@ import { useGuitarBodyPresenterContext } from "./guitar-model/electric-model.pre
 import { HeadstockPresenterProps } from "./types";
 import { useGuitarBuilderContext } from "~/pages/guitar-builder/guitar-builder";
 import { GuitarBuilderRegisterStringSpawnpoints } from "~/pages/guitar-builder/presenter/guitar-builder-string-presenter";
+import { Constants } from "~/constants";
 
 const headstockCtx = createContext<{
   childSpawnPos?: PositionWithRotation;
@@ -46,6 +49,7 @@ export function useHeadstockContext() {
 // right now just assume the component assigned in a guitar fingerboard if setParentMask is provided
 export function HeadstockPresenter(_props: HeadstockPresenterProps) {
   const guitarBodyCtx = useGuitarBodyPresenterContext();
+  const guitarBuilderCtx = useGuitarBuilderContext();
   const props = mergeProps({ isFront: guitarBodyCtx?.isFront ?? (()=>true), pegsSpawnPoint : [] as PosRotWithFlipped[] }, _props);
   const fingerboardCtx = useNeckContext();
   const viewportCtx = useViewportContext();
@@ -58,6 +62,8 @@ export function HeadstockPresenter(_props: HeadstockPresenterProps) {
     neckWoodTexture : createPixiTexture(()=>props.neckWoodTexture),
   };
   const woodTexture = createMemo(()=>selectedTex.neckWoodTexture() ?? fingerboardCtx?.neckWoodTexture?.() ?? viewportCtx?.textures.defaultWood() ?? Texture.EMPTY);
+  const selectedOverlay = createMemo(()=>guitarBuilderCtx?.electric.headstockOverlay.get());
+  const overlayTexture = createPixiTexture(()=>selectedOverlay() === 'rosewood' ? Constants.woodUrl.rosewood : selectedOverlay() === 'plain-maple' ? Constants.woodUrl["plain-maple"] : undefined, false);
   const woodToMaskScale = createMemo(()=>(selectedTex.mask()?.height ?? 0) / (woodTexture()?.height ?? 1))
 
   createEffect(()=>{
@@ -68,7 +74,7 @@ export function HeadstockPresenter(_props: HeadstockPresenterProps) {
     fingerboardCtx?.setHeadstockMask?.(undefined)
   })
   return (
-      <Suspense>
+      <>
         <Container
           zIndex={1}
           position={fingerboardCtx?.childSpawnPos?.() ?? { x: 0, y: 0 }}
@@ -108,9 +114,53 @@ export function HeadstockPresenter(_props: HeadstockPresenterProps) {
               texture={selectedTex.mask() ?? Texture.EMPTY}
             />
             <Show when={props.isFront()}>
+              <Show when={
+                !!selectedOverlay()
+              }>
+                <Switch>
+                  <Match when={selectedOverlay() === 'plain-maple' || selectedOverlay() === 'rosewood'}>
+                    <Sprite
+                      texture={overlayTexture() ?? Texture.EMPTY}
+                      scale={woodToMaskScale()}
+                      zIndex={0.6}
+                      position={{
+                        x : -(props.pivot?.x ?? 0),
+                        y : -(props.pivot?.y ?? 0)
+                      }}
+                    />
+                  </Match>
+                  <Match when={selectedOverlay() === 'pvc'}>
+                    <RenderedGraphics
+                      zIndex={0.6}
+                      draw={[
+                        ['rect', 0, 0, selectedTex.mask()?.width ?? 0, selectedTex.mask()?.height ?? 0],
+                        ['fill', 0xE5E5E5],
+                      ]}
+                      position={{
+                        x : -(props.pivot?.x ?? 0),
+                        y : -(props.pivot?.y ?? 0)
+                      }}
+                    />
+                  </Match>
+                  <Match when={selectedOverlay() === 'pvc-black'}>
+                    <RenderedGraphics
+                      zIndex={0.6}
+                      draw={[
+                        ['rect', 0, 0, selectedTex.mask()?.width ?? 0, selectedTex.mask()?.height ?? 0],
+                        ['fill', 0x000000],
+                      ]}
+                      position={{
+                        x : -(props.pivot?.x ?? 0),
+                        y : -(props.pivot?.y ?? 0)
+                      }}
+                    />
+                  </Match>
+                </Switch>
+              </Show>
               <Sprite
                 texture={woodTexture()}
                 scale={woodToMaskScale()}
+                zIndex={0.5}
                 position={{
                   x : -(props.pivot?.x ?? 0),
                   y : -(props.pivot?.y ?? 0)
@@ -164,8 +214,12 @@ export function HeadstockPresenter(_props: HeadstockPresenterProps) {
           </For>
         </Show>
         <GuitarBuilderRegisterStringSpawnpoints spawnpoints={()=>props.pegsSpawnPoint.map(el=>(
-          { x: el.x + (fingerboardCtx?.childSpawnPos?.()?.x ?? 0), y: el.y + (fingerboardCtx?.childSpawnPos?.()?.y ?? 0) }
+          props.isSlotted?.() 
+            ? { x: el.x + (fingerboardCtx?.childSpawnPos?.()?.x ?? 0) + (
+              ((props.slottedRodOffset?.() ?? 0) + 10) * (el.flipped ? -1 : 1) 
+            ), y: el.y + (fingerboardCtx?.childSpawnPos?.()?.y ?? 0) }
+            : { x: el.x + (fingerboardCtx?.childSpawnPos?.()?.x ?? 0), y: el.y + (fingerboardCtx?.childSpawnPos?.()?.y ?? 0) }
         ))} type="headstock"/>
-      </Suspense>
+      </>
   )
 }

@@ -19,17 +19,19 @@ export function generateBurstTexture(mask : HTMLImageElement, maskBorder : Posit
   });
   path.closePath();
 
-  ctx.clip(path);
+  const alphaReduction = 20/options.gradientLength;
 
-  const alphaReduction = 10/options.gradientLength;
-  console.log(alphaReduction);
+  const step = options.gradientLength / 20;
   
-  for(let borderWidth = options.gradientLength; borderWidth > 0; borderWidth--){
+  for(let borderWidth = options.gradientLength; borderWidth > 0; borderWidth -= step){
     ctx.lineWidth = borderWidth + options.baseLength;
     const x = 1-(borderWidth / options.gradientLength);
     const alpha = Math.pow(x, 2);
     ctx.strokeStyle = `rgba(255,255,255,${borderWidth === 1 ? 1 : (alpha * alphaReduction)})`;
     ctx.stroke(path);
   }
+
+  
+  
   return Texture.from(canvas);
 }

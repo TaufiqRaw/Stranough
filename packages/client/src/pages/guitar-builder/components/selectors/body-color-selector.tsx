@@ -13,7 +13,7 @@ export const BodyColorSelector = (props :{
   }]}
 >
 { (ctx)=><ItemSelector
-  items={()=>()=>GuitarBuilder.asArray(GuitarBuilder.bodyColorTypeToColorsMap[ctx.getSelectedCategoryObj()![`${props.type}BodyColorType`].get()!]).map(i=>{
+  items={()=>()=>GuitarBuilder.asArray(GuitarBuilder.bodyColorTypeToColorsMap[ctx.getSelectedCategoryObj()![`${props.type}BodyColorType`].get()! as GuitarBuilder.KeyOf<Omit<typeof GuitarBuilder.bodyColorType, 'natural'>>]).map(i=>{
     let thumbnail : string = '';
     switch(ctx.getSelectedCategoryObj()![`${props.type}BodyColorType`].get()){
       case 'transparent' :

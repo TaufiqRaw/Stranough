@@ -4,7 +4,7 @@ import { backContourPrice, constructionPrice, topContourPrice } from "./electric
 import * as GuitarBuilder from "./guitar-builder";
 import * as R from "remeda";
 
-export const mustImplementCalculationKeys = ['bridge', 'bridgePickup', 'guitarModel', 'headstock', 'knob', 'middlePickup', 'neckPickup', 'nut', 'peg', 'bridge2', 'pickguardMaterial'] as const;
+export const mustImplementCalculationKeys = ['bridge', 'bridgePickup', 'guitarModel', 'headstock', 'knob', 'middlePickup', 'neckPickup', 'nut', 'peg', 'bridge2', 'pickguardMaterial', 'pickguard'] as const;
 
 export type MustImplementCalculation = typeof mustImplementCalculationKeys[number];
 
@@ -30,6 +30,8 @@ export const selectedElectricCalculator : {[k in keyof Omit<GuitarBuilder.Select
   fingerboardWood : (item) => GuitarBuilder.fingerboardWoods[item].price ?? 0,
   fretCount : (item) => GuitarBuilder.fretCount[item].price ?? 0,
   headstockBinding : (item) => GuitarBuilder.bindings[item].price ?? 0,
+  headstockColorType : (item) => GuitarBuilder.headstockColorType[item].price ?? 0,
+  headstockColor : (item) => 0, //TODO: Implement this
   headstockLogo : (item) => GuitarBuilder.headstockLogo[item].price ?? 0,
   headstockOverlay : (item) => GuitarBuilder.headstockOverlay[item].price ?? 0,
   neckBinding : (item) => GuitarBuilder.bindings[item].price ?? 0,

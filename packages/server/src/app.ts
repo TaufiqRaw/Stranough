@@ -18,8 +18,8 @@ import { Peg } from './entities/peg.entity';
 import { Pickguard } from './entities/pickguard.entity';
 import { Switch } from './entities/switch.entity';
 import mikroOrmConfig from "./database/mikro-orm.config";
-import {mediaController } from './controllers';
-import { ElectricGuitarModel, Pickup, Wood } from './entities';
+import {authController, mediaController } from './controllers';
+import { ElectricGuitarModel, Order, Pickup, User, Wood } from './entities';
 import { initCommonEntityRoutes } from './controllers/common-entity.controller';
 import * as IO from 'socket.io'
 import { AcousticGuitarModel } from './entities/_acoustic-guitar-model.entity';
@@ -28,6 +28,7 @@ import { Inlay } from './entities/inlay.entity';
 import {readFileSync} from 'fs';
 import * as https from 'https'
 import { Pool } from 'pg';
+import {orderController} from './controllers';
 
 require('dotenv').config({
   path : Constants.envPath
@@ -53,6 +54,8 @@ type Repository  = {
   switchs : EntityRepository<Switch>,
   pickups : EntityRepository<Pickup>, 
   woods : EntityRepository<Wood>,
+  orders : EntityRepository<Order>,
+  users : EntityRepository<User>,
 };
 
 // Dependency Injection container
@@ -65,7 +68,7 @@ export const DI = {} as {
   server: http.Server,
   logger : winston.Logger,
   io : IO.Server,
-  pgPool : Pool
+  pgPool : Pool,
 }
 
 export const app = express();
@@ -75,7 +78,7 @@ app.use(morgan('dev'));
 app.use(helmet());
 app.use(cors({
   credentials : true,
-  origin : process.env.NODE_ENV === 'production' ? process.env.FRONTEND_URL : '*',
+  origin : '*',
 }));
 app.use(express.json());
 app.use((_, res, next)=>{
@@ -113,7 +116,7 @@ export async function main(){
   
   DI.io = new IO.Server(DI.server, {
     cors : {
-      origin : process.env.NODE_ENV === 'production' ? process.env.FRONTEND_URL : '*',
+      origin : '*',
     }
   });
 
@@ -123,6 +126,8 @@ export async function main(){
 
 function initRoutes(){
   app.use('/medias', mediaController);
+  app.use('/orders', orderController);
+  app.use('/auth', authController);
   initCommonEntityRoutes().forEach(([path, router])=>{
     app.use(`/${path}`, router);
   })
@@ -176,6 +181,8 @@ export function initRepository(em : EntityManager) : Repository{
     pickups : em.getRepository(Pickup),
     inlays : em.getRepository(Inlay),
     woods : em.getRepository(Wood),
+    orders : em.getRepository(Order),
+    users : em.getRepository(User),
   }
 }
 

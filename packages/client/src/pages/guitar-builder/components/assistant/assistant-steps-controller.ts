@@ -1,6 +1,7 @@
 import { JSX, createSignal } from "solid-js";
 import { createSignalObject } from "~/commons/functions/signal-object.util";
 import { IGuitarBuilder } from "../../utils/types";
+import * as R from 'remeda';
 
 export class AssistantStepsController {
   private context : IGuitarBuilder;
@@ -40,19 +41,65 @@ export class AssistantStepsController {
       console.error(`Step with key ${stepKey} not found`);
     }
   }
+  
+  isNextFinished(){
+    if(this.currentStepIndex.get() === this.steps.length-1){
+      return true;
+    }
+    let nextStepIndex = this.currentStepIndex.get()+1;
+    let nextStep = this.steps[nextStepIndex];
+    while(nextStep.skip?.(this.context) && nextStepIndex < this.steps.length-1){
+      nextStepIndex++;
+      nextStep = this.steps[nextStepIndex];
+    }
+    if(this.steps[nextStepIndex].skip?.(this.context)){
+      return true;
+    }else{
+      return false;
+    }
+  }
 
   next(){
     if(this.currentStepIndex.get() === this.steps.length-1){
       return 'finished';
     }
-    const nextStep = this.steps[this.currentStepIndex.get()+1];
-    this.currentStepIndex.set((x)=>x+1);
-    if(nextStep.skip?.(this.context)){
-      this.next();
+    let nextStepIndex = this.currentStepIndex.get()+1;
+    let nextStep = this.steps[nextStepIndex];
+    while(nextStep.skip?.(this.context) && nextStepIndex < this.steps.length-1){
+      nextStepIndex++;
+      nextStep = this.steps[nextStepIndex];
+    }
+    if(this.steps[nextStepIndex].skip?.(this.context)){
+      return 'finished';
+    }
+    this.currentStepIndex.set(nextStepIndex);
+  }
+
+  getIndexByStepKey(stepKey : string){
+    return this.stepKeyIndex[stepKey];
+  }
+
+  backable(){
+    return this.currentStepIndex.get() > this.getIndexByStepKey('electric-model-type');
+  }
+
+  back(){
+    if(this.currentStepIndex.get() > this.getIndexByStepKey('electric-model-type')){
+      let backStepIndex = this.currentStepIndex.get()-1;
+      let backStep = this.steps[backStepIndex];
+      while(backStep.skip?.(this.context) && backStepIndex > 3){
+        backStepIndex--;
+        backStep = this.steps[backStepIndex];
+      }
+      this.currentStepIndex.set(backStepIndex);
     }
   }
 
   getCurrentStep(){
     return this.steps[this.currentStepIndex.get()].component;
+  }
+
+  getCurrentStepKey(){
+    return R.keys(this.stepKeyIndex)[this.currentStepIndex.get()];
   }
 }

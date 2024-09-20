@@ -79,9 +79,9 @@ export interface SelectedItem {
     // preampCavity : boolean;
     // bodyLogo :
     topBodyColorType: KeyOf<typeof bodyColorType>;
-    topBodyColor: KeyOf<typeof bodyColorTypeToColorsMap[KeyOf<typeof bodyColorType>]>
+    topBodyColor: KeyOf<typeof bodyColorTypeToColorsMap[KeyOf<Omit<typeof bodyColorType, 'natural'>>]>
     backBodyColorType: KeyOf<typeof bodyColorType>;
-    backBodyColor: KeyOf<typeof bodyColorTypeToColorsMap[KeyOf<typeof bodyColorType>]>
+    backBodyColor: KeyOf<typeof bodyColorTypeToColorsMap[KeyOf<Omit<typeof bodyColorType, 'natural'>>]>
     burstType : KeyOf<typeof burstTypes>;
     burstColor : KeyOf<typeof burstColors>;
     // bodyFinish :
@@ -93,7 +93,7 @@ export interface SelectedItem {
     carbonFiberRod : boolean;
     neckBinding : KeyOf<typeof bindings>;
     neckColorType: KeyOf<typeof neckColorType>;
-    neckColor: KeyOf<typeof neckColorTypeToColorsMap[KeyOf<typeof neckColorType>]>
+    neckColor: KeyOf<typeof neckColorTypeToColorsMap[KeyOf<Omit<typeof neckColorType, 'natural'>>]>
     // neckFinish :
 
     fingerboardWood: KeyOf<typeof fingerboardWoods>;
@@ -134,9 +134,9 @@ export interface SelectedItem {
     backBinding: KeyOf<typeof bindings>;
     bodyLogo : KeyOf<typeof bodyLogo>;
     topBodyColorType: KeyOf<typeof bodyColorType>;
-    topBodyColor: KeyOf<typeof bodyColorTypeToColorsMap[KeyOf<typeof bodyColorType>]>
+    topBodyColor: KeyOf<typeof bodyColorTypeToColorsMap[KeyOf<Omit<typeof bodyColorType, 'natural'>>]>
     backBodyColorType: KeyOf<typeof bodyColorType>;
-    backBodyColor: KeyOf<typeof bodyColorTypeToColorsMap[KeyOf<typeof bodyColorType>]>
+    backBodyColor: KeyOf<typeof bodyColorTypeToColorsMap[KeyOf<Omit<typeof bodyColorType, 'natural'>>]>
     burstType : KeyOf<typeof burstTypes>;
     burstColor : KeyOf<typeof burstColors>;
     // bodyFinish :
@@ -147,7 +147,7 @@ export interface SelectedItem {
     neckBinding: KeyOf<typeof bindings>;
     carbonFiberRod : boolean;
     neckColorType: KeyOf<typeof neckColorType>;
-    neckColor: KeyOf<typeof neckColorTypeToColorsMap[KeyOf<typeof neckColorType>]>
+    neckColor: KeyOf<typeof neckColorTypeToColorsMap[KeyOf<Omit<typeof neckColorType, 'natural'>>]>
     // neckFinish :
 
     fingerboardWood: KeyOf<typeof fingerboardWoods>;
@@ -163,7 +163,8 @@ export interface SelectedItem {
     headstockOverlay : KeyOf<typeof headstockOverlay>;
     headstockLogo : KeyOf<typeof headstockLogo>;
     headstockBinding : KeyOf<typeof bindings>;
-    // headstockColorType :
+    headstockColorType : KeyOf<typeof headstockColorType>;
+    headstockColor : KeyOf<typeof headstockColorTypeToColorsMap[KeyOf<Omit<typeof headstockColorType, 'natural'>>]>
     // headstockColor :
     // headstockFinish :
 
@@ -172,7 +173,7 @@ export interface SelectedItem {
     // fretwire: number;
     bridge: number;
     bridge2?: number;
-    // pickguard: number;
+    pickguard: number;
     pickguardMaterial: KeyOf<typeof pickguardMaterials>;
     // switch: number;
     knob: number;
@@ -190,24 +191,27 @@ export interface SelectedItem {
   
 }
 
-export const electricItemLabels : {[k in keyof SelectedItem['electric']] : string} = {
+export const selectedItemLabels : {[k in SelectedItemKeys] : string}= {
   guitarModel: "Bentuk dasar gitar",
   stringCount: "Jumlah senar",
   constructionMethod: "Metode konstruksi",
   scaleLength : "Panjang skala",
+  assembleGuitar : "Rakit gitar",
+  guitarType : "Tipe gitar",
+  orientation : "Orientasi",
 
   bodyType : "Tipe body",
-  topContour: "Kontur top",
-  backContour: "Kontur back",
+  topContour: "Kontur atas",
+  backContour: "Kontur bawah",
   bodyCoreWood: "Kayu inti body",
-  bodyTopWood: "Kayu top body",
-  topBinding: "Binding top",
-  backBinding: "Binding back",
+  bodyTopWood: "Kayu atas body",
+  topBinding: "Binding atas",
+  backBinding: "Binding bawah",
   bodyLogo : "Logo body",
-  topBodyColorType: "Tipe warna top",
-  topBodyColor: "Warna top",
-  backBodyColorType: "Tipe warna back",
-  backBodyColor: "Warna back",
+  topBodyColorType: "Tipe warna atas",
+  topBodyColor: "Warna atas",
+  backBodyColorType: "Tipe warna bawah",
+  backBodyColor: "Warna bawah",
   burstType : "Tipe burst",
   burstColor : "Warna burst",
   neckWood: "Kayu leher",
@@ -224,16 +228,77 @@ export const electricItemLabels : {[k in keyof SelectedItem['electric']] : strin
   fingerboardRadius: "Radius fingerboard",
   useFret: "Fret",
   fretCount : "Jumlah fret",
-  fingerboardEdge: "Edge fingerboard",
+  fingerboardEdge: "Tepi fingerboard",
   inlay : "Inlay",
 
   headstock: "Headstock",
   headstockOverlay : "Overlay headstock",
   headstockLogo : "Logo headstock",
   headstockBinding : "Binding headstock",
+  headstockColorType : "Tipe warna headstock",
+  headstockColor : "Warna headstock",
 
   peg: "Peg",
   nut: "Nut",
+  pickguard : "Pickguard",
+  pickguardMaterial: "Material pickguard",
+  knob: "Knob",
+  jack: "Jack",
+  pickupConfiguration : "Konfigurasi pickup",
+  bridgePickup : "Pickup bridge",
+  neckPickup : "Pickup neck",
+  middlePickup : "Pickup middle",
+  bridge : "Bridge",
+  bridge2 : "Bridge 2",
+}
+
+export const electricItemLabels : {[k in keyof SelectedItem['electric']] : string} = {
+  guitarModel: "Bentuk dasar gitar",
+  stringCount: "Jumlah senar",
+  constructionMethod: "Metode konstruksi",
+  scaleLength : "Panjang skala",
+
+  bodyType : "Tipe body",
+  topContour: "Kontur atas",
+  backContour: "Kontur bawah",
+  bodyCoreWood: "Kayu inti body",
+  bodyTopWood: "Kayu atas body",
+  topBinding: "Binding atas",
+  backBinding: "Binding bawah",
+  bodyLogo : "Logo body",
+  topBodyColorType: "Tipe warna atas",
+  topBodyColor: "Warna atas",
+  backBodyColorType: "Tipe warna bawah",
+  backBodyColor: "Warna bawah",
+  burstType : "Tipe burst",
+  burstColor : "Warna burst",
+  neckWood: "Kayu leher",
+  neckProfile : "Profil leher",
+  trussRodType : "Tipe truss rod",
+  trussRodPosition : "Posisi truss rod",
+  neckBinding: "Binding leher",
+  carbonFiberRod : "Truss rod karbon",
+  neckColorType: "Tipe warna leher",
+  neckColor: "Warna leher",
+
+  fingerboardWood: "Kayu fingerboard",
+  sideInlay: "Inlay samping",
+  fingerboardRadius: "Radius fingerboard",
+  useFret: "Fret",
+  fretCount : "Jumlah fret",
+  fingerboardEdge: "Tepi fingerboard",
+  inlay : "Inlay",
+
+  headstock: "Headstock",
+  headstockOverlay : "Overlay headstock",
+  headstockLogo : "Logo headstock",
+  headstockBinding : "Binding headstock",
+  headstockColorType : "Tipe warna headstock",
+  headstockColor : "Warna headstock",
+
+  peg: "Peg",
+  nut: "Nut",
+  pickguard : "Pickguard",
   pickguardMaterial: "Material pickguard",
   knob: "Knob",
   jack: "Jack",
@@ -246,7 +311,7 @@ export const electricItemLabels : {[k in keyof SelectedItem['electric']] : strin
 }
 
 
-export const mustImplementLabel = ['bridge', 'bridgePickup', 'guitarModel', 'headstock', 'knob', 'middlePickup', 'neckPickup', 'nut', 'peg', 'bridge2'] as const;
+export const mustImplementLabel = ['bridge', 'bridgePickup', 'guitarModel', 'headstock', 'knob', 'middlePickup', 'neckPickup', 'nut', 'peg', 'bridge2', 'pickguard'] as const;
 
 export const selectedElectricItemNames : {[k in keyof Omit<SelectedItem['electric'], typeof mustImplementLabel[number]>] : (key ?: SelectedItem['electric'][k]) => string | undefined} = {
   backBinding : (item)=>item ? bindings[item].name : undefined,
@@ -263,6 +328,8 @@ export const selectedElectricItemNames : {[k in keyof Omit<SelectedItem['electri
   fingerboardRadius : (item)=> item ? fingerboardRadius[item].name : undefined,
   fingerboardWood : (item)=> item ? fingerboardWoods[item].name : undefined,
   headstockBinding : (item)=> item ? bindings[item].name : undefined,
+  headstockColorType : (item)=> item ? headstockColorType[item].name : undefined,
+  headstockColor : (item)=> item,
   headstockLogo : (item)=> item ? headstockLogo[item].name : undefined,
   headstockOverlay : (item)=> item ? headstockOverlay[item].name : undefined,
   neckBinding : (item)=> item ? bindings[item].name : undefined,
@@ -311,10 +378,10 @@ export const inlayTypes = Object.freeze({
   "pearloid-dot" : {
     name : "Pearloid Dot",
   },
-  // "mother-of-pearl-dot" : {
-  //   name : "Mother of Pearl Dot",
-  //   price : 50000,
-  // },
+  "mother-of-pearl-dot" : {
+    name : "Mother of Pearl Dot",
+    price : 50000,
+  },
   "abalone-dot" : {
     name : "Abalone Dot",
     price : 50000,
@@ -764,11 +831,11 @@ export const stringCounts = Object.freeze({
       value : 8,
       price : 500000,
     },
-    "12 String": {
-      name : "12 String",
-      value : 12,
-      price : 500000,
-    },
+    // "12 String": {
+    //   name : "12 String",
+    //   value : 12,
+    //   price : 500000,
+    // },
   },
   "acoustic-guitar": {
     "6 String": {
@@ -974,6 +1041,10 @@ export const bodyCoreWoods = Object.freeze({
 } as const);
 
 export const bodyColorType = Object.freeze({
+  "natural" : {
+    name : "Natural",
+    price : 150000,
+  },
   "solid": {
     name : "Solid",
     price : 150000,
@@ -1001,6 +1072,29 @@ export const bodyColorType = Object.freeze({
 } as const);
 
 export const neckColorType = Object.freeze({
+  "natural" : {
+    name : "Natural",
+    price : 150000,
+  },
+  "solid": {
+    name : "Solid",
+    price : 150000,
+  },
+  "transparent" : {
+    name : "Transparent",
+    price : 150000,
+  },
+  "metallic": {
+    name : "Metallic",
+    price : 350000,
+  },
+} as const);
+
+export const headstockColorType = Object.freeze({
+  "natural" : {
+    name : "Natural",
+    price : 150000,
+  },
   "solid": {
     name : "Solid",
     price : 150000,
@@ -1022,6 +1116,12 @@ export const bodyColorTypeToColorsMap = Object.freeze({
 })
 
 export const neckColorTypeToColorsMap = Object.freeze({
+  "solid" : solidColors,
+  "transparent" : solidColors,
+  "metallic" : metallicColors
+})
+
+export const headstockColorTypeToColorsMap = Object.freeze({
   "solid" : solidColors,
   "transparent" : solidColors,
   "metallic" : metallicColors
@@ -1069,6 +1169,10 @@ export const bindings = Object.freeze({
 export const headstockOverlay = Object.freeze({
   "pvc": {
     name : "PVC",
+    price : 50000
+  },
+  "pvc-black": {
+    name : "PVC Black",
     price : 50000
   },
   "rosewood": {

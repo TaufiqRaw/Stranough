@@ -58,6 +58,8 @@ export const getComponentItems : {
       const topBodyColorType = ctx.selectedComponent.electric.topBodyColorType;
       if(!topBodyColorType)
         throw new Error("Top body color type has not been selected");
+      if(topBodyColorType === "natural")
+        throw new Error("Natural color cant choose the color");
       return GuitarBuilder.asArray(GuitarBuilder.bodyColorTypeToColorsMap[topBodyColorType]).reduce((acc, color)=>{
         acc[color.name] = {
           key : color.key,
@@ -66,26 +68,59 @@ export const getComponentItems : {
       }, {} as ComponentItem);
     },
     backBodyColorType(ctx){
-      return R.merge(GuitarBuilder.asArray(GuitarBuilder.bodyColorType).reduce((acc, type)=>{
+      return GuitarBuilder.asArray(GuitarBuilder.bodyColorType).reduce((acc, type)=>{
         acc[type.name] = {
           key : type.key,
           price : type.price,
         }
         return acc;
-      }, {} as ComponentItem), {
-        nullable : true
-      });
+      }, {} as ComponentItem);
     },
     backBodyColor(ctx){
       const backBodyColorType = ctx.selectedComponent.electric.backBodyColorType;
       if(!backBodyColorType)
         throw new Error("Back body color type has not been selected");
+      if(backBodyColorType === "natural")
+        throw new Error("Natural color cant choose the color");
       return GuitarBuilder.asArray(GuitarBuilder.bodyColorTypeToColorsMap[backBodyColorType]).reduce((acc, color)=>{
         acc[color.name] = {
           key : color.key,
         }
         return acc;
       }, {} as ComponentItem);
+    },
+    headstockColorType(ctx){
+      return GuitarBuilder.asArray(GuitarBuilder.headstockColorType).reduce((acc, type)=>{
+        acc[type.name] = {
+          key : type.key,
+          price : type.price,
+        }
+        return acc;
+      }, {} as ComponentItem);
+    },
+    headstockColor(ctx){
+      const headstockColorType = ctx.selectedComponent.electric.headstockColorType;
+      if(!headstockColorType)
+        throw new Error("Headstock color type has not been selected");
+      if(headstockColorType === "natural")
+        throw new Error("Natural color cant choose the color");
+      return GuitarBuilder.asArray(GuitarBuilder.headstockColorTypeToColorsMap[headstockColorType]).reduce((acc, color)=>{
+        acc[color.name] = {
+          key : color.key,
+        }
+        return acc;
+      }, {} as ComponentItem);
+    },
+    headstockOverlay(ctx){
+      return R.merge(GuitarBuilder.asArray(GuitarBuilder.headstockOverlay).reduce((acc, overlay)=>{
+        acc[overlay.name] = {
+          key : overlay.key,
+          price : overlay.price,
+        }
+        return acc;
+      }, {} as ComponentItem), {
+        nullable : true
+      });
     },
     async pickguardMaterial(ctx){
       const selectedModel = ctx.selectedComponent.electric.guitarModel;
@@ -367,20 +402,20 @@ export const getComponentItems : {
       }, {} as ComponentItem);
     },
     neckColorType(ctx){
-      return R.merge(GuitarBuilder.asArray(GuitarBuilder.bodyColorType).reduce((acc, type)=>{
+      return GuitarBuilder.asArray(GuitarBuilder.bodyColorType).reduce((acc, type)=>{
         acc[type.name] = {
           key : type.key,
           price : type.price,
         }
         return acc;
-      }, {} as ComponentItem),{
-        nullable : true
-      });
+      }, {} as ComponentItem);
     },
     neckColor(ctx){
       const neckColorType = ctx.selectedComponent.electric.neckColorType;
       if(!neckColorType)
         throw new Error("Neck color type has not been selected");
+      if(neckColorType === "natural")
+        throw new Error("Natural color cant choose the color");
       return GuitarBuilder.asArray(GuitarBuilder.bodyColorTypeToColorsMap[neckColorType]).reduce((acc, color)=>{
         acc[color.name] = {
           key : color.key,
@@ -493,6 +528,17 @@ export const getComponentItems : {
         nullable : true
       });
     },
+    inlay(ctx){
+      return R.merge(GuitarBuilder.asArray(GuitarBuilder.inlayTypes).reduce((acc, inlay)=>{
+        acc[inlay.name] = {
+          key : inlay.key,
+          price : inlay.price,
+        }
+        return acc;
+      }, {} as ComponentItem), {
+        nullable : true
+      });
+    },
     sideInlay(ctx){
       return R.merge(GuitarBuilder.asArray(GuitarBuilder.sideInlay).reduce((acc, inlay)=>{
         acc[inlay.name] = {
@@ -560,11 +606,14 @@ export const getComponentItems : {
       
       const bridges = await SocketDI.repository.bridges.findAll({
         where : {
-          stringCount : stringCount !== 12  
-              ? {
-                  $in : [1, stringCount]
-                } 
-              : stringCount
+          stringCount : {
+            $in : [1, stringCount]
+          }
+          // stringCount !== 12  
+          //     ? {
+          //         $in : [1, stringCount]
+          //       } 
+          //     : stringCount
         }
       });
 
@@ -584,6 +633,9 @@ export const getComponentItems : {
       if(!bridge1)
         throw new Error("First bridge not found");
       const bridge1type = bridge1.type;
+      if(![Bridge.BridgeType.Tailpiece, Bridge.BridgeType.NearTailpiece, Bridge.BridgeType.Tuneomatic].includes(bridge1type)){
+        throw new Error("Invalid first bridge type");
+      }
       
       //first bridge either tailpiece or tuneomatic, if not this selector should be disabled or skipped
       const isTailpiece = [Bridge.BridgeType.Tailpiece, Bridge.BridgeType.NearTailpiece].includes(bridge1type);
@@ -630,6 +682,12 @@ export const additionalComponentInfo : {
   guitarModel : "The basic shape of the guitar, its only dictate guitar basic shape, doesnt dictate whether its hollow or solid because all basic shape can be hollow or solid in this custom guitar, all basic shape also can be headless or not",
   stringCount : "The number of strings on the guitar, the standard are 6 string for guitar and 4 string for bass.",
   pickupConfiguration : "The configuration of the pickups, H-H means two humbuckers, H-S-S means one humbucker and two single coils",
-  bodyTopWood : "The wood that is used for the top of the body, its optional if the body type is solid. when in solid guitar it just used for the cosmetic purpose. laminated means the wood is not fully solid, its a thin layer of wood that is glued to the top of the body, solid means the wood is fully solid",
+  bodyTopWood : "The wood that is used for the top of the body, its optional if the body type is solid. when in solid guitar it just used for the cosmetic purpose so its better to use none or make the user freely choose or use laminated wood instead of solid ones. laminated means the wood is not fully solid, its a thin layer of wood that is glued to the top of the body, this means that the laminated wood doesnt affect guitar tone, while solid means the wood is fully solid and will affect the guitar tone",
   jack : "The type of jack, top is the jack that is placed on the top of the guitar, making the cable goes up, top plated is the jack that is placed on the top of the guitar but with a angled plate making the cable goes 45 degree, side is the jack that is placed on the side of the guitar, making the cable goes to the side",
+  neckColorType : "The color type of the neck, natural means the neck is not painted, while the other color type means the neck is painted",
+  topBodyColorType : "The color type of the top of the body only, natural means the top body is not painted, while the other color type means the top body is painted",
+  backBodyColorType : "The color type of the back of the body and side of the body, natural means the back body and side body is not painted, while the other color type means the back body and side body is painted",
+  useFret : "Whether the fret is used or not, if its no, the fretboard will be fretless, if it yes, the fretboard will have frets",
+  headstockColorType : "The color type of the headstock, natural means the headstock is not painted, while the other color type means the headstock is painted",
+  headstockOverlay : "The overlay of the headstock, the overlay is the thin layer of some material that is glued to the headstock, this is purely cosmetic",
 }

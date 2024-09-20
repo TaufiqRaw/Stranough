@@ -8,11 +8,6 @@ import { findOneEntity } from "../utils/find-one-entity.util";
 import { AcousticModel, Bridge } from "stranough-common";
 import { AcousticGuitarModel, BaseEntity, ElectricGuitarModel, Inlay, Media } from "../entities";
 
-const registeredRepoAndMediaKeys: {
-  repository : EntityRepository<any>;
-  mediaKeys : (keyof any)[];
-}[]=[]
-
 function t<
     T extends {
       id : number;
@@ -29,7 +24,6 @@ function t<
     additionalPopulate ?: any[];
     onGetOne ?: (item : T)=>Promise<T>;
   }){
-    registeredRepoAndMediaKeys.push({repository : b, mediaKeys : d})
     return [a, entityWithMediaRouterFactory(()=>b, c, d, e)] as const
   }
 
@@ -108,6 +102,9 @@ export function initCommonEntityRoutes(){
         const model = await findOneEntity(DI.repository.electricModels, modelId);
         return {model};
       },
+      queryMapper : q=>({
+        'model' : q.model
+      }),
       onUpdate : async (dto, item)=>{
         if(dto.model){
           const model = await findOneEntity(DI.repository.electricModels, dto.model);

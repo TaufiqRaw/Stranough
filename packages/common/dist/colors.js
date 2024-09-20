@@ -148,6 +148,10 @@ exports.solidColors = Object.freeze({
         name: "hijau - RAL5001",
         value: 0x1F3438,
     },
+    "RAL5025": {
+        name: "biru - RAL5025",
+        value: 0x21697c,
+    },
     "RAL5007": {
         name: "biru - RAL5007",
         value: 0x3E5F8A,
